@@ -2,6 +2,7 @@ package Entes;
 
 import java.util.ArrayList;
 import java.util.List;
+import Enums.Pais;
 import Enums.Plan;
 
 /**
@@ -10,22 +11,24 @@ import Enums.Plan;
  * las estadísticas asociadas a la cuenta.
  *
  * @author Grupo 4 - Proyecto TDL2
- * @version 1.3
+ * @version 1.5
  */
 public class Cuenta extends Usuario {
 
     private Plan plan;
     private List<Perfil> perfiles;
-    // private Pais pais;
+    private Pais pais;
     // private ReporteIndividual estadisticas;
 
     /**
      * Constructor vacío.
-     * Inicializa la lista de perfiles.
+     * Inicializa la lista de perfiles y establece un país por defecto.
      */
     public Cuenta() {
         super();
         this.perfiles = new ArrayList<>();
+        this.pais = Pais.NO_ESPECIFICADO;
+        // this.estadisticas = new ReporteIndividual(); // Se inicializan las estadísticas
     }
 
     /**
@@ -33,11 +36,14 @@ public class Cuenta extends Usuario {
      * @param email El correo electrónico para el inicio de sesión.
      * @param contrasena La clave de acceso de la cuenta.
      * @param plan El plan de suscripción asociado a la cuenta.
+     * @param pais El país de residencia de la cuenta.
      */
-    public Cuenta(String email, String contrasena, Plan plan) {
+    public Cuenta(String email, String contrasena, Plan plan, Pais pais) {
         super(email, contrasena);
         this.plan = plan;
+        this.pais = pais;
         this.perfiles = new ArrayList<>();
+        // this.estadisticas = new ReporteIndividual(); // Se inicializan las estadísticas
     }
 
     // --- Métodos de Gestión de Perfiles ---
@@ -94,13 +100,13 @@ public class Cuenta extends Usuario {
         this.perfiles = perfiles;
     }
 
-    // public Pais getPais() {
-    //     return pais;
-    // }
+    public Pais getPais() {
+        return pais;
+    }
 
-    // public void setPais(Pais pais) {
-    //     this.pais = pais;
-    // }
+    public void setPais(Pais pais) {
+      this.pais = pais;
+    }
 
     // public ReporteIndividual getEstadisticas() {
     //     return estadisticas;
