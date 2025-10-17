@@ -2,54 +2,73 @@ package Control;
 
 import java.util.ArrayList;
 import java.util.List;
+import Catalogo.Contenido;
 import Entes.Usuario;
+import Reportes.ReporteManager;
 
 /**
- * Representa la plataforma principal de streaming.
- * Esta clase actúa como el punto de entrada y controlador central, gestionando
- * las listas de usuarios y contenidos.
+ * Clase principal que representa la plataforma de streaming.
+ * Gestiona los usuarios, el catalogo de contenidos y el acceso
+ * al sistema de reportes.
  *
  * @author Grupo 4 - Proyecto TDL2
- * @version 1.0
+ * @version 1.1
  */
 public class Plataforma {
 
     private List<Usuario> usuarios;
-    // private List<Contenido> contenidos;
-    // private ReporteManager controladorReportes;
+    private List<Contenido> contenidos;
+    private ReporteManager controladorReportes;
 
     /**
-     * Constructor para inicializar la plataforma.
-     * Crea las listas necesarias para su funcionamiento.
+     * Constructor de la Plataforma.
+     * Inicializa las listas de usuarios y contenidos, y el gestor de reportes.
      */
     public Plataforma() {
         this.usuarios = new ArrayList<>();
-        // this.contenidos = new ArrayList<>();
-    }
-
-    // --- Métodos de gestión ---
-
-    /**
-     * Registra un nuevo usuario en la plataforma.
-     * @param usuario El usuario a agregar.
-     */
-    public void agregarUsuario(Usuario usuario) {
-        this.usuarios.add(usuario);
-        System.out.println("Usuario añadido a la plataforma.");
+        this.contenidos = new ArrayList<>();
+        this.controladorReportes = new ReporteManager();
     }
 
     /**
-     * Elimina un usuario existente de la plataforma.
-     * @param usuario El usuario a eliminar.
+     * Valida las credenciales de un usuario para iniciar sesion.
+     * @param email El email del usuario.
+     * @param contrasena La contrasena del usuario.
+     * @return El objeto Usuario si las credenciales son correctas, de lo contrario null.
      */
-    public void eliminarUsuario(Usuario usuario) {
-        if (this.usuarios.remove(usuario)) {
-            System.out.println("Usuario eliminado de la plataforma.");
-        } else {
-            System.out.println("El usuario no se encontró.");
+    public Usuario validarUsuario(String email, String contrasena) {
+        for (Usuario usuario : this.usuarios) {
+            if (usuario.iniciarSesion(email, contrasena)) {
+                return usuario;
+            }
         }
+        return null;
+    }
+    
+    /**
+     * Muestra en consola el catalogo de contenidos disponibles.
+     */
+    public void mostrarCatalogo() {
+        System.out.println("\n--- CATALOGO DE CONTENIDO ---");
+        for (Contenido contenido : contenidos) {
+            System.out.println("ID: " + contenido.getIdContenido() + " | Titulo: " + contenido.getTitulo() + " (" + contenido.getClass().getSimpleName() + ")");
+        }
+        System.out.println("---------------------------");
     }
 
+    /**
+     * Busca un contenido en la plataforma por su ID.
+     * @param id El ID del contenido a buscar.
+     * @return El objeto Contenido si se encuentra, de lo contrario null.
+     */
+    public Contenido buscarContenidoPorId(int id) {
+        for (Contenido contenido : contenidos) {
+            if (contenido.getIdContenido() == id) {
+                return contenido;
+            }
+        }
+        return null;
+    }
 
     // --- Getters y Setters ---
 
@@ -61,19 +80,27 @@ public class Plataforma {
         this.usuarios = usuarios;
     }
 
-    // public List<Contenido> getContenidos() {
-    //     return contenidos;
-    // }
+    public void agregarUsuario(Usuario usuario) {
+        this.usuarios.add(usuario);
+    }
 
-    // public void setContenidos(List<Contenido> contenidos) {
-    //     this.contenidos = contenidos;
-    // }
+    public List<Contenido> getContenidos() {
+        return contenidos;
+    }
 
-    // public ReporteManager getControladorReportes() {
-    //     return controladorReportes;
-    // }
+    public void setContenidos(List<Contenido> contenidos) {
+        this.contenidos = contenidos;
+    }
 
-    // public void setControladorReportes(ReporteManager controladorReportes) {
-    //     this.controladorReportes = controladorReportes;
-    // }
+    public void agregarContenido(Contenido contenido) {
+        this.contenidos.add(contenido);
+    }
+
+    public ReporteManager getControladorReportes() {
+        return controladorReportes;
+    }
+
+    public void setControladorReportes(ReporteManager controladorReportes) {
+        this.controladorReportes = controladorReportes;
+    }
 }
