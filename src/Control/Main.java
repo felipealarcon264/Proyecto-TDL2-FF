@@ -13,13 +13,13 @@ public class Main {
         //DataBase.InicializadorDB.crearTablas(); //Crea la base de datos y las tablas.
 
 
-        Datos_Personales dp = new Main().cargaDatosPersonales(scanner);
+        Datos_Personales dp = new Main().cargaDatosPersonales(scanner); //Carga los datos personales desde la entrada estándar.
 
-        Datos_PersonalesDAOImpl DPdao = new Datos_PersonalesDAOImpl();
+        Datos_PersonalesDAOImpl DPdao = new Datos_PersonalesDAOImpl(); //Crea el DAO para datos personales.
 
-        DPdao.guardar(dp);
+        DPdao.guardar(dp); //Guarda el dato personal ingresado en la base de datos.
 
-        DPdao.borrar(DPdao.buscarPorDNI(45782737));
+        DPdao.borrar(DPdao.buscarPorDNI(45782737)); //Ejemplo de borrado de un dato personal por DNI.
         
         scanner.close();
 
