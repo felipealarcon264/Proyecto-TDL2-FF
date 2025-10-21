@@ -51,4 +51,8 @@ public class Datos_Personales {
         this.dni = dni;
     }
 
+    @Override  
+    public String toString() {
+        return "Datos_Personales [nombre=" + nombre + ", apellido=" + apellido + ", dni=" + dni + "]";
+    }
 }
