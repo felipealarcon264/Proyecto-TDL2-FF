@@ -14,7 +14,7 @@ public class InicializadorDB {
             String sql = """
                 CREATE TABLE IF NOT EXISTS DATOS_PERSONALES (
                     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                    NOMBRES TEXT(100) NOT NULL,
+                    NOMBRE TEXT(100) NOT NULL,
                     APELLIDO TEXT(100) NOT NULL,
                     DNI INTEGER NOT NULL UNIQUE
                 );

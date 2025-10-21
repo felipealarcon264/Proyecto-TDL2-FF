@@ -3,12 +3,25 @@ package Control;
 import Entes.Datos_Personales;
 import java.util.Scanner;
 
+import DAO.Datos_PersonalesDAOImpl;
+
 public class Main {
     public static void main(String[] args) {
 
         System.out.println("Hello word!");
         Scanner scanner = new Scanner(System.in);
+        //DataBase.InicializadorDB.crearTablas(); //Crea la base de datos y las tablas.
+
+
         Datos_Personales dp = new Main().cargaDatosPersonales(scanner);
+
+        Datos_PersonalesDAOImpl DPdao = new Datos_PersonalesDAOImpl();
+
+        DPdao.guardar(dp);
+
+        DPdao.borrar(DPdao.buscarPorDNI(45782737));
+        
+        scanner.close();
 
     }
 
@@ -37,6 +50,8 @@ public class Main {
      * Verifica que los nombres y apellidos contengan solo letras y que el DNI sea
      * un número entero positivo.
      * En caso de datos inválidos, solicita al usuario que reingrese los datos.
+     * verifica que el dni no haya sigo ingresado previamente.
+     * finalmente solicita confirmación de los datos ingresados.
      * 
      * @author Grupo 4 - Taller de lenguajes II
      * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
@@ -47,6 +62,7 @@ public class Main {
         String nombre = "";
         String apellido = "";
         int dni = -1;
+        Datos_PersonalesDAOImpl DPdao = new Datos_PersonalesDAOImpl();
         while (!datosValidos) {
             System.out.print("Ingrese el nombre: ");
             nombre = scanner.nextLine();
@@ -74,6 +90,10 @@ public class Main {
                     System.out.print("DNI inválido. Ingrese un número entero positivo: ");
                     dniValido = false;
                 }
+                if (DPdao.buscarPorDNI(dni) != null && dniValido) {
+                    System.out.print("DNI ya ingresado previamente. Ingrese un DNI diferente: ");
+                    dniValido = false;
+                }
                 scanner.nextLine(); // Limpiar el buffer
 
             }
@@ -89,7 +109,6 @@ public class Main {
 
     /**
      * Solicita al usuario la confirmación de los datos ingresados.
-     * 
      * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
      * @return {@code true} si el usuario confirma los datos, {@code false} si desea
      *         reingresar los datos.
