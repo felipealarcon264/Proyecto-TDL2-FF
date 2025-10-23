@@ -12,37 +12,25 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         //DataBase.InicializadorDB.crearTablas(); //Crea la base de datos y las tablas.
 
+        Datos_Personales dp = new Main().cargaDatosPersonales(scanner); // Carga los datos personales desde la entrada
+                                                                        // estándar.
 
-        Datos_Personales dp = new Main().cargaDatosPersonales(scanner); //Carga los datos personales desde la entrada estándar.
+        Datos_PersonalesDAOImpl DPdao = new Datos_PersonalesDAOImpl(); // Crea el DAO para datos personales.
 
-        Datos_PersonalesDAOImpl DPdao = new Datos_PersonalesDAOImpl(); //Crea el DAO para datos personales.
+        DPdao.guardar(dp); // Guarda el dato personal ingresado en la base de datos.
 
-        DPdao.guardar(dp); //Guarda el dato personal ingresado en la base de datos.
+        dp = new Datos_Personales("Andres", "Gomez", 4536522);//Sirve para que quiera borrar un dato que no existe en la base de datos.
 
-        DPdao.borrar(DPdao.buscarPorDNI(45782737)); //Ejemplo de borrado de un dato personal por DNI.
-        
+
+        DPdao.borrar(DPdao.buscarPorDNI(45728374)); // Ejemplo de borrado de un dato personal por DNI.
+
+        DPdao.borrar(dp); //Intentara borrar un DP que no existe en la base de datos.
+
+
+
+
         scanner.close();
 
-    }
-
-    /**
-     * Verifica si una cadena de texto contiene únicamente letras (mayúsculas y/o
-     * minúsculas).
-     * 
-     * @param texto La cadena de texto a verificar.
-     * @return {@code true} si la cadena contiene solo letras , {@code false} en
-     *         caso contrario.
-     */
-    public static boolean contieneSoloLetras(String texto) {
-        if (texto == null || texto.isEmpty()) {
-            return false;
-        }
-        for (char caracter : texto.toCharArray()) {
-            if (!Character.isLetter(caracter)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -50,9 +38,8 @@ public class Main {
      * Verifica que los nombres y apellidos contengan solo letras y que el DNI sea
      * un número entero positivo.
      * En caso de datos inválidos, solicita al usuario que reingrese los datos.
-     * verifica que el dni no haya sigo ingresado previamente.
-     * finalmente solicita confirmación de los datos ingresados.
-     * 
+     * Verifica que el dni no haya sigo ingresado previamente a la base de datos.
+     * finalmente solicita confirmación de los datos ingresados caso contrario reinicia el proceso.
      * @author Grupo 4 - Taller de lenguajes II
      * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
      * @return Un objeto {@link Datos_Personales} con los datos ingresados.
@@ -109,6 +96,7 @@ public class Main {
 
     /**
      * Solicita al usuario la confirmación de los datos ingresados.
+     * 
      * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
      * @return {@code true} si el usuario confirma los datos, {@code false} si desea
      *         reingresar los datos.
@@ -121,6 +109,26 @@ public class Main {
             confirmacion = scanner.nextLine();
         }
         return confirmacion.equalsIgnoreCase("S");
+    }
+
+    /**
+     * Verifica si una cadena de texto contiene únicamente letras (mayúsculas y/o
+     * minúsculas).
+     * 
+     * @param texto La cadena de texto a verificar.
+     * @return {@code true} si la cadena contiene solo letras , {@code false} en
+     *         caso contrario.
+     */
+    public static boolean contieneSoloLetras(String texto) {
+        if (texto == null || texto.isEmpty()) {
+            return false;
+        }
+        for (char caracter : texto.toCharArray()) {
+            if (!Character.isLetter(caracter)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
