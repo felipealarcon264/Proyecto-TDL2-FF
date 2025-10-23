@@ -1,30 +1,33 @@
 package Control;
 
-import Entes.Datos_Personales;
+import Entes.*;
 import java.util.Scanner;
 
+import Catalogo.Pelicula;
 import DAO.Datos_PersonalesDAOImpl;
+import DAO.PeliculaDAOImpl;
 
 public class Main {
     public static void main(String[] args) {
-
-        System.out.println("Hello word!");
         Scanner scanner = new Scanner(System.in);
         //DataBase.InicializadorDB.crearTablas(); //Crea la base de datos y las tablas.
 
-        Datos_Personales dp = new Main().cargaDatosPersonales(scanner); // Carga los datos personales desde la entrada
-                                                                        // estándar.
-
+        /* PRUEBAS DAO DATOS PERSONALES
+        Datos_Personales dp = new Main().cargaDatosPersonales(scanner); // Carga los datos personales desde la entrada estándar.
         Datos_PersonalesDAOImpl DPdao = new Datos_PersonalesDAOImpl(); // Crea el DAO para datos personales.
-
         DPdao.guardar(dp); // Guarda el dato personal ingresado en la base de datos.
-
         dp = new Datos_Personales("Andres", "Gomez", 4536522);//Sirve para que quiera borrar un dato que no existe en la base de datos.
-
-
         DPdao.borrar(DPdao.buscarPorDNI(45728374)); // Ejemplo de borrado de un dato personal por DNI.
-
         DPdao.borrar(dp); //Intentara borrar un DP que no existe en la base de datos.
+        */
+
+        //Pelicula peliculaPrueba = new Pelicula("Inception", "Christopher Nolan", 148, "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.", Enums.Genero.ACCION);
+        
+        PeliculaDAOImpl peliculaDAO = new PeliculaDAOImpl();
+
+        //peliculaDAO.guardar(peliculaPrueba);
+        peliculaDAO.buscarPorTitulo("Inception");
+
 
 
 

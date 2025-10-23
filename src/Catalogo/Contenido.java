@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import Enums.Genero;
 import Enums.Idioma;
-import Enums.Pais;
+   //No se necesita en la segunda entrega.import Enums.Pais;
 
 /**
  * Clase base abstracta para todo el contenido audiovisual de la plataforma.
- * Define los atributos y comportamientos comunes como título, sinopsis,
+ * Define los atributos y comportamientos comunes como título, resumen,
  * duración, géneros, etc.
  *
  * @author Grupo 4 - Proyecto TDL2
@@ -16,34 +16,34 @@ import Enums.Pais;
  */
 public abstract class Contenido {
 
-    private int idContenido;
+    //private int idContenido;   //No se necesita en la segunda entrega.
     private String titulo;
-    private String sinopsis;
+    private String resumen;
     private String director;
-    private int duracion; // en minutos
-    private Idioma idiomaOriginal;
-    private List<String> elenco;
-    private List<Subtitulo> subtitulos;
-    private List<Audio> pistasDeAudio;
-    private List<Calidad> calidades;
-    private List<Pais> restriccionesGeograficas;
-    private List<Genero> generos;
-    private List<Resenia> listReseña;
-    private String trailer; // URL o ruta al archivo del trailer
-    private String video;   // URL o ruta al archivo principal
+    private int duracion; // En segundos
+    //private Idioma idiomaOriginal;   //No se necesita en la segunda entrega.
+    //private List<String> elenco;   //No se necesita en la segunda entrega.
+    //private List<Subtitulo> subtitulos;   //No se necesita en la segunda entrega.
+    //private List<Audio> pistasDeAudio;   //No se necesita en la segunda entrega.
+    //private List<Calidad> calidades;   //No se necesita en la segunda entrega.
+    //private List<Pais> restriccionesGeograficas;    //No se necesita en la segunda entrega.
+    private Genero genero;    //En realidad es una lista de géneros.
+    //private List<Resenia> listReseña;   //No se necesita en la segunda entrega.
+    //private String trailer; // URL o ruta al archivo del trailer   //No se necesita en la segunda entrega.
+    //private String video;   // URL o ruta al archivo principal   //No se necesita en la segunda entrega.
 
     /**
      * Constructor vacío.
      * Inicializa todas las listas para evitar NullPointerException.
      */
     public Contenido() {
-        this.elenco = new ArrayList<>();
-        this.subtitulos = new ArrayList<>();
-        this.pistasDeAudio = new ArrayList<>();
-        this.calidades = new ArrayList<>();
-        this.restriccionesGeograficas = new ArrayList<>();
-        this.generos = new ArrayList<>();
-        this.listReseña = new ArrayList<>();
+           //No se necesita en la segunda entrega.this.elenco = new ArrayList<>();
+           //No se necesita en la segunda entrega.this.subtitulos = new ArrayList<>();
+           //No se necesita en la segunda entrega.this.pistasDeAudio = new ArrayList<>();
+           //No se necesita en la segunda entrega.this.calidades = new ArrayList<>();
+           //No se necesita en la segunda entrega.this.restriccionesGeograficas = new ArrayList<>();
+           //No se necesita en la segunda entrega.this.generos = new ArrayList<>();
+           //No se necesita en la segunda entrega.this.listReseña = new ArrayList<>();
     }
 
     /**
@@ -53,29 +53,31 @@ public abstract class Contenido {
      * @param director Director del contenido.
      * @param duracion Duración en minutos.
      */
-    public Contenido(int idContenido, String titulo, String director, int duracion) {
-        this.idContenido = idContenido;
+    public Contenido(String titulo, String director, int duracion, String resumen, Genero genero) {
+           //No se necesita en la segunda entrega.this.idContenido = idContenido;
         this.titulo = titulo;
         this.director = director;
         this.duracion = duracion;
-        this.elenco = new ArrayList<>();
-        this.subtitulos = new ArrayList<>();
-        this.pistasDeAudio = new ArrayList<>();
-        this.calidades = new ArrayList<>();
-        this.restriccionesGeograficas = new ArrayList<>();
-        this.generos = new ArrayList<>();
-        this.listReseña = new ArrayList<>();
+        this.resumen = resumen;
+        this.genero = genero;
+           //No se necesita en la segunda entrega.this.elenco = new ArrayList<>();
+           //No se necesita en la segunda entrega.this.subtitulos = new ArrayList<>();
+           //No se necesita en la segunda entrega.this.pistasDeAudio = new ArrayList<>();
+           //No se necesita en la segunda entrega.this.calidades = new ArrayList<>();
+           //No se necesita en la segunda entrega.this.restriccionesGeograficas = new ArrayList<>();
+           //No se necesita en la segunda entrega.this.generos = new ArrayList<>();
+           //No se necesita en la segunda entrega.this.listReseña = new ArrayList<>();
     }
 
     // --- Getters y Setters ---
 
-    public int getIdContenido() {
-        return idContenido;
-    }
+       //No se necesita en la segunda entrega.public int getIdContenido() {
+       //No se necesita en la segunda entrega.    return idContenido;
+       //No se necesita en la segunda entrega.}
 
-    public void setIdContenido(int idContenido) {
-        this.idContenido = idContenido;
-    }
+       //No se necesita en la segunda entrega.public void setIdContenido(int idContenido) {
+       //No se necesita en la segunda entrega.    this.idContenido = idContenido;
+       //No se necesita en la segunda entrega.}
 
     public String getTitulo() {
         return titulo;
@@ -85,12 +87,12 @@ public abstract class Contenido {
         this.titulo = titulo;
     }
 
-    public String getSinopsis() {
-        return sinopsis;
+    public String getResumen() {
+        return resumen;
     }
 
-    public void setSinopsis(String sinopsis) {
-        this.sinopsis = sinopsis;
+    public void setResumen(String resumen) {
+        this.resumen = resumen;
     }
 
     public String getDirector() {
@@ -109,83 +111,89 @@ public abstract class Contenido {
         this.duracion = duracion;
     }
 
-    public Idioma getIdiomaOriginal() {
-        return idiomaOriginal;
-    }
+       //No se necesita en la segunda entrega.public Idioma getIdiomaOriginal() {
+       //No se necesita en la segunda entrega.    return idiomaOriginal;
+       //No se necesita en la segunda entrega.}
 
-    public void setIdiomaOriginal(Idioma idiomaOriginal) {
-        this.idiomaOriginal = idiomaOriginal;
-    }
+       //No se necesita en la segunda entrega.public void setIdiomaOriginal(Idioma idiomaOriginal) {
+       //No se necesita en la segunda entrega.    this.idiomaOriginal = idiomaOriginal;
+       //No se necesita en la segunda entrega.}
 
-    public List<String> getElenco() {
-        return elenco;
-    }
+       //No se necesita en la segunda entrega.public List<String> getElenco() {
+       //No se necesita en la segunda entrega.    return elenco;
+       //No se necesita en la segunda entrega.}
 
-    public void setElenco(List<String> elenco) {
-        this.elenco = elenco;
-    }
+       //No se necesita en la segunda entrega.public void setElenco(List<String> elenco) {
+       //No se necesita en la segunda entrega.    this.elenco = elenco;
+       //No se necesita en la segunda entrega.}
 
-    public List<Subtitulo> getSubtitulos() {
-        return subtitulos;
-    }
+       //No se necesita en la segunda entrega.public List<Subtitulo> getSubtitulos() {
+       //No se necesita en la segunda entrega.    return subtitulos;
+       //No se necesita en la segunda entrega.}
 
-    public void setSubtitulos(List<Subtitulo> subtitulos) {
-        this.subtitulos = subtitulos;
-    }
+       //No se necesita en la segunda entrega.public void setSubtitulos(List<Subtitulo> subtitulos) {
+       //No se necesita en la segunda entrega.    this.subtitulos = subtitulos;
+       //No se necesita en la segunda entrega.}
 
-    public List<Audio> getPistasDeAudio() {
-        return pistasDeAudio;
-    }
+       //No se necesita en la segunda entrega.public List<Audio> getPistasDeAudio() {
+       //No se necesita en la segunda entrega.    return pistasDeAudio;
+       //No se necesita en la segunda entrega.}
 
-    public void setPistasDeAudio(List<Audio> pistasDeAudio) {
-        this.pistasDeAudio = pistasDeAudio;
-    }
+       //No se necesita en la segunda entrega.public void setPistasDeAudio(List<Audio> pistasDeAudio) {
+       //No se necesita en la segunda entrega.    this.pistasDeAudio = pistasDeAudio;
+       //No se necesita en la segunda entrega.}
 
-    public List<Calidad> getCalidades() {
-        return calidades;
-    }
+       //No se necesita en la segunda entrega.public List<Calidad> getCalidades() {
+       //No se necesita en la segunda entrega.    return calidades;
+       //No se necesita en la segunda entrega.}
 
-    public void setCalidades(List<Calidad> calidades) {
-        this.calidades = calidades;
-    }
+       //No se necesita en la segunda entrega.public void setCalidades(List<Calidad> calidades) {
+       //No se necesita en la segunda entrega.    this.calidades = calidades;
+       //No se necesita en la segunda entrega.}
 
-    public List<Pais> getRestriccionesGeograficas() {
-        return restriccionesGeograficas;
-    }
+       //No se necesita en la segunda entrega.public List<Pais> getRestriccionesGeograficas() {
+       //No se necesita en la segunda entrega.    return restriccionesGeograficas;
+       //No se necesita en la segunda entrega.}
 
-    public void setRestriccionesGeograficas(List<Pais> restriccionesGeograficas) {
-        this.restriccionesGeograficas = restriccionesGeograficas;
-    }
+       //No se necesita en la segunda entrega.public void setRestriccionesGeograficas(List<Pais> restriccionesGeograficas) {
+       //No se necesita en la segunda entrega.    this.restriccionesGeograficas = restriccionesGeograficas;
+       //No se necesita en la segunda entrega.}
 
-    public List<Genero> getGeneros() {
-        return generos;
-    }
+       //No se necesita en la segunda entrega.public List<Genero> getGeneros() {
+       //No se necesita en la segunda entrega.    return generos;
+       //No se necesita en la segunda entrega.}
 
-    public void setGeneros(List<Genero> generos) {
-        this.generos = generos;
-    }
+       //No se necesita en la segunda entrega.public void setGeneros(List<Genero> generos) {
+       //No se necesita en la segunda entrega.    this.generos = generos;
+       //No se necesita en la segunda entrega.}
+       public Genero getGenero() {
+           return genero;
+       }
+       public void setGenero(Genero genero) {
+           this.genero = genero;
+       }
 
-    public List<Resenia> getListReseña() {
-        return listReseña;
-    }
+       //No se necesita en la segunda entrega.public List<Resenia> getListReseña() {
+       //No se necesita en la segunda entrega.    return listReseña;
+       //No se necesita en la segunda entrega.}
 
-    public void setListReseña(List<Resenia> listReseña) {
-        this.listReseña = listReseña;
-    }
+       //No se necesita en la segunda entrega.public void setListReseña(List<Resenia> listReseña) {
+       //No se necesita en la segunda entrega.    this.listReseña = listReseña;
+       //No se necesita en la segunda entrega.}
 
-    public String getTrailer() {
-        return trailer;
-    }
+       //No se necesita en la segunda entrega.public String getTrailer() {
+       //No se necesita en la segunda entrega.    return trailer;
+       //No se necesita en la segunda entrega.}
 
-    public void setTrailer(String trailer) {
-        this.trailer = trailer;
-    }
+       //No se necesita en la segunda entrega.public void setTrailer(String trailer) {
+       //No se necesita en la segunda entrega.    this.trailer = trailer;
+       //No se necesita en la segunda entrega.}
 
-    public String getVideo() {
-        return video;
-    }
+       //No se necesita en la segunda entrega.public String getVideo() {
+       //No se necesita en la segunda entrega.    return video;
+       //No se necesita en la segunda entrega.}
 
-    public void setVideo(String video) {
-        this.video = video;
-    }
+       //No se necesita en la segunda entrega.public void setVideo(String video) {
+       //No se necesita en la segunda entrega.    this.video = video;
+       //No se necesita en la segunda entrega.}
 }

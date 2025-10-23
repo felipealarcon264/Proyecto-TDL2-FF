@@ -44,10 +44,7 @@ public class Plataforma {
         }
         return null;
     }
-    
-    /**
-     * Muestra en consola el catalogo de contenidos disponibles.
-     */
+    /* 
     public void mostrarCatalogo() {
         System.out.println("\n--- CATALOGO DE CONTENIDO ---");
         for (Contenido contenido : contenidos) {
@@ -56,11 +53,7 @@ public class Plataforma {
         System.out.println("---------------------------");
     }
 
-    /**
-     * Busca un contenido en la plataforma por su ID.
-     * @param id El ID del contenido a buscar.
-     * @return El objeto Contenido si se encuentra, de lo contrario null.
-     */
+    
     public Contenido buscarContenidoPorId(int id) {
         for (Contenido contenido : contenidos) {
             if (contenido.getIdContenido() == id) {
@@ -69,6 +62,8 @@ public class Plataforma {
         }
         return null;
     }
+    */
+    
 
     // --- Getters y Setters ---
 

@@ -1,5 +1,7 @@
 package Catalogo;
 
+import Enums.Genero;
+
 /**
  * Representa una Película dentro de la plataforma.
  * Es una clase concreta que hereda todos los atributos y métodos
@@ -28,7 +30,7 @@ public class Pelicula extends Contenido {
      * @param director Director de la película.
      * @param duracion Duración en minutos.
      */
-    public Pelicula(int idContenido, String titulo, String director, int duracion) {
-        super(idContenido, titulo, director, duracion);
+    public Pelicula(String titulo, String director, int duracion, String resumen, Genero genero) {
+        super(titulo, director, duracion, resumen, genero);
     }
 }
