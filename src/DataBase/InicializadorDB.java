@@ -3,6 +3,11 @@ package DataBase;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+/**
+ * Clase para inicializar la base de datos y crear las tablas necesarias.
+ * @author Grupo 4 - Taller de lenguajes II
+ * @version 1.0
+ */
 
 public class InicializadorDB {
 
@@ -10,7 +15,9 @@ public class InicializadorDB {
         try (Connection connection = ConexionDB.conectar();
              Statement stmt = connection.createStatement()) {
 
-            // Tabla DATOS_PERSONALES
+            /**
+             * Tabla DATOS_PERSONALES
+             */
             String sql = """
                 CREATE TABLE IF NOT EXISTS DATOS_PERSONALES (
                     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -21,7 +28,9 @@ public class InicializadorDB {
             """;
             stmt.executeUpdate(sql);
 
-            // Tabla PELICULA
+            /**
+             * Tabla PELICULA
+             */
             sql = """
                 CREATE TABLE IF NOT EXISTS PELICULA (
                     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -34,7 +43,9 @@ public class InicializadorDB {
             """;
             stmt.executeUpdate(sql);
 
-            // Tabla USUARIO
+            /**
+             * Tabla USUARIO
+             */
             sql = """
                 CREATE TABLE IF NOT EXISTS USUARIO (
                     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -48,7 +59,9 @@ public class InicializadorDB {
             """;
             stmt.executeUpdate(sql);
 
-            // Tabla RESENIA
+            /**
+             * Tabla RESENIA
+             */
             sql = """
                 CREATE TABLE IF NOT EXISTS RESENIA (
                     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,

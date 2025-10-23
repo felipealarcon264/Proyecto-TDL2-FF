@@ -5,9 +5,14 @@ import Entes.Datos_Personales;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+/**
+ * Implementación de la interfaz Datos_PersonalesDAO para la gestión de datos personales en la base de datos.
+ * @author Grupo 4 - Taller de lenguajes II
+ * @version 1.1
+ */
 
 public class Datos_PersonalesDAOImpl implements Datos_PersonalesDAO {
-    /*
+    /**
      * Guarda datos personales a la base de datos
      * 
      * @param dp Datos_Personales a guardar
@@ -33,7 +38,7 @@ public class Datos_PersonalesDAOImpl implements Datos_PersonalesDAO {
         }
     }
 
-    /*
+    /**
      * Borrar datos personales
      * Verifica si el objeto Datos_Personales es nulo antes de intentar borrarlo.\
      * Recupera el valor del dni del objeto Datos_Personales para usarlo en la
@@ -68,7 +73,7 @@ public class Datos_PersonalesDAOImpl implements Datos_PersonalesDAO {
         }
     }
 
-    /*
+    /**
      * Buscar datos personales por DNI
      * 
      * @param dni DNI a buscar

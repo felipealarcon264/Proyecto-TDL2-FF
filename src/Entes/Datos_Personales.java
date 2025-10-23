@@ -27,6 +27,11 @@ public class Datos_Personales {
     public Datos_Personales() {
     }
 
+    /**
+     * Getters y Setters
+     * @return
+     */
+
     public String getNombre() {
         return nombre;
     }
@@ -51,6 +56,9 @@ public class Datos_Personales {
         this.dni = dni;
     }
 
+    /**
+     * Representación en cadena de los datos personales
+     */
     @Override  
     public String toString() {
         return "Datos_Personales [nombre=" + nombre + ", apellido=" + apellido + ", dni=" + dni + "]";
