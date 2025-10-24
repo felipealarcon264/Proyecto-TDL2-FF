@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import Catalogo.Contenido;
 import Entes.Usuario;
-import Reportes.ReporteManager;
+   //No se necesita en la segunda entrega.import Reportes.ReporteManager;
 
 /**
  * Clase principal que representa la plataforma de streaming.
@@ -18,7 +18,7 @@ public class Plataforma {
 
     private List<Usuario> usuarios;
     private List<Contenido> contenidos;
-    private ReporteManager controladorReportes;
+       //No se necesita en la segunda entrega.private ReporteManager controladorReportes;
 
     /**
      * Constructor de la Plataforma.
@@ -27,22 +27,7 @@ public class Plataforma {
     public Plataforma() {
         this.usuarios = new ArrayList<>();
         this.contenidos = new ArrayList<>();
-        this.controladorReportes = new ReporteManager();
-    }
-
-    /**
-     * Valida las credenciales de un usuario para iniciar sesion.
-     * @param email El email del usuario.
-     * @param contrasena La contrasena del usuario.
-     * @return El objeto Usuario si las credenciales son correctas, de lo contrario null.
-     */
-    public Usuario validarUsuario(String email, String contrasena) {
-        for (Usuario usuario : this.usuarios) {
-            if (usuario.iniciarSesion(email, contrasena)) {
-                return usuario;
-            }
-        }
-        return null;
+           //No se necesita en la segunda entrega.this.controladorReportes = new ReporteManager();
     }
     /* 
     public void mostrarCatalogo() {
@@ -91,11 +76,11 @@ public class Plataforma {
         this.contenidos.add(contenido);
     }
 
-    public ReporteManager getControladorReportes() {
-        return controladorReportes;
-    }
+       //No se necesita en la segunda entrega.public ReporteManager getControladorReportes() {
+       //No se necesita en la segunda entrega.    return controladorReportes;
+       //No se necesita en la segunda entrega.}
 
-    public void setControladorReportes(ReporteManager controladorReportes) {
-        this.controladorReportes = controladorReportes;
-    }
+       //No se necesita en la segunda entrega.public void setControladorReportes(ReporteManager controladorReportes) {
+       //No se necesita en la segunda entrega.    this.controladorReportes = controladorReportes;
+       //No se necesita en la segunda entrega.}
 }

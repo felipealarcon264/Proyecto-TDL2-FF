@@ -51,8 +51,9 @@ public class InicializadorDB {
                     ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                     NOMBRE_USUARIO TEXT NOT NULL,
                     EMAIL TEXT NOT NULL,
-                    CONTRASENIA TEXT NOT NULL,
+                    CONTRASENA TEXT NOT NULL, 
                     ID_DATOS_PERSONALES INTEGER NOT NULL,
+                    ROL TEXT NOT NULL,
                     CONSTRAINT USUARIO_DATOS_PERSONALES_FK FOREIGN KEY (ID_DATOS_PERSONALES)
                         REFERENCES DATOS_PERSONALES(ID)
                 );

@@ -1,9 +1,9 @@
 package Entes;
 
-import java.util.ArrayList;
-import java.util.List;
-import Enums.Pais;
-import Enums.Plan;
+   //No se necesita en la segunda entrega.import java.util.ArrayList;
+   //No se necesita en la segunda entrega.import java.util.List;
+   //No se necesita en la segunda entrega.import Enums.Pais;
+   //No se necesita en la segunda entrega.import Enums.Plan;
 
 /**
  * Representa la cuenta de un cliente final de la plataforma.
@@ -15,9 +15,9 @@ import Enums.Plan;
  */
 public class Cuenta extends Usuario {
 
-    private Plan plan;
-    private List<Perfil> perfiles;
-    private Pais pais;
+    //private Plan plan;   //No se necesita en la segunda entrega.
+    //private List<Perfil> perfiles;   //No se necesita en la segunda entrega.
+    //private Pais pais;   //No se necesita en la segunda entrega.
     // private ReporteIndividual estadisticas;
 
     /**
@@ -26,33 +26,36 @@ public class Cuenta extends Usuario {
      */
     public Cuenta() {
         super();
-        this.perfiles = new ArrayList<>();
-        this.pais = Pais.NO_ESPECIFICADO;
+           //No se necesita en la segunda entrega.this.perfiles = new ArrayList<>();
+           //No se necesita en la segunda entrega.this.pais = Pais.NO_ESPECIFICADO;
         // this.estadisticas = new ReporteIndividual(); // Se inicializan las estadísticas
     }
 
     /**
      * Constructor para crear una instancia de Cuenta con datos iniciales.
+     * @param nombreUsuario El nombre de usuario para la plataforma.
      * @param email El correo electrónico para el inicio de sesión.
      * @param contrasena La clave de acceso de la cuenta.
-     * @param plan El plan de suscripción asociado a la cuenta.
-     * @param pais El país de residencia de la cuenta.
+     * @param datosPersonales Los datos personales asociados a la cuenta.
      */
-    public Cuenta(String email, String contrasena, Plan plan, Pais pais) {
-        super(email, contrasena);
-        this.plan = plan;
-        this.pais = pais;
-        this.perfiles = new ArrayList<>();
+    public Cuenta(int idDB, String nombreUsuario, String email, String contrasena, Datos_Personales datosPersonales, String rol) {
+        super(idDB,nombreUsuario, email, contrasena, datosPersonales, rol);
+           //No se necesita en la segunda entrega.this.plan = plan;
+           //No se necesita en la segunda entrega.this.pais = pais;
+           //No se necesita en la segunda entrega.this.perfiles = new ArrayList<>();
         // this.estadisticas = new ReporteIndividual(); // Se inicializan las estadísticas
     }
 
     // --- Métodos de Gestión de Perfiles ---
 
-    /**
+       //No se necesita en la segunda entrega.
+
+     /*   
+    //**
      * Crea un nuevo perfil asociado a esta cuenta.
      * @param nombre El nombre para el nuevo perfil.
      * @return El nuevo perfil creado y añadido a la lista.
-     */
+     
     public Perfil crearPerfil(String nombre) {
         Perfil nuevoPerfil = new Perfil(nombre);
         this.perfiles.add(nuevoPerfil);
@@ -63,7 +66,7 @@ public class Cuenta extends Usuario {
     /**
      * Elimina un perfil existente de la cuenta.
      * @param perfil El perfil a eliminar.
-     */
+     
     public void eliminarPerfil(Perfil perfil) {
         if (this.perfiles.remove(perfil)) {
             System.out.println("Perfil '" + perfil.getNombre() + "' eliminado.");
@@ -76,7 +79,7 @@ public class Cuenta extends Usuario {
      * Permite cambiar al perfil seleccionado.
      * (La implementación futura podría establecer este perfil como activo).
      * @param perfil El perfil al que se desea cambiar.
-     */
+     
     public void cambiarPerfil(Perfil perfil) {
         System.out.println("Cambiando al perfil: " + perfil.getNombre());
     }
@@ -115,5 +118,10 @@ public class Cuenta extends Usuario {
     // public void setEstadisticas(ReporteIndividual estadisticas) {
     //     this.estadisticas = estadisticas;
     // }
+    */
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }
 

@@ -10,8 +10,8 @@ import Entes.Datos_Personales;
  */
 
 public interface Datos_PersonalesDAO {
-    public boolean guardar(Datos_Personales datosPersonales);
+    public int guardar(Datos_Personales datosPersonales);
     public boolean borrar(Datos_Personales datosPersonales);
     public Datos_Personales buscarPorDNI(int dni);
-
+    public Datos_Personales buscarPorID(int id);
 }

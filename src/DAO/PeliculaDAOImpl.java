@@ -5,7 +5,6 @@ import java.sql.SQLException;
 
 import Catalogo.Pelicula;
 import DataBase.ConexionDB;
-import Entes.Datos_Personales;
 import Enums.Genero;
 
 public class PeliculaDAOImpl implements PeliculaDAO {

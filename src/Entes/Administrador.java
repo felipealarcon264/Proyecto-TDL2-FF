@@ -19,11 +19,13 @@ public class Administrador extends Usuario {
 
     /**
      * Constructor para crear una instancia de Administrador con datos iniciales.
+     * @param nombreUsuario El nombre de usuario para la plataforma.
      * @param email El correo electrónico para el inicio de sesión.
      * @param contrasena La clave de acceso del administrador.
+     * @param datosPersonales Los datos personales asociados al administrador.
      */
-    public Administrador(String email, String contrasena) {
-        super(email, contrasena);
+    public Administrador(int idDB, String nombreUsuario, String email, String contrasena, Datos_Personales datosPersonales, String rol) {
+        super(idDB, nombreUsuario, email, contrasena, datosPersonales, rol);
     }
 
     // --- Métodos de Gestión ---
@@ -66,5 +68,9 @@ public class Administrador extends Usuario {
      */
     public void generarReporte(/*Plataforma plataforma, Reporte reporte*/) {
         System.out.println("Funcionalidad para generar un reporte."); //Luego eliminar
+    }
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }

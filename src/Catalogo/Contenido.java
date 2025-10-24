@@ -1,9 +1,9 @@
 package Catalogo;
 
-import java.util.ArrayList;
-import java.util.List;
+//import java.util.ArrayList;
+//import java.util.List;
 import Enums.Genero;
-import Enums.Idioma;
+//import Enums.Idioma;
    //No se necesita en la segunda entrega.import Enums.Pais;
 
 /**

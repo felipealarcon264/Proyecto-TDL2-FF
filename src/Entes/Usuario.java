@@ -9,9 +9,14 @@ package Entes;
  */
 public abstract class Usuario {
 
+    private int idDB;
+    private String nombreUsuario;
     private String email;
     private String contrasena;
-    private boolean activo;
+    // No se necesita en la segunda entrega.private boolean activo;
+    private Datos_Personales datosPersonales;
+    private String rol;
+
 
     /**
      * Constructor vacío.
@@ -21,37 +26,48 @@ public abstract class Usuario {
 
     /**
      * Constructor para crear una instancia de Usuario con datos iniciales.
+     * 
+     * @param nombreUsuario El nombre de usuario para la plataforma.
      * @param email El correo electrónico para el inicio de sesión.
      * @param contrasena La clave de acceso del usuario.
+     * @param datosPersonales Los datos personales asociados al usuario.
      */
-    public Usuario(String email, String contrasena) {
+    public Usuario(int idDB, String nombreUsuario, String email, String contrasena, Datos_Personales datosPersonales, String rol) {
+        this.idDB = idDB;
+        this.nombreUsuario = nombreUsuario;
         this.email = email;
         this.contrasena = contrasena;
-        this.activo = false; // Un usuario siempre empieza con la sesión cerrada.
+        // No se necesita en la segunda entrega.this.activo = false; // Un usuario
+        // siempre empieza con la sesión cerrada.
+        this.datosPersonales = datosPersonales;
+        this.rol=rol;
     }
 
-    /**
-     * Valida las credenciales y, si son correctas, marca la sesión como activa.
-     * @param email El email a verificar.
-     * @param contrasena La contraseña a verificar.
-     * @return true si las credenciales son correctas, de lo contrario false.
-     */
-    public boolean iniciarSesion(String email, String contrasena) {
-        if (this.email.equals(email) && this.contrasena.equals(contrasena)) {
-            this.activo = true;
-            return true;
-        }
-        return false;
+    public String getRol() {
+        return rol;
     }
 
-    /**
-     * Cierra la sesión del usuario estableciendo su estado como inactivo.
-     */
-    public void cerrarSesion() {
-        this.activo = false;
+    public void setRol(String rol) {
+        this.rol = rol;
     }
+
 
     // --- Getters y Setters ---
+    public int getIdDB() {
+        return idDB;
+    }
+
+    public void setIdDB(int idDB) {
+        this.idDB = idDB;
+    }
+
+    public String getNombreUsuario() {
+        return nombreUsuario;
+    }
+
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
+    }
 
     public String getEmail() {
         return email;
@@ -69,12 +85,41 @@ public abstract class Usuario {
         this.contrasena = contrasena;
     }
 
-    public boolean getActivo() {
-        return activo;
+    // No se necesita en la segunda entrega.public boolean getActivo() {
+    // No se necesita en la segunda entrega. return activo;
+    // No se necesita en la segunda entrega.}
+
+    // No se necesita en la segunda entrega.public void setActivo(boolean activo) {
+    // No se necesita en la segunda entrega. this.activo = activo;
+    // No se necesita en la segunda entrega.}
+    public Datos_Personales getDatosPersonales() {
+        return this.datosPersonales;
     }
 
-    public void setActivo(boolean activo) {
-        this.activo = activo;
+    public void setDatosPersonales(Datos_Personales datosPersonales) {
+        this.datosPersonales = datosPersonales;
     }
+
+    /**
+     * Muestra la informacion cargada.
+     * HECHO TOTALMENTE CON IA
+     */
+   @Override
+    public String toString() {
+        // Usa StringBuilder para construir la cadena eficientemente
+        StringBuilder sb = new StringBuilder();
+        sb.append("Usuario{\n"); // Nombre de la clase y llave de apertura
+        sb.append("  Rol='").append(rol).append("',\n"); // Muestra el rol
+        sb.append("  Nombre Usuario='").append(nombreUsuario).append("',\n"); // Muestra el nombre de usuario
+        sb.append("  Email='").append(email).append("',\n"); // Muestra el email
+        // NO incluimos la contraseña por seguridad
+        // sb.append("  Contrasena='********',\n"); // Podrías mostrarla oculta si fuera necesario
+        
+        // Incluye la representación toString() de Datos_Personales, manejando si es null
+        sb.append("  Datos Personales=").append(datosPersonales != null ? datosPersonales.toString() : "N/A").append("\n"); 
+        
+        sb.append("}"); // Llave de cierre
+        return sb.toString(); // Devuelve la cadena construida
+    }
+
 }
-
