@@ -2,6 +2,10 @@ package Entes;
 
 /**
  * Clase que representa los datos personales de una persona.
+ * 
+ * @author Grupo 4 - Proyecto TDL2
+ * @version 1.0
+ * 
  */
 public class Datos_Personales {
     private String nombre;
@@ -29,6 +33,7 @@ public class Datos_Personales {
 
     /**
      * Getters y Setters
+     * 
      * @return
      */
 
@@ -59,8 +64,8 @@ public class Datos_Personales {
     /**
      * Representación en cadena de los datos personales
      */
-    @Override  
+    @Override
     public String toString() {
-        return "Datos_Personales [nombre=" + nombre + ", apellido=" + apellido + ", dni=" + dni + "]";
+        return "[" + nombre + ", apellido=" + apellido + ", dni=" + dni + "]";
     }
 }

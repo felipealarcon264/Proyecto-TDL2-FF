@@ -1,8 +1,18 @@
 package DAO;
 
 import DataBase.ConexionDB;
+import Entes.Administrador;
+import Entes.Cuenta;
 import Entes.Datos_Personales;
 import Entes.Usuario;
+
+/**
+ * Implementacion de la interfaz UsuarioDAO
+ * 
+ * @author Grupo 4 - Proyecto TDL2
+ * @version 1.0
+ * 
+ */
 
 public class UsuarioDAOImpl implements UsuarioDAO {
 
@@ -11,6 +21,9 @@ public class UsuarioDAOImpl implements UsuarioDAO {
      * Primero carga sus datos personales a la base de datos y luego el usuario
      * completo.
      * Se tomaron todas las precauciones en caso de errores.
+     * 
+     * @author Grupo 4 - Taller de lenguajes II
+     * @version 1.0
      * 
      * @param usr El usuario a guardar
      * @return true si se logro guardar y false en caso contrario.
@@ -57,6 +70,9 @@ public class UsuarioDAOImpl implements UsuarioDAO {
      * Usuario y datos personales estan ligados fuertemente, si elimino uno elimino
      * a los dos
      * 
+     * @author Grupo 4 - Taller de lenguajes II
+     * @version 1.0
+     * 
      * @param usr usuario a borrar.
      * 
      */
@@ -91,6 +107,9 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     /**
      * Busca un usuario validando su ingreso y lo retorna.
      * 
+     * @author Grupo 4 - Taller de lenguajes II
+     * @version 1.0
+     * 
      * @param email
      * @param contrasena
      * @return Usuario si lo encuentra, null en caso contrario.
@@ -108,7 +127,6 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 String rol = rs.getString("ROL");
                 int idDB = rs.getInt("ID");
                 Datos_PersonalesDAOImpl dpImpl = new Datos_PersonalesDAOImpl(); // Para recuperar los datos personales
-                                                                                // BuscarPorID
                 Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
                 if (rol.equals("ADMINISTRADOR")) {
                     System.out.println("Administrador encontrado [" + nombreUsuario + "]");
@@ -118,12 +136,49 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                     return new Entes.Cuenta(idDB, nombreUsuario, email, contrasena, dp, rol);
                 } else
                     return null;
-              }
+            }
             System.out.println("Usuario no encontrado.");
             return null;
-            }catch (Exception e) {
-                System.out.println("Error al buscar el usuario: " + e.getMessage());
-            }
-            return null;
+        } catch (Exception e) {
+            System.out.println("Error al buscar el usuario: " + e.getMessage());
+        }
+        return null;
     }
+
+    /**
+     * Lista todos los Usuarios guardados en la DB y los muestra en pantalla
+     * 
+     * @author Grupo 4 - Taller de lenguajes II
+     * @version 1.0
+     * 
+     */
+    @Override
+    public void ListarTodosLosUsuariosEnPantalla() {
+        String sql = "SELECT * FROM USUARIO";
+        try (java.sql.Connection conn = ConexionDB.conectar();
+                java.sql.Statement stmt = conn.createStatement();
+                java.sql.ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String nombreUsuario = rs.getString("NOMBRE_USUARIO");
+                String email = rs.getString("EMAIL");
+                String contrasena = rs.getString("CONTRASENA");
+                String rol = rs.getString("ROL");
+                Datos_PersonalesDAOImpl dpImpl = new Datos_PersonalesDAOImpl(); // Para recuperar los datos personales
+                Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
+                // Se crean solo para mostrar luego el garbage collector elimina la basura en
+                // memoria.
+                if (rol.equals("ADMINISTRADOR")) {
+                    Administrador auxAdm = new Administrador(id, nombreUsuario, email, contrasena, dp, rol);
+                    System.out.println(auxAdm);
+                } else {
+                    Cuenta auxCta = new Cuenta(id, nombreUsuario, email, contrasena, dp, rol);
+                    System.out.println(auxCta);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error al listar los usuarios: " + e.getMessage());
+        }
+    }
+
 }

@@ -17,7 +17,6 @@ public abstract class Usuario {
     private Datos_Personales datosPersonales;
     private String rol;
 
-
     /**
      * Constructor vacío.
      */
@@ -27,12 +26,13 @@ public abstract class Usuario {
     /**
      * Constructor para crear una instancia de Usuario con datos iniciales.
      * 
-     * @param nombreUsuario El nombre de usuario para la plataforma.
-     * @param email El correo electrónico para el inicio de sesión.
-     * @param contrasena La clave de acceso del usuario.
+     * @param nombreUsuario   El nombre de usuario para la plataforma.
+     * @param email           El correo electrónico para el inicio de sesión.
+     * @param contrasena      La clave de acceso del usuario.
      * @param datosPersonales Los datos personales asociados al usuario.
      */
-    public Usuario(int idDB, String nombreUsuario, String email, String contrasena, Datos_Personales datosPersonales, String rol) {
+    public Usuario(int idDB, String nombreUsuario, String email, String contrasena, Datos_Personales datosPersonales,
+            String rol) {
         this.idDB = idDB;
         this.nombreUsuario = nombreUsuario;
         this.email = email;
@@ -40,7 +40,7 @@ public abstract class Usuario {
         // No se necesita en la segunda entrega.this.activo = false; // Un usuario
         // siempre empieza con la sesión cerrada.
         this.datosPersonales = datosPersonales;
-        this.rol=rol;
+        this.rol = rol;
     }
 
     public String getRol() {
@@ -50,7 +50,6 @@ public abstract class Usuario {
     public void setRol(String rol) {
         this.rol = rol;
     }
-
 
     // --- Getters y Setters ---
     public int getIdDB() {
@@ -104,7 +103,7 @@ public abstract class Usuario {
      * Muestra la informacion cargada.
      * HECHO TOTALMENTE CON IA
      */
-   @Override
+    @Override
     public String toString() {
         // Usa StringBuilder para construir la cadena eficientemente
         StringBuilder sb = new StringBuilder();
@@ -113,11 +112,14 @@ public abstract class Usuario {
         sb.append("  Nombre Usuario='").append(nombreUsuario).append("',\n"); // Muestra el nombre de usuario
         sb.append("  Email='").append(email).append("',\n"); // Muestra el email
         // NO incluimos la contraseña por seguridad
-        // sb.append("  Contrasena='********',\n"); // Podrías mostrarla oculta si fuera necesario
-        
-        // Incluye la representación toString() de Datos_Personales, manejando si es null
-        sb.append("  Datos Personales=").append(datosPersonales != null ? datosPersonales.toString() : "N/A").append("\n"); 
-        
+        // sb.append(" Contrasena='********',\n"); // Podrías mostrarla oculta si fuera
+        // necesario
+
+        // Incluye la representación toString() de Datos_Personales, manejando si es
+        // null
+        sb.append("  Datos Personales= ").append(datosPersonales != null ? datosPersonales.toString() : "N/A")
+                .append("\n");
+
         sb.append("}"); // Llave de cierre
         return sb.toString(); // Devuelve la cadena construida
     }

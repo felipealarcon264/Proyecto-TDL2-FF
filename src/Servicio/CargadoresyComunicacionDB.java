@@ -6,43 +6,15 @@ import Entes.Administrador;
 import Entes.Cuenta;
 import Entes.Datos_Personales;
 import DAO.Datos_PersonalesDAOImpl;
-import DAO.UsuarioDAOImpl;
-
-public class ComunicacionDB {
-    int x;
-
 
 /**
- * Basicamente se encarga de cargar y guardar directamente en la DB.
- * @param scanner
+ * CARGADORES Y COMUNICACION CON BASE DE DATOS CON DICHOS CARGADORES.
+ * 
+ * @author Grupo 4 - Taller de lenguajes II
+ * @version 1.0
+ * 
  */
-public void cargarYGuardarEnDBDatos_Personales(Scanner scanner) {
-        Datos_Personales dp = cargaDatosPersonales(scanner);
-        Datos_PersonalesDAOImpl dpImpl = new Datos_PersonalesDAOImpl();
-        dpImpl.guardar(dp);
-    }
-
-/**
- * Basicamente se encarga de cargar y guardar directamente en la DB.
- * @param scanner
- */
-    public void cargarYGuardarEnDBAdministrador(Scanner scanner) {
-        Administrador admin = cargaAdministrador(scanner);
-        UsuarioDAOImpl usrImpl = new UsuarioDAOImpl();
-        usrImpl.guardar(admin);
-    }
-
-/**
- * Basicamente se encarga de cargar y guardar directamente en la DB.
- * @param scanner
- */
-    public void cargarYGuardarEnDBCuenta(Scanner scanner) {
-        Cuenta cta = cargaCuenta(scanner);
-        UsuarioDAOImpl usrImpl = new UsuarioDAOImpl();
-        usrImpl.guardar(cta);
-    }
-
-
+public class CargadoresyComunicacionDB {
 
     /**
      * Carga los datos personales desde la entrada estándar (consola).
@@ -52,12 +24,16 @@ public void cargarYGuardarEnDBDatos_Personales(Scanner scanner) {
      * Verifica que el dni no haya sigo ingresado previamente a la base de datos.
      * finalmente solicita confirmación de los datos ingresados caso contrario
      * reinicia el proceso.
+     * Se puede cancelar.
      * 
      * @author Grupo 4 - Taller de lenguajes II
+     * @version 1.0
+     * 
      * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
-     * @return Un objeto {@link Datos_Personales} con los datos ingresados.
+     * @return Un objeto {@link Datos_Personales} con los datos ingresados. o null
+     *         si se cancela la carga.
      */
-    public static Datos_Personales cargaDatosPersonales(Scanner scanner) {
+    public Datos_Personales cargaDatosPersonales(Scanner scanner) {
         System.out.println("Carga de datos personales: ");
         boolean datosValidos = false;
         String nombre = "";
@@ -103,7 +79,15 @@ public void cargarYGuardarEnDBDatos_Personales(Scanner scanner) {
                     "\nApellido: " + apellido +
                     "\nDNI: " + dni);
             System.out.println("CONFIRMACION DE CARGA -> DATOS PERSONALES.");
-            datosValidos = confirmacionDatos(scanner);
+            datosValidos = confirmacion(scanner);
+            if (!datosValidos) {
+                System.out.println("Quieres cancelar la carga? ");
+                datosValidos = confirmacion(scanner);
+                if (datosValidos) {
+                    System.out.println("Carga cancelada.💡");
+                    return null;
+                }
+            }
         }
         System.out.println("Datos confirmados...");
         return new Datos_Personales(nombre, apellido, dni);
@@ -112,15 +96,18 @@ public void cargarYGuardarEnDBDatos_Personales(Scanner scanner) {
     /**
      * Solicita al usuario la confirmación de los datos ingresados.
      * 
+     * @author Grupo 4 - Taller de lenguajes II
+     * @version 1.0
+     * 
      * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
      * @return {@code true} si el usuario confirma los datos, {@code false} si desea
      *         reingresar los datos.
      */
-    private static boolean confirmacionDatos(Scanner scanner) {
-        System.out.print("Confirmar datos (S/N): ");
+    private boolean confirmacion(Scanner scanner) {
+        System.out.print(" (S/N): ");
         String confirmacion = scanner.nextLine();
         while (!confirmacion.equalsIgnoreCase("S") && !confirmacion.equalsIgnoreCase("N")) {
-            System.out.print("Entrada inválida. Ingrese 'S' para confirmar o 'N' para reingresar los datos: ");
+            System.out.print("Entrada inválida. Ingrese 'S' para confirmar o 'N' para denegar: ");
             confirmacion = scanner.nextLine();
         }
         return confirmacion.equalsIgnoreCase("S");
@@ -130,11 +117,14 @@ public void cargarYGuardarEnDBDatos_Personales(Scanner scanner) {
      * Verifica si una cadena de texto contiene únicamente letras (mayúsculas y/o
      * minúsculas).
      * 
+     * @author Grupo 4 - Taller de lenguajes II
+     * @version 1.0
+     * 
      * @param texto La cadena de texto a verificar.
      * @return {@code true} si la cadena contiene solo letras , {@code false} en
      *         caso contrario.
      */
-    private static boolean contieneSoloLetras(String texto) {
+    private boolean contieneSoloLetras(String texto) {
         if (texto == null || texto.isEmpty()) {
             return false;
         }
@@ -151,14 +141,19 @@ public void cargarYGuardarEnDBDatos_Personales(Scanner scanner) {
      * Se supone que se utilizara si se quiere guardar un Administrador -> Usuario a
      * la base de datos.
      * Dentro del proceso luego de confirmar Datos_Personales primero los carga en
-     * la base da datos.
+     * la base da datos. De alguna manera si o si se tiene que lograr la carga sino
+     * puede generar errores futuros.
      * Toma todos los requerimientos de validaciones.
+     * Se puede cancelar.
+     * 
+     * @author Grupo 4 - Taller de lenguajes II
+     * @version 1.0
      * 
      * @param scanner
-     * @return Administrador generado.
+     * @return Administrador generado, si se cancela retorna null.
      */
-    public static Administrador cargaAdministrador(Scanner scanner) {
-        System.out.println("Carga de un administrador: ");
+    public Administrador cargaAdministrador(Scanner scanner) {
+        System.out.println("[CARGA DE UN ADMINISTRADOR]");
         String nombreUsuario = "";
         String email = "";
         String contrasena = "";
@@ -168,6 +163,10 @@ public void cargarYGuardarEnDBDatos_Personales(Scanner scanner) {
 
         // Carga de datos por teclado.
         while (!datosValidos) {
+            dp = cargaDatosPersonales(scanner);
+            if (dp == null) { // Si cancelo la carga de datos desde la carga de Datos_Personales
+                return null;
+            }
             System.out.print("Ingrese el nombre de usuario: ");
             nombreUsuario = scanner.nextLine();
             System.out.print("Ingrese el email: ");
@@ -178,9 +177,16 @@ public void cargarYGuardarEnDBDatos_Personales(Scanner scanner) {
             }
             System.out.print("Ingrese la contraseña: ");
             contrasena = scanner.nextLine();
-            dp = cargaDatosPersonales(scanner);
             System.out.println("CONFIRMACION DE CARGA -> ADMINISTRADOR.");
-            datosValidos = confirmacionDatos(scanner);
+            datosValidos = confirmacion(scanner);
+            if (!datosValidos) {
+                System.out.println("Quieres cancelar la carga? ");
+                datosValidos = confirmacion(scanner);
+                if (datosValidos) {
+                    System.out.println("Carga cancelada.💡");
+                    return null;
+                }
+            }
         }
 
         // Todo confirmado se prodece crear el objeto Administrador.
@@ -194,14 +200,19 @@ public void cargarYGuardarEnDBDatos_Personales(Scanner scanner) {
      * Se supone que se utilizara si se quiere guardar una Cuenta -> Usuario a la
      * base de datos.
      * Dentro del proceso luego de confirmar Datos_Personales primero los carga en
-     * la base da datos.
+     * la base da datos. De alguna manera si o si se tiene que lograr la carga sino
+     * puede generar errores futuros.
      * Toma todos los requerimientos de validaciones.
+     * Se puede cancelar.
+     * 
+     * @author Grupo 4 - Taller de lenguajes II
+     * @version 1.0
      * 
      * @param scanner
-     * @return Cuenta generado.
+     * @return Cuenta generado, si se cancela retorna null.
      */
-    public static Cuenta cargaCuenta(Scanner scanner) {
-        System.out.println("Carga de una cuenta: ");
+    public Cuenta cargaCuenta(Scanner scanner) {
+        System.out.println("[CARGA DE UNA CUENTA]");
         String nombreUsuario = "";
         String email = "";
         String contrasena = "";
@@ -211,6 +222,10 @@ public void cargarYGuardarEnDBDatos_Personales(Scanner scanner) {
 
         // Carga de datos por teclado.
         while (!datosValidos) {
+            dp = cargaDatosPersonales(scanner);
+            if (dp == null) { // Si cancelo la carga de datos desde la carga de Datos_Personales
+                return null;
+            }
             System.out.print("Ingrese el nombre de usuario: ");
             nombreUsuario = scanner.nextLine();
             System.out.print("Ingrese el email: ");
@@ -221,9 +236,16 @@ public void cargarYGuardarEnDBDatos_Personales(Scanner scanner) {
             }
             System.out.print("Ingrese la contraseña: ");
             contrasena = scanner.nextLine();
-            dp = cargaDatosPersonales(scanner);
             System.out.println("CONFIRMACION DE CARGA -> CUENTA.");
-            datosValidos = confirmacionDatos(scanner);
+            datosValidos = confirmacion(scanner);
+            if (!datosValidos) {
+                System.out.println("Quieres cancelar la carga? ");
+                datosValidos = confirmacion(scanner);
+                if (datosValidos) {
+                    System.out.println("Carga cancelada.💡");
+                    return null;
+                }
+            }
         }
 
         // Todo confirmado se prodece crear el objeto Cuenta.
@@ -239,11 +261,14 @@ public void cargarYGuardarEnDBDatos_Personales(Scanner scanner) {
      * No valida la estructura completa xxx@yyy.zzz.
      * HECHO TOTALMENTE CON IA.
      *
+     * @author Grupo 4 - Taller de lenguajes II
+     * @version 1.0
+     * 
      * @param email El correo electrónico (String) a verificar.
      * @return {@code true} si el email cumple las condiciones simples,
      *         {@code false} en caso contrario.
      */
-    public static boolean esFormatoEmailSimpleValido(String email) {
+    public boolean esFormatoEmailSimpleValido(String email) {
         // 1. Verifica si es nulo o vacío
         if (email == null || email.trim().isEmpty()) {
             return false;
@@ -267,6 +292,4 @@ public void cargarYGuardarEnDBDatos_Personales(Scanner scanner) {
         return true;
     }
 
-
 }
-

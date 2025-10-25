@@ -11,7 +11,7 @@ package Entes;
  * las estadísticas asociadas a la cuenta.
  *
  * @author Grupo 4 - Proyecto TDL2
- * @version 1.5
+ * @version 1.0
  */
 public class Cuenta extends Usuario {
 
