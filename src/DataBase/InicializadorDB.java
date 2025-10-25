@@ -21,7 +21,7 @@ public class InicializadorDB {
      * @version 1.0
      * 
      */
-    public static void crearTablas() {
+    public void crearTablas() {
         try (Connection connection = ConexionDB.conectar();
                 Statement stmt = connection.createStatement()) {
 

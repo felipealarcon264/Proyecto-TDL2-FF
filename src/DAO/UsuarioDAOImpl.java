@@ -147,30 +147,47 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     /**
      * Lista todos los Usuarios guardados en la DB y los muestra en pantalla
+     * Mejoramos la eficiencia con el JOIN
      * 
      * @author Grupo 4 - Taller de lenguajes II
-     * @version 1.0
+     * @version 1.2
      * 
      */
     @Override
     public void ListarTodosLosUsuariosEnPantalla() {
-        String sql = "SELECT * FROM USUARIO";
+        int i=0;
+        // SQL con JOIN para traer todos los datos en UNA SOLA consulta
+        String sql = """
+            SELECT u.ID, u.NOMBRE_USUARIO, u.EMAIL, u.CONTRASENA, u.ROL,
+                   dp.NOMBRE, dp.APELLIDO, dp.DNI
+            FROM USUARIO u
+            JOIN DATOS_PERSONALES dp ON u.ID_DATOS_PERSONALES = dp.ID
+        """;
+        
         try (java.sql.Connection conn = ConexionDB.conectar();
                 java.sql.Statement stmt = conn.createStatement();
                 java.sql.ResultSet rs = stmt.executeQuery(sql)) {
+            
             while (rs.next()) {
+                // Datos del Usuario
                 int id = rs.getInt("ID");
                 String nombreUsuario = rs.getString("NOMBRE_USUARIO");
                 String email = rs.getString("EMAIL");
                 String contrasena = rs.getString("CONTRASENA");
                 String rol = rs.getString("ROL");
-                Datos_PersonalesDAOImpl dpImpl = new Datos_PersonalesDAOImpl(); // Para recuperar los datos personales
-                Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
-                // Se crean solo para mostrar luego el garbage collector elimina la basura en
-                // memoria.
+
+                // --- AJUSTE REALIZADO ---
+                // Creamos el objeto Datos_Personales usando tu constructor
+                String dpNombre = rs.getString("NOMBRE");
+                String dpApellido = rs.getString("APELLIDO");
+                int dpDni = rs.getInt("DNI");
+                Datos_Personales dp = new Datos_Personales(dpNombre, dpApellido, dpDni);
+                
+                i++;
+                // Se crean solo para mostrar
                 if (rol.equals("ADMINISTRADOR")) {
                     Administrador auxAdm = new Administrador(id, nombreUsuario, email, contrasena, dp, rol);
-                    System.out.println(auxAdm);
+                    System.out.println(i+". \n"+auxAdm);
                 } else {
                     Cuenta auxCta = new Cuenta(id, nombreUsuario, email, contrasena, dp, rol);
                     System.out.println(auxCta);
@@ -180,5 +197,4 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             System.out.println("Error al listar los usuarios: " + e.getMessage());
         }
     }
-
 }
