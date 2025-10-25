@@ -6,8 +6,10 @@ import Entes.Administrador;
 import Entes.Cuenta;
 import Entes.Datos_Personales;
 import Entes.Usuario;
+import Enums.Genero;
 import DAO.Datos_PersonalesDAOImpl;
 import java.util.List;
+import Catalogo.Pelicula;
 
 /**
  * CARGADORES Y COMUNICACION CON BASE DE DATOS CON DICHOS CARGADORES.
@@ -133,7 +135,7 @@ public class CargadoresyComunicacionDB {
             while (correoExistente(email, listaUSuario)) {
                 System.out.print("Email ya registrado. Ingrese otro email: ");
                 email = scanner.nextLine();
-                }
+            }
             while (!esFormatoEmailSimpleValido(email)) {
                 System.out.print("Email inválido. Ingrese un email válido: ");
                 email = scanner.nextLine();
@@ -196,7 +198,7 @@ public class CargadoresyComunicacionDB {
             while (correoExistente(email, listaUSuario)) {
                 System.out.print("Email ya registrado. Ingrese otro email: ");
                 email = scanner.nextLine();
-                }
+            }
             while (!esFormatoEmailSimpleValido(email)) {
                 System.out.print("Email inválido. Ingrese un email válido: ");
                 email = scanner.nextLine();
@@ -221,6 +223,124 @@ public class CargadoresyComunicacionDB {
         // "Se lo da realmente DB"
     }
 
+    
+    /**
+     * Carga una Pelicula desde la entrada estándar (consola).
+     * Permite al usuario determinar
+     * @param scanner Entrada.
+     * @return Una pelicula o null en caso de cancelar la carga.
+     */
+    public Pelicula cargaPelicula(Scanner scanner){
+        System.out.println(" 🎬CARGA DE PELICULA🎬");
+        //titulo resumen director duracion genero
+        String titulo = "";
+        String resumen = "";
+        String director = "";
+        int duracion = -1;
+        Genero genero = null;
+        boolean datosValidos = false;
+        while (!datosValidos) {
+            System.out.print("Ingrese el titulo: ");
+            titulo = scanner.nextLine();
+            System.out.print("Ingrese el resumen: ");
+            resumen = scanner.nextLine();
+            System.out.print("Ingrese el director: ");
+            director = scanner.nextLine();
+            System.out.print("Ingrese la duracion: ");
+            duracion = scanner.nextInt();
+            genero = seleccionarGenero(scanner);
+            System.out.println("CONFIRMACION DE CARGA -> PELICULA.");
+            System.out.println("Datos ingresados:" +
+                    "\nTitulo: " + titulo +
+                    "\nResumen: " + resumen +
+                    "\nDirector: " + director +
+                    "\nDuracion: " + duracion +
+                    "\nGenero: " + genero);
+            datosValidos = confirmacion(scanner);
+            if (!datosValidos) {
+                System.out.println("Quieres cancelar la carga? ");
+                datosValidos = confirmacion(scanner);
+                if (datosValidos) {
+                    System.out.println("Carga cancelada.💡");
+                    return null;
+                }
+            }
+        }
+        System.out.println("Datos confirmados...");
+        return new Pelicula(titulo, director, duracion, resumen, genero);
+    }
+    
+    
+    /**
+     * Solicita al usuario la confirmación de los datos ingresados.
+     * 
+     * @author Grupo 4 - Taller de lenguajes II
+     * @version 1.0
+     * 
+     * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
+     * @return {@code true} si el usuario confirma los datos, {@code false} si desea
+     *         reingresar los datos.
+     */
+    public boolean confirmacion(Scanner scanner) {
+        System.out.print(" (S/N): ");
+        String confirmacion = scanner.nextLine();
+        while (!confirmacion.equalsIgnoreCase("S") && !confirmacion.equalsIgnoreCase("N")) {
+            System.out.print("Entrada inválida. Ingrese 'S' para confirmar o 'N' para denegar: ");
+            confirmacion = scanner.nextLine();
+        }
+        return confirmacion.equalsIgnoreCase("S");
+    }
+
+    
+   /**
+     * Solicita al usuario que seleccione un género de la lista de forma segura.
+     * El método mostrará un menú y se repetirá indefinidamente hasta que el 
+     * usuario ingrese una opción válida (un número del 1 al 5).
+     * 
+     * Lee la entrada como un String para prevenir errores de tipo .
+     *
+     * @param scanner Entrada.
+     * @return El enum Genero seleccionado por el usuario.
+     */
+    private Genero seleccionarGenero(Scanner scanner) {
+        
+        // Bucle infinito que solo se sale cuando hay un 'return'
+        while (true) {
+            System.out.println("\n--- Seleccione un Género ---");
+            System.out.println("1. Acción");
+            System.out.println("2. Anime");
+            System.out.println("3. Drama");
+            System.out.println("4. Comedia");
+            System.out.println("5. Terror");
+            System.out.print("Ingrese su opción (1-5): ");
+
+            // 1. Leer la entrada SIEMPRE como String para evitar errores
+            String opcion = scanner.nextLine(); 
+
+            // 2. Usar un 'switch' para evaluar el String
+            switch (opcion) {
+                case "1":
+                    return Genero.ACCION; // Opción válida, salimos del método
+                case "2":
+                    return Genero.ANIME;
+                case "3":
+                    return Genero.DRAMA;
+                case "4":
+                    return Genero.COMEDIA;
+                case "5":
+                    return Genero.TERROR;
+                
+                // 3. Si no coincide con 1-5, se ejecuta el 'default'
+                default:
+                    System.out.println("-------------------------------------------------");
+                    System.out.println("Error: Opción no válida. Debe ingresar un número del 1 al 5.");
+                    System.out.println("-------------------------------------------------");
+                    // El bucle 'while(true)' vuelve a empezar
+            }
+        }
+    }
+
+    
     /**
      * Verifica de forma simple si un correo electrónico tiene un formato básico
      * válido:
@@ -308,23 +428,4 @@ public class CargadoresyComunicacionDB {
         return true;
     }
 
-    /**
-     * Solicita al usuario la confirmación de los datos ingresados.
-     * 
-     * @author Grupo 4 - Taller de lenguajes II
-     * @version 1.0
-     * 
-     * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
-     * @return {@code true} si el usuario confirma los datos, {@code false} si desea
-     *         reingresar los datos.
-     */
-    private boolean confirmacion(Scanner scanner) {
-        System.out.print(" (S/N): ");
-        String confirmacion = scanner.nextLine();
-        while (!confirmacion.equalsIgnoreCase("S") && !confirmacion.equalsIgnoreCase("N")) {
-            System.out.print("Entrada inválida. Ingrese 'S' para confirmar o 'N' para denegar: ");
-            confirmacion = scanner.nextLine();
-        }
-        return confirmacion.equalsIgnoreCase("S");
-    }
 }

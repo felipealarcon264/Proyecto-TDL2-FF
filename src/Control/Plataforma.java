@@ -27,11 +27,11 @@ public class Plataforma {
     // Ver aclaraciones en Readme.
     // Quitamos el controlador de reportes y listas innecesarias.
 
-    Datos_PersonalesDAOImpl dpDAO;
-    PeliculaDAOImpl peliDAO;
-    UsuarioDAOImpl usrDAO;
-    CargadoresyComunicacionDB cargadoresyComunDB;
-    List<Usuario> listaUSuario; // Se manaejara esta lista para disminuir la entrada a la base de datos
+    private Datos_PersonalesDAOImpl dpDAO;
+    private PeliculaDAOImpl peliDAO;
+    private UsuarioDAOImpl usrDAO;
+    private CargadoresyComunicacionDB cargadoresyComunDB;
+    private List<Usuario> listaUSuario; // Se manaejara esta lista para disminuir la entrada a la base de datos
 
     /**
      * Constructor de la Plataforma.
@@ -123,7 +123,23 @@ public class Plataforma {
      * @return true si el correo está registrado, false en caso
      *         contrario.
      */
-    public boolean validarUsuario(String correo) {
+    public boolean validarUsuario(String correo,String contrasena) {
+        // Maneja el caso de que la lista sea nula.
+        if (this.listaUSuario == null) {
+            System.out.println("Error: No se pudo obtener la lista de usuarios para validar.");
+            return false;
+        }
+        // Busca coincidencia.
+        for (Usuario usuario : this.listaUSuario) {
+            if (usuario.getEmail() != null && usuario.getEmail().equals(correo) && usuario.getContrasena().equals(contrasena)) {
+                return true;
+            }
+        }
+        // Si no encontro.
+        return false;
+    }
+
+    public boolean validarCorreo(String correo) {
         // Maneja el caso de que la lista sea nula.
         if (this.listaUSuario == null) {
             System.out.println("Error: No se pudo obtener la lista de usuarios para validar.");
@@ -174,6 +190,42 @@ public class Plataforma {
      */
     public void Reproducir(Perfil perfil /* , Contenido contenido // Probablemente necesites el contenido */) {
         // Implementación pendiente...
+    }
+
+
+    /**
+    * Getters and setters
+     */
+    public Datos_PersonalesDAOImpl getDpDAO() {
+        return dpDAO;
+    }
+
+    public void setDpDAO(Datos_PersonalesDAOImpl dpDAO) {
+        this.dpDAO = dpDAO;
+    }
+    public PeliculaDAOImpl getPeliDAO() {
+        return peliDAO;
+    }
+    public void setPeliDAO(PeliculaDAOImpl peliDAO) {
+        this.peliDAO = peliDAO;
+    }
+    public UsuarioDAOImpl getUsrDAO() {
+        return usrDAO;
+    }
+    public void setUsrDAO(UsuarioDAOImpl usrDAO) {
+        this.usrDAO = usrDAO;
+    }
+    public CargadoresyComunicacionDB getCargadoresyComunDB() {
+        return cargadoresyComunDB;
+    }
+    public void setCargadoresyComunDB(CargadoresyComunicacionDB cargadoresyComunDB) {
+        this.cargadoresyComunDB = cargadoresyComunDB;
+    }
+    public List<Usuario> getListaUSuario() {
+        return listaUSuario;
+    }
+    public void setListaUSuario(List<Usuario> listaUSuario) {
+        this.listaUSuario = listaUSuario;
     }
 
 }

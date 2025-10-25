@@ -23,14 +23,26 @@ public class Pelicula extends Contenido {
 
     /**
      * Constructor para crear una Película con datos esenciales.
-     * Llama al constructor correspondiente de la clase padre para inicializar los datos.
+     * Llama al constructor correspondiente de la clase padre para inicializar los
+     * datos.
      *
      * @param idContenido Identificador único de la película.
-     * @param titulo Título de la película.
-     * @param director Director de la película.
-     * @param duracion Duración en minutos.
+     * @param titulo      Título de la película.
+     * @param director    Director de la película.
+     * @param duracion    Duración en minutos.
      */
     public Pelicula(String titulo, String director, int duracion, String resumen, Genero genero) {
         super(titulo, director, duracion, resumen, genero);
+    }
+
+    /**
+     * Muestra los valores de una pelicula.
+     * 
+     * 
+     * @return String con todos los valores.
+     */
+    @Override
+    public String toString() {
+        return "Pelicula: " + super.toString();
     }
 }

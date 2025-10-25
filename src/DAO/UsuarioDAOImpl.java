@@ -110,9 +110,10 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     /**
      * Busca un usuario validando su ingreso y lo retorna.
+     * Es inteligente directamente devuelve un administrador o una cuenta!
      * 
      * @author Grupo 4 - Taller de lenguajes II
-     * @version 1.0
+     * @version 1.3
      * 
      * @param email
      * @param contrasena
