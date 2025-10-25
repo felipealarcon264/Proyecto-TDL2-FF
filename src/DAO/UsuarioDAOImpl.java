@@ -1,5 +1,8 @@
 package DAO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import DataBase.ConexionDB;
 import Entes.Administrador;
 import Entes.Cuenta;
@@ -74,6 +77,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
      * @version 1.0
      * 
      * @param usr usuario a borrar.
+     * @return true si se borro correctamente, false en caso contrario.
      * 
      */
     @Override
@@ -86,7 +90,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         if (!Datos_PersonalesDAOImpl.borrar(usr.getDatosPersonales())) {
             System.out.println("Error al borrar los datos personales. ❌Error al borrar el usuario");
             return false;
-        }
+        }//Si logra borrar datos personales es seguro que hay un usuario a borrar.
         String sql = "DELETE FROM USUARIO WHERE ID = ?";
         try (java.sql.Connection conn = ConexionDB.conectar();
                 java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -99,7 +103,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 return true;
             }
         } catch (Exception e) {
-            System.out.println("Error al borrar el usuario: " + e.getMessage());
+            System.out.println("❌Error al borrar el usuario: " + e.getMessage());
             return false;
         }
     }
@@ -155,19 +159,19 @@ public class UsuarioDAOImpl implements UsuarioDAO {
      */
     @Override
     public void ListarTodosLosUsuariosEnPantalla() {
-        int i=0;
+        int i = 0;
         // SQL con JOIN para traer todos los datos en UNA SOLA consulta
         String sql = """
-            SELECT u.ID, u.NOMBRE_USUARIO, u.EMAIL, u.CONTRASENA, u.ROL,
-                   dp.NOMBRE, dp.APELLIDO, dp.DNI
-            FROM USUARIO u
-            JOIN DATOS_PERSONALES dp ON u.ID_DATOS_PERSONALES = dp.ID
-        """;
-        
+                    SELECT u.ID, u.NOMBRE_USUARIO, u.EMAIL, u.CONTRASENA, u.ROL,
+                           dp.NOMBRE, dp.APELLIDO, dp.DNI
+                    FROM USUARIO u
+                    JOIN DATOS_PERSONALES dp ON u.ID_DATOS_PERSONALES = dp.ID
+                """;
+
         try (java.sql.Connection conn = ConexionDB.conectar();
                 java.sql.Statement stmt = conn.createStatement();
                 java.sql.ResultSet rs = stmt.executeQuery(sql)) {
-            
+
             while (rs.next()) {
                 // Datos del Usuario
                 int id = rs.getInt("ID");
@@ -176,25 +180,69 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 String contrasena = rs.getString("CONTRASENA");
                 String rol = rs.getString("ROL");
 
-                // --- AJUSTE REALIZADO ---
-                // Creamos el objeto Datos_Personales usando tu constructor
+                // Se crea el objeto Datos_Personales usando su constructor.
                 String dpNombre = rs.getString("NOMBRE");
                 String dpApellido = rs.getString("APELLIDO");
                 int dpDni = rs.getInt("DNI");
                 Datos_Personales dp = new Datos_Personales(dpNombre, dpApellido, dpDni);
-                
+
                 i++;
                 // Se crean solo para mostrar
                 if (rol.equals("ADMINISTRADOR")) {
                     Administrador auxAdm = new Administrador(id, nombreUsuario, email, contrasena, dp, rol);
-                    System.out.println(i+". \n"+auxAdm);
+                    System.out.println(i + ". \n" + auxAdm);
                 } else {
                     Cuenta auxCta = new Cuenta(id, nombreUsuario, email, contrasena, dp, rol);
-                    System.out.println(auxCta);
+                    System.out.println(i + ". \n" + auxCta);
                 }
             }
         } catch (Exception e) {
             System.out.println("Error al listar los usuarios: " + e.getMessage());
         }
+    }
+
+    /**
+     * Devuelve una lista con todos los usuarios de la base de datos cargados.
+     * 
+     * @author Grupo 4 - Taller de lenguajes II
+     * @version 1.0
+     * 
+     * @return Lista cargada con todos los usuarios de la base de datos.
+     */
+    @Override
+    public List<Usuario> devolverListaUsuarios() {
+        List<Usuario> lista = new ArrayList<>();
+        String sql = """
+                    SELECT u.ID, u.NOMBRE_USUARIO, u.EMAIL, u.CONTRASENA, u.ROL,
+                           dp.NOMBRE, dp.APELLIDO, dp.DNI
+                    FROM USUARIO u
+                    JOIN DATOS_PERSONALES dp ON u.ID_DATOS_PERSONALES = dp.ID
+                """;
+        try (java.sql.Connection conn = ConexionDB.conectar();
+                java.sql.Statement stmt = conn.createStatement();
+                java.sql.ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                // Datos del Usuario
+                int id = rs.getInt("ID");
+                String nombreUsuario = rs.getString("NOMBRE_USUARIO");
+                String email = rs.getString("EMAIL");
+                String contrasena = rs.getString("CONTRASENA");
+                String rol = rs.getString("ROL");
+
+                // Se crea el objeto Datos_Personales usando su constructor.
+                String dpNombre = rs.getString("NOMBRE");
+                String dpApellido = rs.getString("APELLIDO");
+                int dpDni = rs.getInt("DNI");
+                Datos_Personales dp = new Datos_Personales(dpNombre, dpApellido, dpDni);
+
+                // Se carga en la lista.
+                lista.add(new Administrador(id, nombreUsuario, email, contrasena, dp, rol));
+            }
+        } catch (Exception e) {
+            System.out.println("Error al listar los usuarios: " + e.getMessage());
+            return null;
+        }
+        return lista;
+
     }
 }

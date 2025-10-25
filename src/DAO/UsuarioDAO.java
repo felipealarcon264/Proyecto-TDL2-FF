@@ -2,6 +2,7 @@ package DAO;
 
 
 import Entes.Usuario;
+import java.util.List;
 
 /**
  * Interfaz DAO para la gestión de usuarios.
@@ -16,4 +17,5 @@ public interface UsuarioDAO {
     public boolean borrar(Usuario usr);
     public Usuario buscarPorEmailyContrasena(String email, String contrasena);
     public void ListarTodosLosUsuariosEnPantalla();
+    public List<Usuario> devolverListaUsuarios();
 }

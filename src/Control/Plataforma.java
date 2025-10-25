@@ -10,6 +10,7 @@ import Entes.Cuenta;
 import Entes.Administrador;
 import Servicio.CargadoresyComunicacionDB;
 import java.util.Scanner;
+import java.util.List;
 
 //No se necesita en la segunda entrega.import Reportes.ReporteManager;
 
@@ -29,7 +30,8 @@ public class Plataforma {
     Datos_PersonalesDAOImpl dpDAO;
     PeliculaDAOImpl peliDAO;
     UsuarioDAOImpl usrDAO;
-    CargadoresyComunicacionDB msjBD;
+    CargadoresyComunicacionDB cargadoresyComunDB;
+    List<Usuario> listaUSuario; // Se manaejara esta lista para disminuir la entrada a la base de datos
 
     /**
      * Constructor de la Plataforma.
@@ -38,8 +40,8 @@ public class Plataforma {
         this.dpDAO = new Datos_PersonalesDAOImpl();
         this.peliDAO = new PeliculaDAOImpl();
         this.usrDAO = new UsuarioDAOImpl();
-        this.msjBD = new CargadoresyComunicacionDB();
-
+        this.cargadoresyComunDB = new CargadoresyComunicacionDB();
+        this.listaUSuario = usrDAO.devolverListaUsuarios();
     }
 
     /**
@@ -67,12 +69,13 @@ public class Plataforma {
      * 
      */
     public void cargarYguardarCuenta(Scanner scanner) {
-        Cuenta cta = msjBD.cargaCuenta(scanner);
+        Cuenta cta = cargadoresyComunDB.cargaCuenta(scanner,this.listaUSuario);
         if (cta == null) {
             System.out.println("No se guardo nada en la base de datos.");
             return;
         }
         usrDAO.guardar(cta);
+        listaUSuario.add(cta);
         System.out.println("✅Cuenta guardada exitosamente!");
     }
 
@@ -86,44 +89,54 @@ public class Plataforma {
      * @param usuario El usuario a agregar.
      */
     public void cargarYguardarAdministrador(Scanner scanner) {
-        Administrador adm = msjBD.cargaAdministrador(scanner);
+        Administrador adm = cargadoresyComunDB.cargaAdministrador(scanner,this.listaUSuario);
         if (adm == null) {
             System.out.println("No se guardo nada en la base de datos.");
             return;
         }
         usrDAO.guardar(adm);
+        listaUSuario.add(adm);
         System.out.println("✅Administrador guardado exitosamente!");
     }
 
     /**
-     * Elimina un usuario existente de la plataforma.
+     * Elimina un usuario existente de la base de datos y la lista de plataforma.
+     * Los mensajes seran emitidos por el metodo borrar.
      * 
      * @param usuario El usuario a eliminar.
+     * @return true si se pudo borrar y false si ocurrio un error/imprevisto.
      */
-    public void eliminarUsuario(Usuario usuario) {
-        // Implementación pendiente...
-    }
-
-    /**
-     * Inicia la reproducción de un contenido para un perfil específico.
-     * Podría crear y devolver una instancia de Reproductor.
-     * 
-     * @param perfil El perfil que inicia la reproducción.
-     */
-    public void Reproducir(Perfil perfil /* , Contenido contenido // Probablemente necesites el contenido */) {
-        // Implementación pendiente...
+    public boolean eliminarUsuario(Usuario usuario) {
+        if (usrDAO.borrar(usuario)) {
+            listaUSuario.remove(usuario);
+            return true;
+        } else
+            return false;
     }
 
     /**
      * Verifica si un correo electrónico ya está registrado en la plataforma.
+     * Siempre suponemos que un correo no se puede ingresar dos veces por lo que
+     * a la primera coincidencia retorna true.
      * 
      * @param correo El correo a validar.
-     * @return El objeto Usuario si el correo está registrado, null en caso
+     * @return true si el correo está registrado, false en caso
      *         contrario.
      */
-    public Usuario validarUsuario(String correo) {
-        // Implementación pendiente...
-        return null;
+    public boolean validarUsuario(String correo) {
+        // Maneja el caso de que la lista sea nula.
+        if (this.listaUSuario == null) {
+            System.out.println("Error: No se pudo obtener la lista de usuarios para validar.");
+            return false;
+        }
+        // Busca coincidencia.
+        for (Usuario usuario : this.listaUSuario) {
+            if (usuario.getEmail() != null && usuario.getEmail().equals(correo)) {
+                return true;
+            }
+        }
+        // Si no encontro.
+        return false;
     }
 
     /**
@@ -131,6 +144,7 @@ public class Plataforma {
      * Crea una nueva instancia de Cuenta (Usuario tipo cliente).
      * Nota: Este método probablemente solo crea el objeto; el guardado se haría
      * aparte.
+     * NO IMPLEMENTADO.
      * 
      * @param correo     El correo para la nueva cuenta.
      * @param contrasena La contraseña para la nueva cuenta.
@@ -143,10 +157,23 @@ public class Plataforma {
     /**
      * Actualiza el plan de suscripción de un usuario (asumiendo que opera sobre un
      * usuario actual).
+     * NO IMPLEMENTADO.
      * 
      * @param plan El nuevo plan a asignar.
      */
     public void actualizarPlan(Plan plan /* , Usuario usuarioAActualizar // Necesitarás saber a quién actualizar */) {
         // Implementación pendiente...
     }
+
+    /**
+     * Inicia la reproducción de un contenido para un perfil específico.
+     * Podría crear y devolver una instancia de Reproductor.
+     * NO IMPLEMENTADO.
+     * 
+     * @param perfil El perfil que inicia la reproducción.
+     */
+    public void Reproducir(Perfil perfil /* , Contenido contenido // Probablemente necesites el contenido */) {
+        // Implementación pendiente...
+    }
+
 }

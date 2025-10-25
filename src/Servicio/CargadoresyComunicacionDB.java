@@ -5,7 +5,9 @@ import java.util.Scanner;
 import Entes.Administrador;
 import Entes.Cuenta;
 import Entes.Datos_Personales;
+import Entes.Usuario;
 import DAO.Datos_PersonalesDAOImpl;
+import java.util.List;
 
 /**
  * CARGADORES Y COMUNICACION CON BASE DE DATOS CON DICHOS CARGADORES.
@@ -94,23 +96,193 @@ public class CargadoresyComunicacionDB {
     }
 
     /**
-     * Solicita al usuario la confirmación de los datos ingresados.
+     * Carga un administrador desde la entrada estándar (consola).
+     * Se supone que se utilizara si se quiere guardar un Administrador -> Usuario a
+     * la base de datos.
+     * Dentro del proceso luego de confirmar Datos_Personales primero los carga en
+     * la base da datos. De alguna manera si o si se tiene que lograr la carga sino
+     * puede generar errores futuros.
+     * Toma todos los requerimientos de validaciones.
+     * Se puede cancelar.
      * 
      * @author Grupo 4 - Taller de lenguajes II
      * @version 1.0
      * 
-     * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
-     * @return {@code true} si el usuario confirma los datos, {@code false} si desea
-     *         reingresar los datos.
+     * @param scanner
+     * @return Administrador generado, si se cancela retorna null.
      */
-    private boolean confirmacion(Scanner scanner) {
-        System.out.print(" (S/N): ");
-        String confirmacion = scanner.nextLine();
-        while (!confirmacion.equalsIgnoreCase("S") && !confirmacion.equalsIgnoreCase("N")) {
-            System.out.print("Entrada inválida. Ingrese 'S' para confirmar o 'N' para denegar: ");
-            confirmacion = scanner.nextLine();
+    public Administrador cargaAdministrador(Scanner scanner, List<Usuario> listaUSuario) {
+        System.out.println("[CARGA DE UN ADMINISTRADOR]");
+        String nombreUsuario = "";
+        String email = "";
+        String contrasena = "";
+        Datos_Personales dp = null;
+        String rol = "ADMINISTRADOR";
+        boolean datosValidos = false;
+
+        // Carga de datos por teclado.
+        while (!datosValidos) {
+            dp = cargaDatosPersonales(scanner);
+            if (dp == null) { // Si cancelo la carga de datos desde la carga de Datos_Personales
+                return null;
+            }
+            System.out.print("Ingrese el nombre de usuario: ");
+            nombreUsuario = scanner.nextLine();
+            System.out.print("Ingrese el email: ");
+            email = scanner.nextLine();
+            while (correoExistente(email, listaUSuario)) {
+                System.out.print("Email ya registrado. Ingrese otro email: ");
+                email = scanner.nextLine();
+                }
+            while (!esFormatoEmailSimpleValido(email)) {
+                System.out.print("Email inválido. Ingrese un email válido: ");
+                email = scanner.nextLine();
+            }
+            System.out.print("Ingrese la contraseña: ");
+            contrasena = scanner.nextLine();
+            System.out.println("CONFIRMACION DE CARGA -> ADMINISTRADOR.");
+            datosValidos = confirmacion(scanner);
+            if (!datosValidos) {
+                System.out.println("Quieres cancelar la carga? ");
+                datosValidos = confirmacion(scanner);
+                if (datosValidos) {
+                    System.out.println("Carga cancelada.💡");
+                    return null;
+                }
+            }
         }
-        return confirmacion.equalsIgnoreCase("S");
+
+        // Todo confirmado se prodece crear el objeto Administrador.
+
+        return new Administrador(-1, nombreUsuario, email, contrasena, dp, rol);// -1 corresponde a un valor invalido de
+        // id "Se lo da realmente DB"
+    }
+
+    /**
+     * Carga una Cuenta desde la entrada estándar (consola).
+     * Se supone que se utilizara si se quiere guardar una Cuenta -> Usuario a la
+     * base de datos.
+     * Dentro del proceso luego de confirmar Datos_Personales primero los carga en
+     * la base da datos. De alguna manera si o si se tiene que lograr la carga sino
+     * puede generar errores futuros.
+     * Toma todos los requerimientos de validaciones.
+     * Se puede cancelar.
+     * 
+     * @author Grupo 4 - Taller de lenguajes II
+     * @version 1.0
+     * 
+     * @param scanner
+     * @return Cuenta generado, si se cancela retorna null.
+     */
+    public Cuenta cargaCuenta(Scanner scanner, List<Usuario> listaUSuario) {
+        System.out.println("[CARGA DE UNA CUENTA]");
+        String nombreUsuario = "";
+        String email = "";
+        String contrasena = "";
+        Datos_Personales dp = null;
+        String rol = "CUENTA";
+        boolean datosValidos = false;
+
+        // Carga de datos por teclado.
+        while (!datosValidos) {
+            dp = cargaDatosPersonales(scanner);
+            if (dp == null) { // Si cancelo la carga de datos desde la carga de Datos_Personales
+                return null;
+            }
+            System.out.print("Ingrese el nombre de usuario: ");
+            nombreUsuario = scanner.nextLine();
+            System.out.print("Ingrese el email: ");
+            email = scanner.nextLine();
+            while (correoExistente(email, listaUSuario)) {
+                System.out.print("Email ya registrado. Ingrese otro email: ");
+                email = scanner.nextLine();
+                }
+            while (!esFormatoEmailSimpleValido(email)) {
+                System.out.print("Email inválido. Ingrese un email válido: ");
+                email = scanner.nextLine();
+            }
+            System.out.print("Ingrese la contraseña: ");
+            contrasena = scanner.nextLine();
+            System.out.println("CONFIRMACION DE CARGA -> CUENTA.");
+            datosValidos = confirmacion(scanner);
+            if (!datosValidos) {
+                System.out.println("Quieres cancelar la carga? ");
+                datosValidos = confirmacion(scanner);
+                if (datosValidos) {
+                    System.out.println("Carga cancelada.💡");
+                    return null;
+                }
+            }
+        }
+
+        // Todo confirmado se prodece crear el objeto Cuenta.
+
+        return new Cuenta(-1, nombreUsuario, email, contrasena, dp, rol); // -1 corresponde a un valor invalido de id
+        // "Se lo da realmente DB"
+    }
+
+    /**
+     * Verifica de forma simple si un correo electrónico tiene un formato básico
+     * válido:
+     * contiene exactamente un '@' y este no es el último carácter.
+     * No valida la estructura completa xxx@yyy.zzz.
+     * HECHO TOTALMENTE CON IA.
+     *
+     * @author Grupo 4 - Taller de lenguajes II
+     * @version 1.0
+     * 
+     * @param email El correo electrónico (String) a verificar.
+     * @return {@code true} si el email cumple las condiciones simples,
+     *         {@code false} en caso contrario.
+     */
+    private boolean esFormatoEmailSimpleValido(String email) {
+        // 1. Verifica si es nulo o vacío
+        if (email == null || email.trim().isEmpty()) {
+            return false;
+        }
+
+        // 2. Busca la posición del primer '@'
+        int arrobaIndex = email.indexOf('@');
+
+        // 3. Verifica si no hay '@' o si hay más de uno
+        // (si la primera posición no es igual a la última, hay más de uno)
+        if (arrobaIndex == -1 || arrobaIndex != email.lastIndexOf('@')) {
+            return false;
+        }
+
+        // 4. Verifica si el '@' es el último carácter
+        if (arrobaIndex == email.length() - 1) {
+            return false; // No hay nada después del '@'
+        }
+
+        // 5. Si pasó todas las verificaciones, es válido (según estas reglas simples)
+        return true;
+    }
+
+    /**
+     * Verifica si un correo electrónico ya está registrado en la base de datos.
+     * Siempre suponemos que un correo no se puede ingresar dos veces por lo que
+     * a la primera coincidencia retorna true.
+     * 
+     * @param correo       El correo a validar.
+     * @param listaUsuario Suponemos que lo envia la plataforma actualizada!
+     * @return true si el correo está registrado, false en caso
+     *         contrario.
+     */
+    private boolean correoExistente(String correo, List<Usuario> listaUSuario) {
+        // Maneja el caso de que la lista sea nula.
+        if (listaUSuario == null) {
+            System.out.println("Error: No se pudo obtener la lista de usuarios para validar.");
+            return false;
+        }
+        // Busca coincidencia.
+        for (Usuario usuario : listaUSuario) {
+            if (usuario.getEmail() != null && usuario.getEmail().equals(correo)) {
+                return true;
+            }
+        }
+        // Si no encontro.
+        return false;
     }
 
     /**
@@ -137,159 +309,22 @@ public class CargadoresyComunicacionDB {
     }
 
     /**
-     * Carga un administrador desde la entrada estándar (consola).
-     * Se supone que se utilizara si se quiere guardar un Administrador -> Usuario a
-     * la base de datos.
-     * Dentro del proceso luego de confirmar Datos_Personales primero los carga en
-     * la base da datos. De alguna manera si o si se tiene que lograr la carga sino
-     * puede generar errores futuros.
-     * Toma todos los requerimientos de validaciones.
-     * Se puede cancelar.
+     * Solicita al usuario la confirmación de los datos ingresados.
      * 
      * @author Grupo 4 - Taller de lenguajes II
      * @version 1.0
      * 
-     * @param scanner
-     * @return Administrador generado, si se cancela retorna null.
+     * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
+     * @return {@code true} si el usuario confirma los datos, {@code false} si desea
+     *         reingresar los datos.
      */
-    public Administrador cargaAdministrador(Scanner scanner) {
-        System.out.println("[CARGA DE UN ADMINISTRADOR]");
-        String nombreUsuario = "";
-        String email = "";
-        String contrasena = "";
-        Datos_Personales dp = null;
-        String rol = "ADMINISTRADOR";
-        boolean datosValidos = false;
-
-        // Carga de datos por teclado.
-        while (!datosValidos) {
-            dp = cargaDatosPersonales(scanner);
-            if (dp == null) { // Si cancelo la carga de datos desde la carga de Datos_Personales
-                return null;
-            }
-            System.out.print("Ingrese el nombre de usuario: ");
-            nombreUsuario = scanner.nextLine();
-            System.out.print("Ingrese el email: ");
-            email = scanner.nextLine();
-            while (!esFormatoEmailSimpleValido(email)) {
-                System.out.print("Email inválido. Ingrese un email válido: ");
-                email = scanner.nextLine();
-            }
-            System.out.print("Ingrese la contraseña: ");
-            contrasena = scanner.nextLine();
-            System.out.println("CONFIRMACION DE CARGA -> ADMINISTRADOR.");
-            datosValidos = confirmacion(scanner);
-            if (!datosValidos) {
-                System.out.println("Quieres cancelar la carga? ");
-                datosValidos = confirmacion(scanner);
-                if (datosValidos) {
-                    System.out.println("Carga cancelada.💡");
-                    return null;
-                }
-            }
+    private boolean confirmacion(Scanner scanner) {
+        System.out.print(" (S/N): ");
+        String confirmacion = scanner.nextLine();
+        while (!confirmacion.equalsIgnoreCase("S") && !confirmacion.equalsIgnoreCase("N")) {
+            System.out.print("Entrada inválida. Ingrese 'S' para confirmar o 'N' para denegar: ");
+            confirmacion = scanner.nextLine();
         }
-
-        // Todo confirmado se prodece crear el objeto Administrador.
-
-        return new Administrador(-1, nombreUsuario, email, contrasena, dp, rol);// -1 corresponde a un valor invalido de
-                                                                                // id "Se lo da realmente DB"
+        return confirmacion.equalsIgnoreCase("S");
     }
-
-    /**
-     * Carga una Cuenta desde la entrada estándar (consola).
-     * Se supone que se utilizara si se quiere guardar una Cuenta -> Usuario a la
-     * base de datos.
-     * Dentro del proceso luego de confirmar Datos_Personales primero los carga en
-     * la base da datos. De alguna manera si o si se tiene que lograr la carga sino
-     * puede generar errores futuros.
-     * Toma todos los requerimientos de validaciones.
-     * Se puede cancelar.
-     * 
-     * @author Grupo 4 - Taller de lenguajes II
-     * @version 1.0
-     * 
-     * @param scanner
-     * @return Cuenta generado, si se cancela retorna null.
-     */
-    public Cuenta cargaCuenta(Scanner scanner) {
-        System.out.println("[CARGA DE UNA CUENTA]");
-        String nombreUsuario = "";
-        String email = "";
-        String contrasena = "";
-        Datos_Personales dp = null;
-        String rol = "CUENTA";
-        boolean datosValidos = false;
-
-        // Carga de datos por teclado.
-        while (!datosValidos) {
-            dp = cargaDatosPersonales(scanner);
-            if (dp == null) { // Si cancelo la carga de datos desde la carga de Datos_Personales
-                return null;
-            }
-            System.out.print("Ingrese el nombre de usuario: ");
-            nombreUsuario = scanner.nextLine();
-            System.out.print("Ingrese el email: ");
-            email = scanner.nextLine();
-            while (!esFormatoEmailSimpleValido(email)) {
-                System.out.print("Email inválido. Ingrese un email válido: ");
-                email = scanner.nextLine();
-            }
-            System.out.print("Ingrese la contraseña: ");
-            contrasena = scanner.nextLine();
-            System.out.println("CONFIRMACION DE CARGA -> CUENTA.");
-            datosValidos = confirmacion(scanner);
-            if (!datosValidos) {
-                System.out.println("Quieres cancelar la carga? ");
-                datosValidos = confirmacion(scanner);
-                if (datosValidos) {
-                    System.out.println("Carga cancelada.💡");
-                    return null;
-                }
-            }
-        }
-
-        // Todo confirmado se prodece crear el objeto Cuenta.
-
-        return new Cuenta(-1, nombreUsuario, email, contrasena, dp, rol); // -1 corresponde a un valor invalido de id
-                                                                          // "Se lo da realmente DB"
-    }
-
-    /**
-     * Verifica de forma simple si un correo electrónico tiene un formato básico
-     * válido:
-     * contiene exactamente un '@' y este no es el último carácter.
-     * No valida la estructura completa xxx@yyy.zzz.
-     * HECHO TOTALMENTE CON IA.
-     *
-     * @author Grupo 4 - Taller de lenguajes II
-     * @version 1.0
-     * 
-     * @param email El correo electrónico (String) a verificar.
-     * @return {@code true} si el email cumple las condiciones simples,
-     *         {@code false} en caso contrario.
-     */
-    public boolean esFormatoEmailSimpleValido(String email) {
-        // 1. Verifica si es nulo o vacío
-        if (email == null || email.trim().isEmpty()) {
-            return false;
-        }
-
-        // 2. Busca la posición del primer '@'
-        int arrobaIndex = email.indexOf('@');
-
-        // 3. Verifica si no hay '@' o si hay más de uno
-        // (si la primera posición no es igual a la última, hay más de uno)
-        if (arrobaIndex == -1 || arrobaIndex != email.lastIndexOf('@')) {
-            return false;
-        }
-
-        // 4. Verifica si el '@' es el último carácter
-        if (arrobaIndex == email.length() - 1) {
-            return false; // No hay nada después del '@'
-        }
-
-        // 5. Si pasó todas las verificaciones, es válido (según estas reglas simples)
-        return true;
-    }
-
 }
