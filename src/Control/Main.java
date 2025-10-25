@@ -1,7 +1,9 @@
 package Control;
 
 import java.util.Scanner;
+import java.util.List;
 
+import Catalogo.Pelicula;
 import DAO.UsuarioDAOImpl;
 
 //import DataBase.InicializadorDB;
@@ -61,9 +63,9 @@ public class Main {
                 System.out.println("✌️" + usuario.getRol() + "✌️");
 
                 if (usuario.getRol().equals("ADMINISTRADOR"))
-                    simulacionAdm(in, (Administrador) usuario);// Lo envia como Administrador
+                    simulacionAdm(in, (Administrador) usuario, plataforma);// Lo envia como Administrador
                 else
-                    simulacionCta(in, (Cuenta) usuario);// Lo envia como cuenta.
+                    simulacionCta(in, (Cuenta) usuario, plataforma);// Lo envia como cuenta.
 
             } else {// el correo no exite
                 System.out.println("Usuario inexistente");
@@ -83,31 +85,37 @@ public class Main {
      * @param in
      * @param adm
      */
-    public static void simulacionAdm(Scanner in, Administrador adm) {
+    public static void simulacionAdm(Scanner in, Administrador adm, Plataforma plataforma) {
         System.out.println("Adminitrador: " + adm.getDatosPersonales().toString());
         while (true) {
             System.out.println("\n--- Menú de Administrador ---");
             System.out.println("1. Agregar película");
-            System.out.println("2. Borrar cuenta de usuario");
-            System.out.println("3. Salir (Volver al menú anterior)");
-            System.out.print("Ingrese su opción (1-3): ");
+            System.out.println("2. Borrar película");
+            System.out.println("3. Borrar cuenta de usuario");
+            System.out.println("4. Salir (Volver al menú anterior)");
+            System.out.print("Ingrese su opción (1-4): ");
 
             String opcion = in.nextLine();
 
             switch (opcion) {
                 case "1":
-
+                    plataforma.cargarYguardarPelicula(in);
                     break;
 
                 case "2":
+                    System.out.println("Ingresa el nombre de la pelicula a eliminar:");
+                    String aux = in.nextLine();
+                    plataforma.eliminarPelicula(plataforma.getPeliDAO().buscarPorTitulo(aux));
+                    break;
+                case "3":
 
                     break;
 
-                case "3":
+                case "4":
                     System.out.println("Cerrando sesion...");
                     return;
                 default:
-                    // --- Validación de entrada (si no es 1, 2 o 3) ---
+                    // --- Validación de entrada (si no es 1, 2 , 3 o 4) ---
                     System.out.println("-------------------------------------");
                     System.out.println("Error: Opción no válida. Intente de nuevo.");
                     System.out.println("-------------------------------------");
@@ -122,20 +130,28 @@ public class Main {
      * @param in
      * @param cta
      */
-    public static void simulacionCta(Scanner in, Cuenta cta) {
+    public static void simulacionCta(Scanner in, Cuenta cta, Plataforma plataforma) {
         System.out.println("Cuenta: " + cta.getDatosPersonales().toString());
         while (true) {
             System.out.println("\n--- Menú de Cuenta ---");
-            System.out.println("1. Salir");
+            System.out.println("1. Mostrar peliculas.");
+            System.out.println("2. Salir");
+            System.out.print("Ingrese su opción (1-2): ");
 
             String opcion = in.nextLine();
 
             switch (opcion) {
                 case "1":
+                    List<Pelicula> listaPelicula = plataforma.getPeliDAO().devolverListaPelicula();
+                    for (Pelicula pelicula : listaPelicula) {
+                        System.out.println(pelicula);
+                    }
+                    break;
+                case "2":
                     System.out.println("Cerrando sesion...");
                     return;
                 default:
-                    // --- Validación de entrada (si no es 1, 2 o 3) ---
+                    // --- Validación de entrada (si no es 1, 2) ---
                     System.out.println("-------------------------------------");
                     System.out.println("Error: Opción no válida. Intente de nuevo.");
                     System.out.println("-------------------------------------");

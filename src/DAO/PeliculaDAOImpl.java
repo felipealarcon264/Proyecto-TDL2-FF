@@ -3,9 +3,12 @@ package DAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import Catalogo.Pelicula;
 import DataBase.ConexionDB;
+
 import Enums.Genero;
 
 /**
@@ -43,7 +46,7 @@ public class PeliculaDAOImpl implements PeliculaDAO {
             pstmt.setString(4, pelicula.getResumen());
             pstmt.setString(5, pelicula.getGenero().toString());
             if (pstmt.executeUpdate() > 0) {
-                System.out.println("Película guardada exitosamente.");
+                System.out.println("✅Película guardada exitosamente.");
                 return true;
             } else {
                 System.out.println("❌No se pudo guardar la película.");
@@ -118,5 +121,41 @@ public class PeliculaDAOImpl implements PeliculaDAO {
             System.out.println("❌Error al buscar la pelicula: " + e.getMessage());
             return null;
         }
+    }
+
+    /**
+     * Devuelve una lista con todos las peliculas de la base de datos.
+     * 
+     * @author Grupo 4 - Taller de lenguajes II
+     * @version 1.0
+     * 
+     * @return Lista cargada con todas las peliculas de la base de datos.
+     */
+    @Override
+    public List<Pelicula> devolverListaPelicula() {
+        List<Pelicula> lista = new ArrayList<>();
+        String sql = """
+                    SELECT GENERO, TITULO, RESUMEN, DIRECTOR, DURACION
+                     FROM PELICULA
+                """;
+        try (java.sql.Connection conn = ConexionDB.conectar();
+                java.sql.Statement stmt = conn.createStatement();
+                java.sql.ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                // Datos de la pelicula.
+                Genero generoEnum = Genero.valueOf(rs.getString("GENERO").toUpperCase());
+                String titulo = rs.getString("TITULO");
+                String resumen = rs.getString("RESUMEN");
+                String director = rs.getString("DIRECTOR");
+                int duracion = rs.getInt("DURACION");
+                // Se crea el objeto pelicula usando su constructor cargandolo en la lista.
+                lista.add(new Pelicula(titulo, director, duracion, resumen, generoEnum));
+            }
+        } catch (Exception e) {
+            System.out.println("Error al listar las peliculas: " + e.getMessage());
+            return null;
+        }
+        return lista;
+
     }
 }

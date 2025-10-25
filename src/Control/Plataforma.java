@@ -11,6 +11,7 @@ import Entes.Administrador;
 import Servicio.CargadoresyComunicacionDB;
 import java.util.Scanner;
 import java.util.List;
+import Catalogo.Pelicula;
 
 //No se necesita en la segunda entrega.import Reportes.ReporteManager;
 
@@ -31,7 +32,10 @@ public class Plataforma {
     private PeliculaDAOImpl peliDAO;
     private UsuarioDAOImpl usrDAO;
     private CargadoresyComunicacionDB cargadoresyComunDB;
-    private List<Usuario> listaUSuario; // Se manaejara esta lista para disminuir la entrada a la base de datos
+    private List<Usuario> listaUSuario; // Se manaejara esta lista para disminuir la entrada a la base de datos, se
+                                        // actualiza con cada guardar o eliminar.
+    private List<Pelicula> listaPelicula; // Se manaejara esta lista para disminuir la entrada a la base de datos, se
+                                          // actualiza con cada guardar o eliminar.
 
     /**
      * Constructor de la Plataforma.
@@ -44,6 +48,7 @@ public class Plataforma {
         this.listaUSuario = usrDAO.devolverListaUsuarios();
     }
 
+    
     /**
      * Verifica el tipo de usuario (ej: "ADMINISTRADOR", "CUENTA").
      * 
@@ -69,7 +74,7 @@ public class Plataforma {
      * 
      */
     public void cargarYguardarCuenta(Scanner scanner) {
-        Cuenta cta = cargadoresyComunDB.cargaCuenta(scanner,this.listaUSuario);
+        Cuenta cta = cargadoresyComunDB.cargaCuenta(scanner, this.listaUSuario);
         if (cta == null) {
             System.out.println("No se guardo nada en la base de datos.");
             return;
@@ -89,7 +94,7 @@ public class Plataforma {
      * @param usuario El usuario a agregar.
      */
     public void cargarYguardarAdministrador(Scanner scanner) {
-        Administrador adm = cargadoresyComunDB.cargaAdministrador(scanner,this.listaUSuario);
+        Administrador adm = cargadoresyComunDB.cargaAdministrador(scanner, this.listaUSuario);
         if (adm == null) {
             System.out.println("No se guardo nada en la base de datos.");
             return;
@@ -97,6 +102,36 @@ public class Plataforma {
         usrDAO.guardar(adm);
         listaUSuario.add(adm);
         System.out.println("✅Administrador guardado exitosamente!");
+    }
+
+    /**
+     * Se encarga de cargar y guardar una pelicula en la base de datos, se puede
+     * cancelar.
+     * Todos los mensajes se indican en guardar y cargaPelicula.
+     * 
+     * @param usuario
+     * @return
+     */
+    public void cargarYguardarPelicula(Scanner scanner) {
+        Pelicula pelicula = this.cargadoresyComunDB.cargaPelicula(scanner);
+        PeliculaDAOImpl peliculaDAO = new PeliculaDAOImpl();
+        if (peliculaDAO.guardar(pelicula))// Si es null se encarga de dar error.
+            listaPelicula.add(pelicula); // Si es != de null tambien lo carga en la lista.
+    }
+
+    /**
+     * Elimina una pelicula existente de la base de datos tambien en la lista de plataforma.
+     * Los mensajes seran emitidos por el metodo borrar.
+     * 
+     * @param usuario El usuario a eliminar.
+     * @return true si se pudo borrar y false si ocurrio un error/imprevisto.
+     */
+    public boolean eliminarPelicula(Pelicula pelicula) {
+        if (peliDAO.borrar(pelicula)) {
+            this.listaPelicula.remove(pelicula);
+            return true;
+        } else
+            return false;
     }
 
     /**
@@ -108,7 +143,7 @@ public class Plataforma {
      */
     public boolean eliminarUsuario(Usuario usuario) {
         if (usrDAO.borrar(usuario)) {
-            listaUSuario.remove(usuario);
+            this.listaUSuario.remove(usuario);
             return true;
         } else
             return false;
@@ -123,7 +158,7 @@ public class Plataforma {
      * @return true si el correo está registrado, false en caso
      *         contrario.
      */
-    public boolean validarUsuario(String correo,String contrasena) {
+    public boolean validarUsuario(String correo, String contrasena) {
         // Maneja el caso de que la lista sea nula.
         if (this.listaUSuario == null) {
             System.out.println("Error: No se pudo obtener la lista de usuarios para validar.");
@@ -131,7 +166,8 @@ public class Plataforma {
         }
         // Busca coincidencia.
         for (Usuario usuario : this.listaUSuario) {
-            if (usuario.getEmail() != null && usuario.getEmail().equals(correo) && usuario.getContrasena().equals(contrasena)) {
+            if (usuario.getEmail() != null && usuario.getEmail().equals(correo)
+                    && usuario.getContrasena().equals(contrasena)) {
                 return true;
             }
         }
@@ -192,9 +228,8 @@ public class Plataforma {
         // Implementación pendiente...
     }
 
-
     /**
-    * Getters and setters
+     * Getters and setters
      */
     public Datos_PersonalesDAOImpl getDpDAO() {
         return dpDAO;
@@ -203,27 +238,35 @@ public class Plataforma {
     public void setDpDAO(Datos_PersonalesDAOImpl dpDAO) {
         this.dpDAO = dpDAO;
     }
+
     public PeliculaDAOImpl getPeliDAO() {
         return peliDAO;
     }
+
     public void setPeliDAO(PeliculaDAOImpl peliDAO) {
         this.peliDAO = peliDAO;
     }
+
     public UsuarioDAOImpl getUsrDAO() {
         return usrDAO;
     }
+
     public void setUsrDAO(UsuarioDAOImpl usrDAO) {
         this.usrDAO = usrDAO;
     }
+
     public CargadoresyComunicacionDB getCargadoresyComunDB() {
         return cargadoresyComunDB;
     }
+
     public void setCargadoresyComunDB(CargadoresyComunicacionDB cargadoresyComunDB) {
         this.cargadoresyComunDB = cargadoresyComunDB;
     }
+
     public List<Usuario> getListaUSuario() {
         return listaUSuario;
     }
+
     public void setListaUSuario(List<Usuario> listaUSuario) {
         this.listaUSuario = listaUSuario;
     }
