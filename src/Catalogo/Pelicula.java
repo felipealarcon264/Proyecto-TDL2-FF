@@ -31,8 +31,9 @@ public class Pelicula extends Contenido {
      * @param director    Director de la película.
      * @param duracion    Duración en minutos.
      */
-    public Pelicula(String titulo, String director, int duracion, String resumen, Genero genero) {
+    public Pelicula(int idDB, String titulo, String director, int duracion, String resumen, Genero genero) {
         super(titulo, director, duracion, resumen, genero);
+        this.setIdDB(idDB);
     }
 
     /**

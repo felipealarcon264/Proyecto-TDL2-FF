@@ -287,4 +287,41 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         return lista;
 
     }
+
+    /**
+     * Busca un usuario por su ID de base de datos.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param id El ID del usuario a buscar.
+     * @return El objeto Usuario (Administrador o Cuenta) si se encuentra, o null
+     *         en caso contrario.
+     */
+    @Override
+    public Usuario buscarPorId(int id) {
+        String sql = "SELECT * FROM USUARIO WHERE ID = ?";
+        try (java.sql.Connection conn = ConexionDB.conectar();
+                java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            var rs = pstmt.executeQuery();
+            if (rs.next()) {
+                String nombreUsuario = rs.getString("NOMBRE_USUARIO");
+                String email = rs.getString("EMAIL");
+                String contrasena = rs.getString("CONTRASENA");
+                String rol = rs.getString("ROL");
+                Datos_PersonalesDAOImpl dpImpl = new Datos_PersonalesDAOImpl();
+                Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
+
+                if ("ADMINISTRADOR".equals(rol)) {
+                    return new Administrador(id, nombreUsuario, email, contrasena, dp, rol);
+                } else if ("CUENTA".equals(rol)) {
+                    return new Cuenta(id, nombreUsuario, email, contrasena, dp, rol);
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            System.out.println("❌ Error al buscar el usuario por ID: " + e.getMessage());
+            return null;
+        }
+    }
 }

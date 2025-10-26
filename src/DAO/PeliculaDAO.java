@@ -14,5 +14,6 @@ public interface PeliculaDAO {
     public boolean borrar(Pelicula pelicula);
     public Pelicula buscarPorTitulo(String titulo);
     public List<Pelicula> devolverListaPelicula();
+    public Pelicula buscarPorId(int id);
 
 }

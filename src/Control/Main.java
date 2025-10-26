@@ -182,9 +182,10 @@ public class Main {
         System.out.println("👋 ¡Hola, " + cta.getDatosPersonales().getNombre() + "!");
         while (true) {
             System.out.println("\n--- Menú de Cuenta ---");
-            System.out.println("1. Elegir como mostrar la lista de peliculas.");
-            System.out.println("2. Salir");
-            System.out.print("Ingrese su opción (1-2): ");
+            System.out.println("1. Ver y ordenar lista de películas.");
+            System.out.println("2. Crear una reseña.");
+            System.out.println("3. Salir");
+            System.out.print("Ingrese su opción (1-3): ");
 
             String opcion = in.nextLine();
 
@@ -196,10 +197,13 @@ public class Main {
                     }
                     break;
                 case "2":
+                    plataforma.cargarYguardarReseña(in, cta);
+                    break;
+                case "3":
                     System.out.println("🚪 Cerrando sesión...");
                     return;
                 default:
-                    // --- Validación de entrada (si no es 1, 2) ---
+                    // --- Validación de entrada (si no es 1, 2 o 3) ---
                     System.out.println("-------------------------------------");
                     System.out.println("Error: Opción no válida. Intente de nuevo.");
                     System.out.println("-------------------------------------");

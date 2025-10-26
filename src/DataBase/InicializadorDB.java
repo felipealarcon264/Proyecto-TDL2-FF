@@ -78,7 +78,7 @@ public class InicializadorDB {
                             ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                             CALIFICACION INTEGER NOT NULL,
                             COMENTARIO TEXT(500),
-                            APROBADO INTEGER DEFAULT (1) NOT NULL,
+                            APROBADO INTEGER DEFAULT (0) NOT NULL,
                             FECHA_HORA DATETIME NOT NULL,
                             ID_USUARIO INTEGER NOT NULL,
                             ID_PELICULA INTEGER NOT NULL,

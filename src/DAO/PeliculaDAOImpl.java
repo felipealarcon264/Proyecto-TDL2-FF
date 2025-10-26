@@ -101,7 +101,7 @@ public class PeliculaDAOImpl implements PeliculaDAO {
      */
     @Override
     public Pelicula buscarPorTitulo(String titulo) {
-        String sql = "SELECT TITULO, DIRECTOR, DURACION, RESUMEN, GENERO FROM PELICULA WHERE TITULO = ?";
+        String sql = "SELECT ID, TITULO, DIRECTOR, DURACION, RESUMEN, GENERO FROM PELICULA WHERE TITULO = ?";
         try (Connection conn = ConexionDB.conectar();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, titulo);
@@ -110,13 +110,41 @@ public class PeliculaDAOImpl implements PeliculaDAO {
                 String generoSTR = rs.getString("GENERO");
                 Genero generoEnum = Genero.valueOf(generoSTR.toUpperCase());
                 System.out.println("ℹ️ Película [" + titulo + "] encontrada.");
-                return new Pelicula(rs.getString("TITULO"), rs.getString("DIRECTOR"), rs.getInt("DURACION"),
+                return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"), rs.getInt("DURACION"),
                         rs.getString("RESUMEN"), generoEnum);
             } else
                 System.out.println("❌ Película [" + titulo + "] no encontrada en la base de datos.");
             return null;
         } catch (SQLException e) {
             System.out.println("❌ Error al buscar la película: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Busca una pelicula por su ID.
+     *
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     *
+     * @param id El ID de la película a buscar.
+     * @return La pelicula en caso de encontrarla o null en caso contrario.
+     */
+    @Override
+    public Pelicula buscarPorId(int id) {
+        String sql = "SELECT ID, TITULO, DIRECTOR, DURACION, RESUMEN, GENERO FROM PELICULA WHERE ID = ?";
+        try (Connection conn = ConexionDB.conectar();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            var rs = pstmt.executeQuery();
+            if (rs.next()) {
+                Genero generoEnum = Genero.valueOf(rs.getString("GENERO").toUpperCase());
+                return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"), rs.getInt("DURACION"),
+                        rs.getString("RESUMEN"), generoEnum);
+            }
+            return null; // No se encontró película con ese ID
+        } catch (SQLException e) {
+            System.out.println("❌ Error al buscar la película por ID: " + e.getMessage());
             return null;
         }
     }
@@ -132,7 +160,7 @@ public class PeliculaDAOImpl implements PeliculaDAO {
     public List<Pelicula> devolverListaPelicula() {
         List<Pelicula> lista = new ArrayList<>();
         String sql = """
-                    SELECT GENERO, TITULO, RESUMEN, DIRECTOR, DURACION
+                    SELECT ID, GENERO, TITULO, RESUMEN, DIRECTOR, DURACION
                      FROM PELICULA
                 """;
         try (java.sql.Connection conn = ConexionDB.conectar();
@@ -140,13 +168,14 @@ public class PeliculaDAOImpl implements PeliculaDAO {
                 java.sql.ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 // Datos de la pelicula.
+                int id = rs.getInt("ID");
                 Genero generoEnum = Genero.valueOf(rs.getString("GENERO").toUpperCase());
                 String titulo = rs.getString("TITULO");
                 String resumen = rs.getString("RESUMEN");
                 String director = rs.getString("DIRECTOR");
                 int duracion = rs.getInt("DURACION");
                 // Se crea el objeto pelicula usando su constructor cargandolo en la lista.
-                lista.add(new Pelicula(titulo, director, duracion, resumen, generoEnum));
+                lista.add(new Pelicula(id, titulo, director, duracion, resumen, generoEnum));
             }
         } catch (Exception e) {
             System.out.println("❌ Error al listar las películas: " + e.getMessage());

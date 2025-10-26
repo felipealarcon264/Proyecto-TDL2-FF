@@ -17,6 +17,7 @@ import Enums.Genero;
 public abstract class Contenido {
 
     // private int idContenido; //No se necesita en la segunda entrega.
+    private int idDB;
     private String titulo;
     private String resumen;
     private String director;
@@ -76,6 +77,14 @@ public abstract class Contenido {
     }
 
     // --- Getters y Setters ---
+
+    public int getIdDB() {
+        return idDB;
+    }
+
+    public void setIdDB(int idDB) {
+        this.idDB = idDB;
+    }
 
     // No se necesita en la segunda entrega.public int getIdContenido() {
     // No se necesita en la segunda entrega. return idContenido;

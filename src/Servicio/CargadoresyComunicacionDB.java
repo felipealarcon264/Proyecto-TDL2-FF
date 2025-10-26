@@ -8,8 +8,10 @@ import Entes.Datos_Personales;
 import Entes.Usuario;
 import Enums.Genero;
 import DAO.Datos_PersonalesDAOImpl;
+
 import java.util.List;
 import Catalogo.Pelicula;
+import Catalogo.Resenia;
 
 /**
  * CARGADORES Y COMUNICACION CON BASE DE DATOS CON DICHOS CARGADORES.
@@ -19,6 +21,73 @@ import Catalogo.Pelicula;
  * 
  */
 public class CargadoresyComunicacionDB {
+    /*
+     * Ingresar un usuario y una contraseña que el sistema valida.
+     * -
+     * Si la validación es exitosa, mostrar un listado numerado con los títulos de
+     * las
+     * películas disponibles.
+     * -
+     * El usuario indica un número de película válido.
+     * -
+     * A continuación se solicitan todos los datos de la reseña (calificación,
+     * comentario).
+     * -
+     * Si el usuario confirma, se guarda en la base de datos.
+     */
+
+    /**
+     * Carga de una resenia por teclado.
+     * Importante se le envia una lista de peliculas/contenidos para decidir a cual
+     * hacer la resenia.
+     * se asegura que el indice seleccionado sea valido.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.1
+     * @param scanner        El Scanner para leer la entrada del usuario.
+     * @param listaPelicula La lista de peliculas disponibles para reseñar.
+     * @param usuario        El usuario que está realizando la reseña.
+     * @return Un objeto {@link Resenia} con los datos cargados, o null si el
+     *         usuario cancela la operación o la lista de películas está vacía.
+     */
+    public Resenia cargaResenia(Scanner scanner, List<Pelicula> listaPelicula, Usuario usuario) {
+        String comentario;
+        int seleccionPelicula;
+        System.out.println("\n--- ✍️ Carga de Reseña ✍️ ---");
+        if (listaPelicula == null || listaPelicula.isEmpty()) {
+            System.out.println("ℹ️ No hay películas disponibles para reseñar.");
+            return null;
+        }
+        for (int i = 0; i < listaPelicula.size(); i++) {
+            System.out.println((i + 1) + ". " + listaPelicula.get(i).getTitulo());
+        }
+        System.out.println();// Espacio.
+
+        // Bucle para asegurar que el número de película esté en el rango correcto.
+        do {
+            seleccionPelicula = this.ingresarNumeroValido(scanner,
+                    "👉 Ingrese el número de la película (1 a " + listaPelicula.size() + "): ");
+            if (seleccionPelicula < 1 || seleccionPelicula > listaPelicula.size()) {
+                System.out.println("❌ Número fuera de rango. Intente de nuevo.");
+            }
+        } while (seleccionPelicula < 1 || seleccionPelicula > listaPelicula.size());
+
+        // Indice real en la lista.
+        int indiceSeleccionado = seleccionPelicula - 1;
+        System.out.println("Resenia para la pelicula [" + listaPelicula.get(indiceSeleccionado).getTitulo() + "]");
+        int calificacion = this.ingresarNumeroValido(scanner, "Ingrese la calificacion: ");
+        System.out.println("Ingrese el comentario: ");
+        comentario = scanner.nextLine();
+        System.out.println("\n--- Confirmación de Carga: Reseña ---");
+        System.out.println("Datos ingresados:" +
+                "\nCalificacion: " + calificacion +
+                "\nComentario: " + comentario);
+        boolean datosValidos = confirmacion(scanner);
+        if (datosValidos)
+            return new Resenia(-1,calificacion, comentario, 0, usuario, listaPelicula.get(indiceSeleccionado));
+        else
+            return null;
+    }
 
     /**
      * Carga los datos personales desde la entrada estándar (consola).
@@ -34,7 +103,8 @@ public class CargadoresyComunicacionDB {
      * @version 1.1
      * 
      * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
-     * @return Un objeto {@link Datos_Personales} con los datos ingresados, o null si se cancela la carga.
+     * @return Un objeto {@link Datos_Personales} con los datos ingresados, o null
+     *         si se cancela la carga.
      */
     public Datos_Personales cargaDatosPersonales(Scanner scanner) {
         System.out.println("Carga de datos personales: ");
@@ -110,8 +180,9 @@ public class CargadoresyComunicacionDB {
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
      * 
-     * @param scanner El Scanner para leer la entrada del usuario.
-     * @param listaUSuario La lista de usuarios actual para validar correos existentes.
+     * @param scanner      El Scanner para leer la entrada del usuario.
+     * @param listaUSuario La lista de usuarios actual para validar correos
+     *                     existentes.
      * @return Un objeto Administrador generado, o null si se cancela la carga.
      */
     public Administrador cargaAdministrador(Scanner scanner, List<Usuario> listaUSuario) {
@@ -132,7 +203,7 @@ public class CargadoresyComunicacionDB {
             System.out.print("Ingrese el nombre de usuario: ");
             nombreUsuario = scanner.nextLine();
             System.out.print("Ingrese el email: ");
-            email = scanner.nextLine().toLowerCase(); 
+            email = scanner.nextLine().toLowerCase();
             while (correoExistente(email, listaUSuario)) {
                 System.out.print("Email ya registrado. Ingrese otro email: ");
                 email = scanner.nextLine().toLowerCase();
@@ -174,8 +245,9 @@ public class CargadoresyComunicacionDB {
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
      * 
-     * @param scanner El Scanner para leer la entrada del usuario.
-     * @param listaUSuario La lista de usuarios actual para validar correos existentes.
+     * @param scanner      El Scanner para leer la entrada del usuario.
+     * @param listaUSuario La lista de usuarios actual para validar correos
+     *                     existentes.
      * @return Un objeto Cuenta generado, o null si se cancela la carga.
      */
     public Cuenta cargaCuenta(Scanner scanner, List<Usuario> listaUSuario) {
@@ -225,7 +297,6 @@ public class CargadoresyComunicacionDB {
         // "Se lo da realmente DB"
     }
 
-    
     /**
      * Carga una Pelicula desde la entrada estándar (consola).
      * Permite al usuario ingresar los datos y confirmarlos.
@@ -235,9 +306,9 @@ public class CargadoresyComunicacionDB {
      * @param scanner El Scanner para leer la entrada del usuario.
      * @return Una pelicula o null en caso de cancelar la carga.
      */
-    public Pelicula cargaPelicula(Scanner scanner){
+    public Pelicula cargaPelicula(Scanner scanner) {
         System.out.println(" 🎬CARGA DE PELICULA🎬");
-        //titulo resumen director duracion genero
+        // titulo resumen director duracion genero
         String titulo = "";
         String resumen = "";
         String director = "";
@@ -272,10 +343,10 @@ public class CargadoresyComunicacionDB {
             }
         }
         System.out.println("Datos confirmados...");
-        return new Pelicula(titulo, director, duracion, resumen, genero);
+        // Pasamos -1 como ID temporal, ya que la DB asignará el real.
+        return new Pelicula(-1, titulo, director, duracion, resumen, genero);
     }
-    
-    
+
     /**
      * Solicita al usuario la confirmación de los datos ingresados.
      * 
@@ -295,10 +366,9 @@ public class CargadoresyComunicacionDB {
         return confirmacion.equalsIgnoreCase("S");
     }
 
-    
-   /**
+    /**
      * Solicita al usuario que seleccione un género de la lista de forma segura.
-     * El método mostrará un menú y se repetirá indefinidamente hasta que el 
+     * El método mostrará un menú y se repetirá indefinidamente hasta que el
      * usuario ingrese una opción válida (un número del 1 al 5).
      * 
      * Lee la entrada como un String para prevenir errores de tipo .
@@ -309,7 +379,7 @@ public class CargadoresyComunicacionDB {
      * @return El enum Genero seleccionado por el usuario.
      */
     private Genero seleccionarGenero(Scanner scanner) {
-        
+
         // Bucle infinito que solo se sale cuando hay un 'return'
         while (true) {
             System.out.println("\n--- Seleccione un Género ---");
@@ -321,7 +391,7 @@ public class CargadoresyComunicacionDB {
             System.out.print("Ingrese su opción (1-5): ");
 
             // 1. Leer la entrada SIEMPRE como String para evitar errores
-            String opcion = scanner.nextLine(); 
+            String opcion = scanner.nextLine();
 
             // 2. Usar un 'switch' para evaluar el String
             switch (opcion) {
@@ -335,7 +405,7 @@ public class CargadoresyComunicacionDB {
                     return Genero.COMEDIA;
                 case "5":
                     return Genero.TERROR;
-                
+
                 // 3. Si no coincide con 1-5, se ejecuta el 'default'
                 default:
                     System.out.println("-------------------------------------------------");
@@ -346,7 +416,6 @@ public class CargadoresyComunicacionDB {
         }
     }
 
-    
     /**
      * Verifica de forma simple si un correo electrónico tiene un formato básico
      * válido:
@@ -358,7 +427,8 @@ public class CargadoresyComunicacionDB {
      * @version 1.1
      * 
      * @param email El correo electrónico (String) a verificar.
-     * @return true si el email cumple las condiciones simples, false en caso contrario.
+     * @return true si el email cumple las condiciones simples, false en caso
+     *         contrario.
      */
     private boolean esFormatoEmailSimpleValido(String email) {
         // 1. Verifica si es nulo o vacío
@@ -434,4 +504,29 @@ public class CargadoresyComunicacionDB {
         return true;
     }
 
+    /**
+     * Pide al usuario que ingrese un número entero y valida la entrada.
+     * Pide reintentar si se ingresa algo que no es un número.
+     * 
+     * @author Gemini.
+     * @version 1.0.
+     * 
+     * @param scanner El objeto Scanner ya inicializado.
+     * @param mensaje El mensaje a mostrar al usuario para solicitar la entrada.
+     * @return El número entero válido ingresado por el usuario.
+     */
+    private int ingresarNumeroValido(Scanner scanner, String mensaje) {
+        int numero;
+        while (true) {
+            System.out.print(mensaje);
+            String linea = scanner.nextLine(); // Leer siempre la línea completa.
+            try {
+                numero = Integer.parseInt(linea); // Intentar convertir la línea a entero.
+                return numero; // Si tiene éxito, devolver el número y salir del método.
+            } catch (NumberFormatException e) {
+                // Si la conversión falla, es porque no se ingresó un número válido.
+                System.out.println("❌ Entrada no válida. Por favor, ingrese solo números enteros.");
+            }
+        }
+    }
 }

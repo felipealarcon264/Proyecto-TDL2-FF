@@ -2,6 +2,7 @@ package Control;
 
 import DAO.Datos_PersonalesDAOImpl;
 import DAO.PeliculaDAOImpl;
+import DAO.ReseniaDAOImpl;
 import DAO.UsuarioDAOImpl;
 import Entes.Perfil;
 import Entes.Usuario;
@@ -12,6 +13,7 @@ import Servicio.CargadoresyComunicacionDB;
 import java.util.Scanner;
 import java.util.List;
 import Catalogo.Pelicula;
+import Catalogo.Resenia;
 import Utilidades.Comparadores.*;
 
 //No se necesita en la segunda entrega.import Reportes.ReporteManager;
@@ -32,12 +34,14 @@ public class Plataforma {
     private Datos_PersonalesDAOImpl dpDAO;
     private PeliculaDAOImpl peliDAO;
     private UsuarioDAOImpl usrDAO;
+    private ReseniaDAOImpl resDAO;
     private CargadoresyComunicacionDB cargadoresyComunDB;
     private List<Usuario> listaUSuario; // Se manaejara esta lista para disminuir la entrada a la base de datos, se
                                         // actualiza con cada guardar o eliminar.
     private List<Pelicula> listaPelicula; // Se manaejara esta lista para disminuir la entrada a la base de datos, se
                                           // actualiza con cada guardar o eliminar.
 
+    private List<Resenia> listaResenia;
     /**
      * Constructor de la Plataforma.
      * 
@@ -48,9 +52,11 @@ public class Plataforma {
         this.dpDAO = new Datos_PersonalesDAOImpl();
         this.peliDAO = new PeliculaDAOImpl();
         this.usrDAO = new UsuarioDAOImpl();
+        this.resDAO = new ReseniaDAOImpl();
         this.cargadoresyComunDB = new CargadoresyComunicacionDB();
         this.listaUSuario = usrDAO.devolverListaUsuarios();
         this.listaPelicula = peliDAO.devolverListaPelicula();
+        this.listaResenia = resDAO.devolverListaResenia();
     }
 
     /**
@@ -115,6 +121,7 @@ public class Plataforma {
      *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
      * @param scanner El Scanner para leer la entrada del usuario.
      */
     public void cargarYguardarPelicula(Scanner scanner) {
@@ -122,6 +129,25 @@ public class Plataforma {
         if (this.peliDAO.guardar(pelicula))// Si es null se encarga de dar error.
             listaPelicula.add(pelicula); // Si es != de null tambien lo carga en la lista.
     }
+
+   /**
+     * Se encarga de cargar y guardar una reseña en la base de datos, se puede
+     * cancelar.
+     * Todos los mensajes se indican en guardar y cargaPelicula.
+     *
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
+     * @param scanner El Scanner para leer la entrada del usuario.
+     */
+    public void cargarYguardarReseña(Scanner scanner,Usuario usuario) {
+        Resenia reseña = this.cargadoresyComunDB.cargaResenia(scanner, this.listaPelicula, usuario);
+
+        if (this.resDAO.guardar(reseña))// Si es null se encarga de dar error.
+            listaResenia.add(reseña); // Si es != de null tambien lo carga en la lista.
+    }
+
+
 
     /**
      * Elimina una pelicula existente de la base de datos tambien en la lista de

@@ -19,4 +19,5 @@ public interface UsuarioDAO {
     public Usuario buscarPorEmail(String email);
     public void ListarTodosLosUsuariosEnPantalla();
     public List<Usuario> devolverListaUsuarios();
+    public Usuario buscarPorId(int id);
 }
