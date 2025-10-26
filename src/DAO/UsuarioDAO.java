@@ -16,6 +16,7 @@ public interface UsuarioDAO {
     public boolean guardar(Usuario usr);
     public boolean borrar(Usuario usr);
     public Usuario buscarPorEmailyContrasena(String email, String contrasena);
+    public Usuario buscarPorEmail(String email);
     public void ListarTodosLosUsuariosEnPantalla();
     public List<Usuario> devolverListaUsuarios();
 }

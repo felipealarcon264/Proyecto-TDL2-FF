@@ -34,7 +34,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     @Override
     public boolean guardar(Usuario usr) {
         if (usr == null) {
-            System.out.println("El usuario es nulo. No se puede guardar.");
+            System.out.println("❌ El usuario es nulo. No se puede guardar.");
             return false;
         }
         // Primero guardo Datos_Personales a la base de datos.
@@ -50,19 +50,19 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 pstmt.setInt(4, ID_DatosPersonales);
                 pstmt.setString(5, usr.getRol());
                 if (pstmt.executeUpdate() > 0) {
-                    System.out.println("Usuario guardado exitosamente.");
+                    System.out.println("✅ Usuario guardado exitosamente.");
                     return true;
                 } else {
-                    System.out.println("❌Error! No se pudo guardar el usuario.");
+                    System.out.println("❌ ¡Error! No se pudo guardar el usuario.");
                     return false;
                 }
             } catch (java.sql.SQLException e) {
-                System.out.println("Error al guardar el usuario: " + e.getMessage());
+                System.out.println("❌ Error al guardar el usuario: " + e.getMessage());
                 return false;
             }
 
         } else {
-            System.out.println("No se pudo cargar usuario. ❌Error al guardar los datos personales.");
+            System.out.println("❌ No se pudo cargar usuario. Error al guardar los datos personales.");
             return false;
         }
     }
@@ -83,24 +83,24 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     @Override
     public boolean borrar(Entes.Usuario usr) {
         if (usr == null || usr.getIdDB() <= 0) {
-            System.out.println("El usuario es nulo o invalido. No se puede borrar.");
+            System.out.println("❌ El usuario es nulo o inválido. No se puede borrar.");
             return false;
         }
         Datos_PersonalesDAOImpl Datos_PersonalesDAOImpl = new Datos_PersonalesDAOImpl();
         if (!Datos_PersonalesDAOImpl.borrar(usr.getDatosPersonales())) {
-            System.out.println("Error al borrar los datos personales. ❌Error al borrar el usuario");
+            System.out.println("❌ Error al borrar los datos personales. No se pudo continuar con el borrado del usuario.");
             return false;
         }//Si logra borrar datos personales es seguro que hay un usuario a borrar.
         String sql = "DELETE FROM USUARIO WHERE ID = ?";
         try (java.sql.Connection conn = ConexionDB.conectar();
                 java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, usr.getIdDB());
-            if (pstmt.executeUpdate() == 0) {
-                System.out.println("No se encontraron usuarios con el ID proporcionado.");
-                return false;
-            } else {
-                System.out.println("Usuario borrado correctamente.");
+            if (pstmt.executeUpdate() > 0) {
+                System.out.println("✅ Usuario borrado correctamente.");
                 return true;
+            } else {
+                System.out.println("⚠️ No se encontraron usuarios con el ID proporcionado.");
+                return false;
             }
         } catch (Exception e) {
             System.out.println("❌Error al borrar el usuario: " + e.getMessage());
@@ -134,22 +134,58 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 Datos_PersonalesDAOImpl dpImpl = new Datos_PersonalesDAOImpl(); // Para recuperar los datos personales
                 Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
                 if (rol.equals("ADMINISTRADOR")) {
-                    System.out.println("Administrador encontrado [" + nombreUsuario + "]");
+                    System.out.println("ℹ️ Administrador encontrado [" + nombreUsuario + "]");
                     return new Entes.Administrador(idDB, nombreUsuario, email, contrasena, dp, rol);
                 } else if (rol.equals("CUENTA")) {
-                    System.out.println("Cuenta encontrada [" + nombreUsuario + "]");
+                    System.out.println("ℹ️ Cuenta encontrada [" + nombreUsuario + "]");
                     return new Entes.Cuenta(idDB, nombreUsuario, email, contrasena, dp, rol);
                 } else
                     return null;
             }
-            System.out.println("Usuario no encontrado.");
+            System.out.println("❌ Usuario no encontrado.");
             return null;
         } catch (Exception e) {
-            System.out.println("Error al buscar el usuario: " + e.getMessage());
+            System.out.println("❌ Error al buscar el usuario: " + e.getMessage());
         }
         return null;
     }
 
+   
+    /**
+     * Busca un usuario por su email, util para que los administradores borren.
+     */
+    @Override
+    public Usuario buscarPorEmail(String email) {
+        String sql = "SELECT * FROM USUARIO WHERE EMAIL = ?";
+        try (java.sql.Connection conn = ConexionDB.conectar();
+                java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            var rs = pstmt.executeQuery();
+            if (rs.next()) {
+                int idDB = rs.getInt("ID");
+                String nombreUsuario = rs.getString("NOMBRE_USUARIO");
+                String contrasena = rs.getString("CONTRASENA");
+                String rol = rs.getString("ROL");
+                Datos_PersonalesDAOImpl dpImpl = new Datos_PersonalesDAOImpl(); 
+                Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
+                if (rol.equals("ADMINISTRADOR")) {
+                    System.out.println("ℹ️ Administrador encontrado [" + nombreUsuario + "]");
+                    return new Entes.Administrador(idDB, nombreUsuario, email, contrasena, dp, rol);
+                } else if (rol.equals("CUENTA")) {
+                    System.out.println("ℹ️ Cuenta encontrada [" + nombreUsuario + "]");
+                    return new Entes.Cuenta(idDB, nombreUsuario, email, contrasena, dp, rol);
+                } else
+                    return null;
+            }
+            System.out.println("❌ Usuario no encontrado.");
+            return null;
+        } catch (Exception e) {
+            System.out.println("❌ Error al buscar el usuario: " + e.getMessage());
+        }
+        return null;
+    }
+
+    
     /**
      * Lista todos los Usuarios guardados en la DB y los muestra en pantalla
      * Mejoramos la eficiencia con el JOIN
@@ -198,7 +234,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error al listar los usuarios: " + e.getMessage());
+            System.out.println("❌ Error al listar los usuarios: " + e.getMessage());
         }
     }
 
@@ -236,11 +272,16 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 int dpDni = rs.getInt("DNI");
                 Datos_Personales dp = new Datos_Personales(dpNombre, dpApellido, dpDni);
 
-                // Se carga en la lista.
-                lista.add(new Administrador(id, nombreUsuario, email, contrasena, dp, rol));
+                // Se carga en la lista el tipo de usuario correcto.
+                if ("ADMINISTRADOR".equals(rol)) {
+                    lista.add(new Administrador(id, nombreUsuario, email, contrasena, dp, rol));
+                } else if ("CUENTA".equals(rol)) {
+                    lista.add(new Cuenta(id, nombreUsuario, email, contrasena, dp, rol));
+                }
+
             }
         } catch (Exception e) {
-            System.out.println("Error al listar los usuarios: " + e.getMessage());
+            System.out.println("❌ Error al listar los usuarios: " + e.getMessage());
             return null;
         }
         return lista;

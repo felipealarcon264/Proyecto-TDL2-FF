@@ -12,6 +12,7 @@ import Servicio.CargadoresyComunicacionDB;
 import java.util.Scanner;
 import java.util.List;
 import Catalogo.Pelicula;
+import Utilidades.Comparadores.*;
 
 //No se necesita en la segunda entrega.import Reportes.ReporteManager;
 
@@ -39,6 +40,9 @@ public class Plataforma {
 
     /**
      * Constructor de la Plataforma.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      */
     public Plataforma() {
         this.dpDAO = new Datos_PersonalesDAOImpl();
@@ -46,9 +50,9 @@ public class Plataforma {
         this.usrDAO = new UsuarioDAOImpl();
         this.cargadoresyComunDB = new CargadoresyComunicacionDB();
         this.listaUSuario = usrDAO.devolverListaUsuarios();
+        this.listaPelicula = peliDAO.devolverListaPelicula();
     }
 
-    
     /**
      * Verifica el tipo de usuario (ej: "ADMINISTRADOR", "CUENTA").
      * 
@@ -91,7 +95,7 @@ public class Plataforma {
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
      * 
-     * @param usuario El usuario a agregar.
+     * @param scanner El Scanner para leer la entrada del usuario.
      */
     public void cargarYguardarAdministrador(Scanner scanner) {
         Administrador adm = cargadoresyComunDB.cargaAdministrador(scanner, this.listaUSuario);
@@ -108,45 +112,114 @@ public class Plataforma {
      * Se encarga de cargar y guardar una pelicula en la base de datos, se puede
      * cancelar.
      * Todos los mensajes se indican en guardar y cargaPelicula.
-     * 
-     * @param usuario
-     * @return
+     *
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param scanner El Scanner para leer la entrada del usuario.
      */
     public void cargarYguardarPelicula(Scanner scanner) {
         Pelicula pelicula = this.cargadoresyComunDB.cargaPelicula(scanner);
-        PeliculaDAOImpl peliculaDAO = new PeliculaDAOImpl();
-        if (peliculaDAO.guardar(pelicula))// Si es null se encarga de dar error.
+        if (this.peliDAO.guardar(pelicula))// Si es null se encarga de dar error.
             listaPelicula.add(pelicula); // Si es != de null tambien lo carga en la lista.
     }
 
     /**
-     * Elimina una pelicula existente de la base de datos tambien en la lista de plataforma.
+     * Elimina una pelicula existente de la base de datos tambien en la lista de
+     * plataforma.
      * Los mensajes seran emitidos por el metodo borrar.
      * 
-     * @param usuario El usuario a eliminar.
-     * @return true si se pudo borrar y false si ocurrio un error/imprevisto.
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param pelicula La película a eliminar.
+     * @return true si se pudo borrar de la DB y de la lista, false en caso contrario.
      */
     public boolean eliminarPelicula(Pelicula pelicula) {
-        if (peliDAO.borrar(pelicula)) {
-            this.listaPelicula.remove(pelicula);
-            return true;
-        } else
-            return false;
+        return peliDAO.borrar(pelicula) && this.listaPelicula.remove(pelicula);
+    }
+
+    /**
+     * Pregunta por pantalla que manera de ordenacion de la lista de Usuarios se
+     * requiere.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.1
+     * 
+     * @param in El Scanner para leer la entrada del usuario.
+     */
+    public void ordenarListaUsuario(Scanner in) {
+        System.out.println("\n--- Ordenamiento de lista usuarios ---");
+        System.out.println("1. Ordenar por Email (A-Z).");
+        System.out.println("2. Ordenar por Nombre de usuario (A-Z).");
+        System.out.print("Ingrese su opción (1-2): ");
+
+        while (true) {
+            String opcion = in.nextLine();
+            switch (opcion) {
+                case "1":
+                    ComparadorUsuarioPorEmail comparadorPorEmail = new ComparadorUsuarioPorEmail();
+                    listaUSuario.sort(comparadorPorEmail);
+                    System.out.println("✅ Lista de usuarios ordenada por email.");
+                    return;
+                case "2":
+                    ComparadorUsuarioPorNombreUsuario comparadorPorNombreUsuario = new ComparadorUsuarioPorNombreUsuario();
+                    listaUSuario.sort(comparadorPorNombreUsuario);
+                    System.out.println("✅ Lista de usuarios ordenada por nombre de usuario.");
+                    return;
+                default:
+                    System.out.print("❌ Error: Opción no válida. Intente de nuevo: ");
+            }
+        }
+    }
+
+    /**
+     * Pregunta por pantalla qué manera de ordenación de la lista de Películas se
+     * requiere.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
+     * @param in El Scanner para leer la entrada del usuario.
+     */
+    public void ordenarListaPelicula(Scanner in) {
+        System.out.println("\n--- Ordenamiento de lista de películas ---");
+        System.out.println("1. Ordenar por Título (A-Z).");
+        System.out.println("2. Ordenar por Duración (menor a mayor).");
+        System.out.println("3. Ordenar por Género (alfabético).");
+        System.out.print("Ingrese su opción (1-3): ");
+
+        while (true) {
+            String opcion = in.nextLine();
+            switch (opcion) {
+                case "1":
+                    listaPelicula.sort(new ComparadorPeliculaPorTitulo());
+                    System.out.println("✅ Lista de películas ordenada por título.");
+                    return;
+                case "2":
+                    listaPelicula.sort(new ComparadorPeliculaPorDuracion());
+                    System.out.println("✅ Lista de películas ordenada por duración.");
+                    return;
+                case "3":
+                    listaPelicula.sort(new ComparadorPeliculaPorGenero());
+                    System.out.println("✅ Lista de películas ordenada por género.");
+                    return;
+                default:
+                    System.out.print("❌ Error: Opción no válida. Intente de nuevo: ");
+            }
+        }
     }
 
     /**
      * Elimina un usuario existente de la base de datos y la lista de plataforma.
      * Los mensajes seran emitidos por el metodo borrar.
      * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * @param usuario El usuario a eliminar.
-     * @return true si se pudo borrar y false si ocurrio un error/imprevisto.
+     * @return true si se pudo borrar de la DB y de la lista, false en caso contrario.
      */
     public boolean eliminarUsuario(Usuario usuario) {
-        if (usrDAO.borrar(usuario)) {
-            this.listaUSuario.remove(usuario);
-            return true;
-        } else
-            return false;
+        // Intenta borrar de la DB y si tiene éxito, intenta borrar de la lista en memoria.
+        return usrDAO.borrar(usuario) && this.listaUSuario.remove(usuario);
     }
 
     /**
@@ -155,6 +228,8 @@ public class Plataforma {
      * a la primera coincidencia retorna true.
      * 
      * @param correo El correo a validar.
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * @return true si el correo está registrado, false en caso
      *         contrario.
      */
@@ -175,6 +250,13 @@ public class Plataforma {
         return false;
     }
 
+    /**
+     * Valida si un correo existe en la lista de usuarios de la plataforma.
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param correo El correo a verificar.
+     * @return true si el correo existe, false en caso contrario.
+     */
     public boolean validarCorreo(String correo) {
         // Maneja el caso de que la lista sea nula.
         if (this.listaUSuario == null) {
@@ -198,6 +280,8 @@ public class Plataforma {
      * aparte.
      * NO IMPLEMENTADO.
      * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * @param correo     El correo para la nueva cuenta.
      * @param contrasena La contraseña para la nueva cuenta.
      * @return El nuevo objeto Usuario (tipo Cuenta) creado.
@@ -211,6 +295,8 @@ public class Plataforma {
      * usuario actual).
      * NO IMPLEMENTADO.
      * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * @param plan El nuevo plan a asignar.
      */
     public void actualizarPlan(Plan plan /* , Usuario usuarioAActualizar // Necesitarás saber a quién actualizar */) {
@@ -222,6 +308,8 @@ public class Plataforma {
      * Podría crear y devolver una instancia de Reproductor.
      * NO IMPLEMENTADO.
      * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * @param perfil El perfil que inicia la reproducción.
      */
     public void Reproducir(Perfil perfil /* , Contenido contenido // Probablemente necesites el contenido */) {
@@ -271,4 +359,11 @@ public class Plataforma {
         this.listaUSuario = listaUSuario;
     }
 
+    public List<Pelicula> getListaPelicula() {
+        return listaPelicula;
+    }
+
+    public void setListaPelicula(List<Pelicula> listaPelicula) {
+        this.listaPelicula = listaPelicula;
+    }
 }

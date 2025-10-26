@@ -14,8 +14,8 @@ import Catalogo.Pelicula;
 /**
  * CARGADORES Y COMUNICACION CON BASE DE DATOS CON DICHOS CARGADORES.
  * 
- * @author Grupo 4 - Taller de lenguajes II
- * @version 1.0
+ * @author Grupo 4 - Proyecto TDL2
+ * @version 1.1
  * 
  */
 public class CargadoresyComunicacionDB {
@@ -30,12 +30,11 @@ public class CargadoresyComunicacionDB {
      * reinicia el proceso.
      * Se puede cancelar.
      * 
-     * @author Grupo 4 - Taller de lenguajes II
-     * @version 1.0
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.1
      * 
      * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
-     * @return Un objeto {@link Datos_Personales} con los datos ingresados. o null
-     *         si se cancela la carga.
+     * @return Un objeto {@link Datos_Personales} con los datos ingresados, o null si se cancela la carga.
      */
     public Datos_Personales cargaDatosPersonales(Scanner scanner) {
         System.out.println("Carga de datos personales: ");
@@ -105,13 +104,15 @@ public class CargadoresyComunicacionDB {
      * la base da datos. De alguna manera si o si se tiene que lograr la carga sino
      * puede generar errores futuros.
      * Toma todos los requerimientos de validaciones.
+     * Los correos se guardan en minuscula.
      * Se puede cancelar.
      * 
-     * @author Grupo 4 - Taller de lenguajes II
-     * @version 1.0
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.1
      * 
-     * @param scanner
-     * @return Administrador generado, si se cancela retorna null.
+     * @param scanner El Scanner para leer la entrada del usuario.
+     * @param listaUSuario La lista de usuarios actual para validar correos existentes.
+     * @return Un objeto Administrador generado, o null si se cancela la carga.
      */
     public Administrador cargaAdministrador(Scanner scanner, List<Usuario> listaUSuario) {
         System.out.println("[CARGA DE UN ADMINISTRADOR]");
@@ -131,14 +132,14 @@ public class CargadoresyComunicacionDB {
             System.out.print("Ingrese el nombre de usuario: ");
             nombreUsuario = scanner.nextLine();
             System.out.print("Ingrese el email: ");
-            email = scanner.nextLine();
+            email = scanner.nextLine().toLowerCase(); 
             while (correoExistente(email, listaUSuario)) {
                 System.out.print("Email ya registrado. Ingrese otro email: ");
-                email = scanner.nextLine();
+                email = scanner.nextLine().toLowerCase();
             }
             while (!esFormatoEmailSimpleValido(email)) {
                 System.out.print("Email inválido. Ingrese un email válido: ");
-                email = scanner.nextLine();
+                email = scanner.nextLine().toLowerCase();
             }
             System.out.print("Ingrese la contraseña: ");
             contrasena = scanner.nextLine();
@@ -170,11 +171,12 @@ public class CargadoresyComunicacionDB {
      * Toma todos los requerimientos de validaciones.
      * Se puede cancelar.
      * 
-     * @author Grupo 4 - Taller de lenguajes II
-     * @version 1.0
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.1
      * 
-     * @param scanner
-     * @return Cuenta generado, si se cancela retorna null.
+     * @param scanner El Scanner para leer la entrada del usuario.
+     * @param listaUSuario La lista de usuarios actual para validar correos existentes.
+     * @return Un objeto Cuenta generado, o null si se cancela la carga.
      */
     public Cuenta cargaCuenta(Scanner scanner, List<Usuario> listaUSuario) {
         System.out.println("[CARGA DE UNA CUENTA]");
@@ -194,14 +196,14 @@ public class CargadoresyComunicacionDB {
             System.out.print("Ingrese el nombre de usuario: ");
             nombreUsuario = scanner.nextLine();
             System.out.print("Ingrese el email: ");
-            email = scanner.nextLine();
+            email = scanner.nextLine().toLowerCase();
             while (correoExistente(email, listaUSuario)) {
                 System.out.print("Email ya registrado. Ingrese otro email: ");
-                email = scanner.nextLine();
+                email = scanner.nextLine().toLowerCase();
             }
             while (!esFormatoEmailSimpleValido(email)) {
                 System.out.print("Email inválido. Ingrese un email válido: ");
-                email = scanner.nextLine();
+                email = scanner.nextLine().toLowerCase();
             }
             System.out.print("Ingrese la contraseña: ");
             contrasena = scanner.nextLine();
@@ -226,8 +228,11 @@ public class CargadoresyComunicacionDB {
     
     /**
      * Carga una Pelicula desde la entrada estándar (consola).
-     * Permite al usuario determinar
-     * @param scanner Entrada.
+     * Permite al usuario ingresar los datos y confirmarlos.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param scanner El Scanner para leer la entrada del usuario.
      * @return Una pelicula o null en caso de cancelar la carga.
      */
     public Pelicula cargaPelicula(Scanner scanner){
@@ -274,12 +279,11 @@ public class CargadoresyComunicacionDB {
     /**
      * Solicita al usuario la confirmación de los datos ingresados.
      * 
-     * @author Grupo 4 - Taller de lenguajes II
-     * @version 1.0
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.1
      * 
      * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
-     * @return {@code true} si el usuario confirma los datos, {@code false} si desea
-     *         reingresar los datos.
+     * @return true si el usuario confirma, false en caso contrario.
      */
     public boolean confirmacion(Scanner scanner) {
         System.out.print(" (S/N): ");
@@ -299,7 +303,9 @@ public class CargadoresyComunicacionDB {
      * 
      * Lee la entrada como un String para prevenir errores de tipo .
      *
-     * @param scanner Entrada.
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param scanner El Scanner para leer la entrada del usuario.
      * @return El enum Genero seleccionado por el usuario.
      */
     private Genero seleccionarGenero(Scanner scanner) {
@@ -348,12 +354,11 @@ public class CargadoresyComunicacionDB {
      * No valida la estructura completa xxx@yyy.zzz.
      * HECHO TOTALMENTE CON IA.
      *
-     * @author Grupo 4 - Taller de lenguajes II
-     * @version 1.0
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.1
      * 
      * @param email El correo electrónico (String) a verificar.
-     * @return {@code true} si el email cumple las condiciones simples,
-     *         {@code false} en caso contrario.
+     * @return true si el email cumple las condiciones simples, false en caso contrario.
      */
     private boolean esFormatoEmailSimpleValido(String email) {
         // 1. Verifica si es nulo o vacío
@@ -384,6 +389,8 @@ public class CargadoresyComunicacionDB {
      * Siempre suponemos que un correo no se puede ingresar dos veces por lo que
      * a la primera coincidencia retorna true.
      * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * @param correo       El correo a validar.
      * @param listaUsuario Suponemos que lo envia la plataforma actualizada!
      * @return true si el correo está registrado, false en caso
@@ -409,12 +416,11 @@ public class CargadoresyComunicacionDB {
      * Verifica si una cadena de texto contiene únicamente letras (mayúsculas y/o
      * minúsculas).
      * 
-     * @author Grupo 4 - Taller de lenguajes II
-     * @version 1.0
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.1
      * 
      * @param texto La cadena de texto a verificar.
-     * @return {@code true} si la cadena contiene solo letras , {@code false} en
-     *         caso contrario.
+     * @return true si la cadena contiene solo letras, false en caso contrario.
      */
     private boolean contieneSoloLetras(String texto) {
         if (texto == null || texto.isEmpty()) {

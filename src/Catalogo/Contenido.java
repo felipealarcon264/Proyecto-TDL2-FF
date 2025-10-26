@@ -228,9 +228,43 @@ public abstract class Contenido {
         return "{" +
                 "titulo='" + titulo + '\'' +
                 ", director='" + director + '\'' +
-                ", duracion=" + duracion + " min" +
+                ", duracion=" + duracion + " seg" +
                 ", resumen='" + resumen + '\'' +
                 ", genero=" + genero +
                 '}';
+    }
+
+    // Se utiliza la clase Objects para simplificar y asegurar el manejo de nulos.
+
+    /**
+     * Compara este contenido con otro objeto para ver si son iguales.
+     * Dos contenidos se consideran iguales si tienen el mismo título.
+     * Se asume que el título es un identificador único.
+     *
+     *@author Gemini.
+     *@version 1.0
+     * 
+     * @param o El objeto a comparar.
+     * @return true si los objetos son iguales, false en caso contrario.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Contenido contenido = (Contenido) o;
+        return duracion == contenido.duracion &&
+                java.util.Objects.equals(titulo, contenido.titulo) &&
+                java.util.Objects.equals(resumen, contenido.resumen) &&
+                java.util.Objects.equals(director, contenido.director) &&
+                genero == contenido.genero;
+    }
+
+    /**
+     * Devuelve un código hash para este contenido.
+     * Es importante sobreescribir hashCode si se sobreescribe equals.
+     */
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(titulo, resumen, director, duracion, genero);
     }
 }

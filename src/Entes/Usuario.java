@@ -124,4 +124,32 @@ public abstract class Usuario {
         return sb.toString(); // Devuelve la cadena construida
     }
 
+    /**
+     * Compara este usuario con otro objeto para ver si son iguales.
+     * Dos usuarios se consideran iguales si tienen el mismo email.
+     * Se asume que el email es un identificador único en el sistema.
+     * 
+     * @author Gemini.
+     * @version 1.0
+     *
+     * @param o El objeto a comparar.
+     * @return true si los objetos son iguales, false en caso contrario.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        // Usamos 'instanceof' en lugar de 'getClass()' para permitir la comparación entre subclases (ej. Usuario vs Administrador)
+        if (o == null || !(o instanceof Usuario)) return false;
+        Usuario usuario = (Usuario) o;
+        // Comparamos por email, que es el identificador único.
+        return java.util.Objects.equals(email, usuario.email);
+    }
+
+    /**
+     * Devuelve un código hash para este usuario, basado en el email.
+     */
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(email);
+    }
 }
