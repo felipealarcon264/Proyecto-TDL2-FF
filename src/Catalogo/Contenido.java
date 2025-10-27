@@ -238,7 +238,7 @@ public abstract class Contenido {
         return "{" +
                 "titulo='" + titulo + '\'' +
                 ", director='" + director + '\'' +
-                ", duracion=" + duracion + " seg" +
+                ", duracion=" + (duracion / 60) + " min" +
                 ", resumen='" + resumen + '\'' +
                 ", genero=" + genero +
                 '}';

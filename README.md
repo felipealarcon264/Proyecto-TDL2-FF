@@ -55,7 +55,7 @@ Se estableció una regla de negocio estricta entre las entidades `Usuario` y `Da
 
 ### B. Comportamiento en el Programa
 
-* **Acceso Rápido a Usuarios (Cache):** La clase `Plataforma` mantiene una copia en memoria (`List<Usuario>`,`List<Pelicula>`,`List<Resenia>`) de todos los usuarios cargados desde la base de datos. Se prefieren los métodos de búsqueda sobre esta lista (más rápidos) a los accesos repetitivos a la base de datos.
+* **Acceso a Datos "On-Demand":** La clase `Plataforma` no mantiene copias de listas en memoria (caché). Cada vez que se necesita una lista de usuarios, películas o reseñas, se realiza una consulta directa a la base de datos a través de la capa DAO. Esto garantiza que la aplicación siempre trabaje con los datos más actualizados y evita problemas de inconsistencia y consumo de memoria.
 * **`equals()` Sobreescrito:** Se modificó el método `equals()` en las clases `Usuario` y `Contenido` para que la comparación se base en sus atributos identificadores (ej: `ID` o `DNI`/`Título`). Esto es fundamental para que las operaciones de colección (`list.remove()`) y las eliminaciones en cascada funcionen correctamente.
 * **Validación de Login:** La validación de credenciales (`validarUsuario`) verifica la existencia del correo electrónico y la **corrección de la contraseña** simultáneamente.
 * **Creación de Administrador:** Se implementó una restricción lógica en el simulador (capa de servicio) para que la creación de administradores no esté disponible para usuarios comunes, asumiendo que debe ocurrir mediante un proceso interno.
@@ -153,4 +153,3 @@ INSERT INTO RESENIA (CALIFICACION, COMENTARIO, APROBADO, FECHA_HORA, ID_USUARIO,
 (2, 'Intenta ser graciosa pero no lo logra. Los zombies son de chiste.', 0, '2025-10-19 16:30:00', 4, 18),
 (3, 'Ha envejecido mal. Los efectos especiales dan risa.', 0, '2025-10-19 17:45:00', 6, 19),
 (2, 'Dolor de cabeza. Puro ruido y explosiones sin sentido.', 0, '2025-10-20 19:00:00', 6, 20);
-

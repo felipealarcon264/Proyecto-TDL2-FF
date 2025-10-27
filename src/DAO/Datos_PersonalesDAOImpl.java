@@ -2,11 +2,14 @@ package DAO;
 
 import DataBase.ConexionDB;
 import Entes.Datos_Personales;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implementación de la interfaz Datos_PersonalesDAO para la gestión de datos
@@ -110,13 +113,14 @@ public class Datos_PersonalesDAOImpl implements Datos_PersonalesDAO {
      */
     @Override
     public Datos_Personales buscarPorDNI(int dni) {
-        String sql = "SELECT NOMBRE, APELLIDO, DNI FROM datos_personales WHERE DNI = ?";
+        String sql = "SELECT ID, NOMBRE, APELLIDO, DNI FROM datos_personales WHERE DNI = ?";
         try (Connection conn = ConexionDB.conectar();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, dni);
             var rs = pstmt.executeQuery();
             if (rs.next())
-                return new Datos_Personales(rs.getString("NOMBRE"), rs.getString("APELLIDO"), rs.getInt("DNI"));
+                return new Datos_Personales(rs.getInt("ID"), rs.getString("NOMBRE"), rs.getString("APELLIDO"),
+                        rs.getInt("DNI"));
             else
                 return null;
         } catch (SQLException e) {
@@ -128,21 +132,23 @@ public class Datos_PersonalesDAOImpl implements Datos_PersonalesDAO {
     /**
      * Buscar datos personales por ID
      * 
+     * @autor Grupo 4 - Taller de lenguajes II
+     * @version 1.0
+     * 
      * @param id ID a buscar
      * @return Datos_Personales o null si no se encuentra
      * 
-     * @autor Grupo 4 - Taller de lenguajes II
-     * @version 1.0
      */
     @Override
     public Datos_Personales buscarPorID(int id) {
-        String sql = "SELECT NOMBRE, APELLIDO, DNI FROM datos_personales WHERE ID = ?";
+        String sql = "SELECT ID, NOMBRE, APELLIDO, DNI FROM datos_personales WHERE ID = ?";
         try (Connection conn = ConexionDB.conectar();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             var rs = pstmt.executeQuery();
             if (rs.next())
-                return new Datos_Personales(rs.getString("NOMBRE"), rs.getString("APELLIDO"), rs.getInt("DNI"));
+                return new Datos_Personales(rs.getInt("ID"), rs.getString("NOMBRE"), rs.getString("APELLIDO"),
+                        rs.getInt("DNI"));
             else
                 return null;
         } catch (SQLException e) {
@@ -153,14 +159,49 @@ public class Datos_PersonalesDAOImpl implements Datos_PersonalesDAO {
 
     /**
      * Actualiza los datos personales en la base de datos.
+     * 
      * @param datosPersonales El objeto con los datos a actualizar.
      * @return true si se actualizó correctamente, false en caso contrario.
      */
     @Override
     public boolean actualizar(Datos_Personales datosPersonales) {
-        //Implementacion no necesaria para el entregable Nro 2.
+        // Implementacion no necesaria para el entregable Nro 2.
         System.out.println("FUNCIONALIDAD NO IMPLEMENTADA");
         return false;
     }
 
+    /**
+     * Devuelve una lista con todos los datos personales de la base de datos.
+     * 
+     * @autor Grupo 4 - Taller de lenguajes II
+     * @version 1.0
+     * 
+     * @return Lista
+     */
+    @Override
+    public List<Datos_Personales> devolverListaDatosPersonales() {
+        List<Datos_Personales> lista = new ArrayList<>();
+        String sql = """
+                    SELECT ID, NOMBRE, APELLIDO, DNI
+                     FROM DATOS_PERSONALES
+                """;
+        try (java.sql.Connection conn = ConexionDB.conectar();
+                java.sql.Statement stmt = conn.createStatement();
+                java.sql.ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                // Datos.
+                int id = rs.getInt("ID");
+                String nombre = rs.getString("NOMBRE");
+                String apellido = rs.getString("APELLIDO");
+                int dni = rs.getInt("DNI");
+                // Se crea el objeto.
+                lista.add(new Datos_Personales(id, nombre, apellido, dni));
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Error al listar los Datos Personales: " + e.getMessage());
+            return null;
+        }
+        return lista;
+
+    }
 }

@@ -14,7 +14,7 @@ public class Resenia {
     private int idDB;// el valor real se lo dara la base de datos cuando se cargue.
     private int calificacion; //Del 0-5
     private String comentario;
-    private int aprovado; //1 aprobado, 0 pendiente.
+    private int aprobado; //1 aprobado, 0 pendiente.
     private Usuario usuario;
     private Contenido contenido;
 
@@ -29,16 +29,16 @@ public class Resenia {
      * Constructor para crear una instancia de Reseña con datos iniciales.
      * @param idDB El ID de la reseña en la base de datos.
      * @param calificacion La puntuación dada (ej: 1 a 5).
-     * @param comentario El texto de la reseña.
-     * @param aprovado Aprovacion por parte de un adm.
+     * @param comentario El texto de la reseña. 
+     * @param aprobado Aprobacion por parte de un adm.
      * @param usuario El usuario que realiza la reseña.
      * @param contenido El contenido que está siendo reseñado.
      */
-    public Resenia(int idDB, int calificacion, String comentario, int aprovado, Usuario usuario, Contenido contenido) {
+    public Resenia(int idDB, int calificacion, String comentario, int aprobado, Usuario usuario, Contenido contenido) {
         this.idDB = idDB;
         this.calificacion = calificacion;
         this.comentario = comentario;
-        this.aprovado = aprovado;
+        this.aprobado = aprobado;
         this.usuario = usuario;
         this.contenido = contenido;
     }
@@ -129,14 +129,14 @@ public class Resenia {
      * @return 1 si está aprobada, 0 si está pendiente.
      */
     public int getAprobado() {
-        return aprovado;
+        return aprobado;
     }
     /**
      * Establece el estado de aprobación de la reseña.
-     * @param aprovado El nuevo estado (1 para aprobado, 0 para pendiente).
+     * @param aprobado El nuevo estado (1 para aprobado, 0 para pendiente).
      */
-    public void setAprobado(int aprovado) {
-        this.aprovado = aprovado;
+    public void setAprobado(int aprobado) {
+        this.aprobado = aprobado;
     }
 
     /**
@@ -155,7 +155,7 @@ public class Resenia {
         sb.append("  usuario='").append(usuario != null ? usuario.getNombreUsuario() : "N/A").append("',\n");
         sb.append("  calificacion=").append(calificacion).append("/5,\n");
         sb.append("  comentario='").append(comentario).append("',\n");
-        sb.append("  estado=").append(aprovado == 1 ? "Aprobado" : "Pendiente").append("\n");
+        sb.append("  estado=").append(aprobado == 1 ? "Aprobado" : "Pendiente").append("\n");
         sb.append("}");
         return sb.toString();
     }

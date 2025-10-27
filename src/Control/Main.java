@@ -2,7 +2,6 @@ package Control;
 
 import java.util.Scanner;
 
-import DAO.UsuarioDAOImpl;
 import DataBase.InicializadorDB;
 import Entes.Administrador;
 import Entes.Usuario;
@@ -79,7 +78,6 @@ public class Main {
     public static void simulacion(Scanner in) {
         Plataforma plataforma = new Plataforma();// Creacion de la clase plataforma
         CargadoresyComunicacionDB cargadoresyComunDB = new CargadoresyComunicacionDB();// Sirve para los cargadores.
-        UsuarioDAOImpl usrDAO = new UsuarioDAOImpl();
 
         while (true) {// infinito
             System.out.println("\n🎬 Bienvenido a la plataforma de streaming TDL2 🎬");
@@ -101,7 +99,8 @@ public class Main {
                         boolean loginExitoso = false;
                         while (!loginExitoso) {
                             if (plataforma.validarUsuario(correo, contrasena)) {
-                                Usuario usuario = usrDAO.buscarPorEmailyContrasena(correo, contrasena);
+                                // Obtenemos el usuario a través del DAO de la plataforma
+                                Usuario usuario = plataforma.getUsrDAO().buscarPorEmailyContrasena(correo, contrasena);
                                 System.out.println("✅ ¡Ingreso exitoso como " + usuario.getRol() + "!");
                                 if (usuario.getRol().equals("ADMINISTRADOR")) {
                                     MenuManager.simulacionAdm(in, (Administrador) usuario, plataforma);

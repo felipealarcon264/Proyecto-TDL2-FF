@@ -7,6 +7,8 @@ import Entes.Cuenta;
 import Entes.Datos_Personales;
 import Entes.Usuario;
 import Enums.Genero;
+import DAO.PeliculaDAOImpl;
+import DAO.UsuarioDAOImpl;
 import DAO.Datos_PersonalesDAOImpl;
 
 import java.util.List;
@@ -49,10 +51,11 @@ public class CargadoresyComunicacionDB {
      * @param usuario        El usuario que está realizando la reseña.
      * @return Un objeto {@link Resenia} con los datos cargados, o null si el
      *         usuario cancela la operación o la lista de películas está vacía.
-     */
-    public Resenia cargaResenia(Scanner scanner, List<Pelicula> listaPelicula, Usuario usuario) {
+     */    
+    public Resenia cargaResenia(Scanner scanner, Usuario usuario) {
         String comentario;
         int seleccionPelicula;
+        List<Pelicula> listaPelicula = new PeliculaDAOImpl().devolverListaPelicula(); // Se obtiene la lista de la DB
         System.out.println("\n--- ✍️ Carga de Reseña ✍️ ---");
         if (listaPelicula == null || listaPelicula.isEmpty()) {
             System.out.println("ℹ️ No hay películas disponibles para reseñar.");
@@ -169,7 +172,7 @@ public class CargadoresyComunicacionDB {
             }
         }
         System.out.println("Datos confirmados...");
-        return new Datos_Personales(nombre, apellido, dni);
+        return new Datos_Personales(-1,nombre, apellido, dni); //Retorna un id no valido eso se asegura de brindarselo la base de datos.
     }
 
     /**
@@ -187,12 +190,12 @@ public class CargadoresyComunicacionDB {
      * @version 1.1
      * 
      * @param scanner      El Scanner para leer la entrada del usuario.
-     * @param listaUSuario La lista de usuarios actual para validar correos
-     *                     existentes.
+     *                     existentes. (Ya no se pasa la lista)
      * @return Un objeto Administrador generado, o null si se cancela la carga.
      */
-    public Administrador cargaAdministrador(Scanner scanner, List<Usuario> listaUSuario) {
+    public Administrador cargaAdministrador(Scanner scanner) {
         System.out.println("[CARGA DE UN ADMINISTRADOR]");
+        UsuarioDAOImpl usrDAO = new UsuarioDAOImpl(); // Para validar correo
         String nombreUsuario = "";
         String email = "";
         String contrasena = "";
@@ -210,7 +213,7 @@ public class CargadoresyComunicacionDB {
             nombreUsuario = scanner.nextLine();
             System.out.print("Ingrese el email: ");
             email = scanner.nextLine().toLowerCase();
-            while (correoExistente(email, listaUSuario)) {
+            while (correoExistente(email, usrDAO.devolverListaUsuarios())) { // Se consulta la DB
                 System.out.print("Email ya registrado. Ingrese otro email: ");
                 email = scanner.nextLine().toLowerCase();
             }
@@ -252,12 +255,12 @@ public class CargadoresyComunicacionDB {
      * @version 1.1
      * 
      * @param scanner      El Scanner para leer la entrada del usuario.
-     * @param listaUSuario La lista de usuarios actual para validar correos
-     *                     existentes.
+     *                     existentes. (Ya no se pasa la lista)
      * @return Un objeto Cuenta generado, o null si se cancela la carga.
      */
-    public Cuenta cargaCuenta(Scanner scanner, List<Usuario> listaUSuario) {
+    public Cuenta cargaCuenta(Scanner scanner) {
         System.out.println("[CARGA DE UNA CUENTA]");
+        UsuarioDAOImpl usrDAO = new UsuarioDAOImpl(); // Para validar correo
         String nombreUsuario = "";
         String email = "";
         String contrasena = "";
@@ -275,7 +278,7 @@ public class CargadoresyComunicacionDB {
             nombreUsuario = scanner.nextLine();
             System.out.print("Ingrese el email: ");
             email = scanner.nextLine().toLowerCase();
-            while (correoExistente(email, listaUSuario)) {
+            while (correoExistente(email, usrDAO.devolverListaUsuarios())) { // Se consulta la DB
                 System.out.print("Email ya registrado. Ingrese otro email: ");
                 email = scanner.nextLine().toLowerCase();
             }

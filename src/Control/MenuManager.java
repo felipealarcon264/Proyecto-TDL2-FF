@@ -48,11 +48,12 @@ public class MenuManager {
 
                 case "2":
                     System.out.println("\n--- 🎬 Lista de Películas 🎬 ---");
-                    if (!plataforma.getListaPelicula().isEmpty()) {
-                        for (Pelicula pelicula : plataforma.getListaPelicula()) {
+                    java.util.List<Pelicula> peliculas = plataforma.getPeliDAO().devolverListaPelicula();
+                    if (peliculas != null && !peliculas.isEmpty()) {
+                        for (Pelicula pelicula : peliculas) {
                             System.out.println(pelicula + "\n");
                         }
-                        System.out.print("👉 Ingresa el título de la película a eliminar: ");
+                        System.out.print("👉 Ingresa el título EXACTO de la película a eliminar: ");
                         aux = in.nextLine();
                         Pelicula peliculaAEliminar = plataforma.getPeliDAO().buscarPorTitulo(aux);
                         if (peliculaAEliminar != null) {
@@ -63,16 +64,15 @@ public class MenuManager {
                     break;
                 case "3":
                     plataforma.ordenarListaUsuario(in);
-                    for (Usuario usuario : plataforma.getListaUSuario()) {
-                        System.out.println(usuario + "\n");
-                    }
+                    // La lista ya se muestra dentro del método ordenarListaUsuario.
                     break;
                 case "4":
                     System.out.println("\n--- 👥 Lista de Usuarios 👥 ---");
-                    for (Usuario usuario : plataforma.getListaUSuario()) {
+                    java.util.List<Usuario> usuarios = plataforma.getUsrDAO().devolverListaUsuarios();
+                    for (Usuario usuario : usuarios) {
                         System.out.println(usuario + "\n");
                     }
-                    System.out.print("👉 Ingresa el email del usuario a eliminar: ");
+                    System.out.print("👉 Ingresa el email EXACTO del usuario a eliminar: ");
                     aux = in.nextLine();
                     Usuario usuarioAEliminar = plataforma.getUsrDAO().buscarPorEmail(aux);
                     if (usuarioAEliminar != null) {
@@ -82,7 +82,8 @@ public class MenuManager {
 
                 case "5":
                     System.out.println("\n--- ⚖️ Gestionar Reseñas ⚖️ ---");
-                    java.util.List<Resenia> todasLasResenias = plataforma.getListaResenia();
+                    java.util.List<Resenia> todasLasResenias = plataforma.getResDAO().devolverListaResenia();
+                    
                     if (todasLasResenias == null || todasLasResenias.isEmpty()) {
                         System.out.println("ℹ️ No hay reseñas para gestionar.");
                         break;
@@ -141,9 +142,10 @@ public class MenuManager {
             switch (opcion) {
                 case "1":
                     plataforma.ordenarListaPelicula(in);
-                    for (Pelicula pelicula : plataforma.getListaPelicula()) {
+                    java.util.List<Pelicula> listaPeliculas = plataforma.getPeliDAO().devolverListaPelicula();
+                    for (Pelicula pelicula : listaPeliculas) {
                         System.out.println(pelicula + "\n");
-                    }
+                    } // La lista se muestra aquí también por si el usuario no quiere ordenar.
                     break;
                 case "2":
                     plataforma.cargarYguardarReseña(in, cta);

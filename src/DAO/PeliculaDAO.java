@@ -2,6 +2,7 @@ package DAO;
 
 import Catalogo.Pelicula;
 import java.util.List;
+
 /**
  * Interfaz DAO para la gestión de películas.
  * Define los métodos para guardar y borrar películas en la base de datos.
@@ -11,10 +12,15 @@ import java.util.List;
  */
 public interface PeliculaDAO {
     public boolean guardar(Pelicula pelicula);
+
     public boolean borrar(Pelicula pelicula);
+
     public Pelicula buscarPorTitulo(String titulo);
-    public List<Pelicula> devolverListaPelicula();
+
     public Pelicula buscarPorId(int id);
+
     public boolean actualizar(Pelicula pelicula);
+
+    public List<Pelicula> devolverListaPelicula();
 
 }

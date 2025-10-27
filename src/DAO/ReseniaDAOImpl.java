@@ -14,6 +14,7 @@ import Catalogo.Contenido;
 import Catalogo.Resenia;
 import DataBase.ConexionDB;
 import Entes.Usuario;
+import Entes.Datos_Personales;
 
 /**
  * Implementacion de la interfaz ReseniaDAO para la gestión de reseñas en la
@@ -146,12 +147,40 @@ public class ReseniaDAOImpl implements ReseniaDAO {
     @Override
     public List<Resenia> devolverListaResenia() {
         List<Resenia> lista = new ArrayList<>();
-        String sql = "SELECT ID FROM RESENIA";
+        // Consulta optimizada con JOIN para evitar el problema N+1
+        String sql = """
+            SELECT
+                r.ID AS resenia_id, r.CALIFICACION, r.COMENTARIO, r.APROBADO,
+                u.ID AS usuario_id, u.NOMBRE_USUARIO, u.EMAIL, u.CONTRASENA, u.ROL,
+                dp.ID AS dp_id, dp.NOMBRE, dp.APELLIDO, dp.DNI,
+                p.ID AS pelicula_id, p.TITULO, p.DIRECTOR, p.DURACION, p.RESUMEN, p.GENERO
+            FROM RESENIA r
+            JOIN USUARIO u ON r.ID_USUARIO = u.ID
+            JOIN DATOS_PERSONALES dp ON u.ID_DATOS_PERSONALES = dp.ID
+            JOIN PELICULA p ON r.ID_PELICULA = p.ID
+        """;
+
         try (Connection conn = ConexionDB.conectar();
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
             while (rs.next()) {
-                lista.add(buscarPorId(rs.getInt("ID")));
+                // Reconstruir Datos_Personales
+                Datos_Personales dp = new Datos_Personales(rs.getInt("dp_id"), rs.getString("NOMBRE"), rs.getString("APELLIDO"), rs.getInt("DNI"));
+
+                // Reconstruir Usuario (Cuenta o Administrador)
+                Usuario usuario = null;
+                if ("CUENTA".equals(rs.getString("ROL"))) {
+                    usuario = new Entes.Cuenta(rs.getInt("usuario_id"), rs.getString("NOMBRE_USUARIO"), rs.getString("EMAIL"), rs.getString("CONTRASENA"), dp, rs.getString("ROL"));
+                } else { // Asumimos que si no es CUENTA, es ADMINISTRADOR
+                    usuario = new Entes.Administrador(rs.getInt("usuario_id"), rs.getString("NOMBRE_USUARIO"), rs.getString("EMAIL"), rs.getString("CONTRASENA"), dp, rs.getString("ROL"));
+                }
+
+                // Reconstruir Pelicula
+                Catalogo.Pelicula pelicula = new Catalogo.Pelicula(rs.getInt("pelicula_id"), rs.getString("TITULO"), rs.getString("DIRECTOR"), rs.getInt("DURACION"), rs.getString("RESUMEN"), Enums.Genero.valueOf(rs.getString("GENERO")));
+
+                // Reconstruir Resenia y añadirla a la lista
+                lista.add(new Resenia(rs.getInt("resenia_id"), rs.getInt("CALIFICACION"), rs.getString("COMENTARIO"), rs.getInt("APROBADO"), usuario, pelicula));
             }
         } catch (SQLException e) {
             System.out.println("❌ Error al listar las reseñas: " + e.getMessage());
@@ -162,6 +191,8 @@ public class ReseniaDAOImpl implements ReseniaDAO {
 
     /**
      * Actualiza una reseña existente en la base de datos.
+     * Solo cambia la condicion de aprobado o desaprovado, tarea que realiza un
+     * administrador.
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0

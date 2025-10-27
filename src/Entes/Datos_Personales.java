@@ -8,6 +8,7 @@ package Entes;
  * 
  */
 public class Datos_Personales {
+    private int idDB;
     private String nombre;
     private String apellido;
     private int dni;
@@ -15,11 +16,13 @@ public class Datos_Personales {
     /**
      * Constructor completo de la clase Datos_Personales
      * 
+     * @param inDB
      * @param nombre
      * @param apellido
      * @param dni
      */
-    public Datos_Personales(String nombre, String apellido, int dni) {
+    public Datos_Personales(int inDB, String nombre, String apellido, int dni) {
+        this.idDB = inDB;
         this.nombre = nombre;
         this.apellido = apellido;
         this.dni = dni;
@@ -36,6 +39,14 @@ public class Datos_Personales {
      * 
      * @return
      */
+
+    public int getIdDB() {
+        return idDB;
+    }
+
+    public void setIdDB(int idDB) {
+        this.idDB = idDB;
+    }
 
     public String getNombre() {
         return nombre;
