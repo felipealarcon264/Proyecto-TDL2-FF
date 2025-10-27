@@ -8,5 +8,6 @@ public interface ReseniaDAO {
     public boolean borrar(Resenia resenia);
     public Resenia buscarPorId(int id);
     public List<Resenia> devolverListaResenia();
+    public boolean actualizar(Resenia resenia);
 
 }

@@ -4,9 +4,7 @@ import DAO.Datos_PersonalesDAOImpl;
 import DAO.PeliculaDAOImpl;
 import DAO.ReseniaDAOImpl;
 import DAO.UsuarioDAOImpl;
-import Entes.Perfil;
 import Entes.Usuario;
-import Enums.Plan;
 import Entes.Cuenta;
 import Entes.Administrador;
 import Servicio.CargadoresyComunicacionDB;
@@ -164,6 +162,75 @@ public class Plataforma {
     }
 
     /**
+     * Elimina una reseña existente de la base de datos y de la lista de
+     * plataforma.
+     * Los mensajes seran emitidos por el metodo borrar de ReseniaDAO.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.2
+     * @param resenia La reseña a eliminar.
+     * @return true si se pudo borrar de la DB y de la lista, false en caso contrario.
+     */
+    public boolean eliminarResenia(Resenia resenia) {
+        return resDAO.borrar(resenia) && this.listaResenia.remove(resenia);
+    }
+
+    /**
+     * Actualiza el estado de una reseña en la base de datos y en la lista de
+     * plataforma.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param resenia La reseña a actualizar.
+     * @return true si se pudo actualizar, false en caso contrario.
+     */
+    public boolean actualizarEstadoResenia(Resenia resenia) {
+        if (resDAO.actualizar(resenia)) {
+            // No es estrictamente necesario recargar la lista, pero asegura consistencia.
+            // Para una mejor performance, se podría buscar y reemplazar el objeto en la lista.
+            this.listaResenia = resDAO.devolverListaResenia();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Filtra y devuelve una lista de reseñas que pertenecen a un usuario específico.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param idUsuario El ID del usuario cuyas reseñas se quieren obtener.
+     * @return Una lista de objetos {@link Resenia}.
+     */
+    public List<Resenia> obtenerReseniasDeUsuario(int idUsuario) {
+        List<Resenia> reseniasDelUsuario = new java.util.ArrayList<>();
+        for (Resenia resenia : this.listaResenia) {
+            if (resenia.getUsuario() != null && resenia.getUsuario().getIdDB() == idUsuario) {
+                reseniasDelUsuario.add(resenia);
+            }
+        }
+        return reseniasDelUsuario;
+    }
+
+    /**
+     * Muestra por consola todas las reseñas de un usuario específico.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param idUsuario El ID del usuario.
+     * @return true si se encontró y mostró al menos una reseña, false en caso
+     *         contrario.
+     */
+    public boolean mostrarReseniasDeUsuario(int idUsuario) {
+        List<Resenia> misResenias = obtenerReseniasDeUsuario(idUsuario);
+        for (Resenia resenia : misResenias) {
+            System.out.println(resenia);
+            System.out.println(); // Espacio extra
+        }
+        return !misResenias.isEmpty();
+    }
+
+    /**
      * Pregunta por pantalla que manera de ordenacion de la lista de Usuarios se
      * requiere.
      * 
@@ -316,80 +383,121 @@ public class Plataforma {
         return null;
     }
 
+
+    
     /**
-     * Actualiza el plan de suscripción de un usuario (asumiendo que opera sobre un
-     * usuario actual).
-     * NO IMPLEMENTADO.
-     * 
-     * @author Grupo 4 - Proyecto TDL2
-     * @version 1.0
-     * @param plan El nuevo plan a asignar.
+     * Getters y Setters
      */
-    public void actualizarPlan(Plan plan /* , Usuario usuarioAActualizar // Necesitarás saber a quién actualizar */) {
-        // Implementación pendiente...
-    }
 
     /**
-     * Inicia la reproducción de un contenido para un perfil específico.
-     * Podría crear y devolver una instancia de Reproductor.
-     * NO IMPLEMENTADO.
-     * 
-     * @author Grupo 4 - Proyecto TDL2
-     * @version 1.0
-     * @param perfil El perfil que inicia la reproducción.
-     */
-    public void Reproducir(Perfil perfil /* , Contenido contenido // Probablemente necesites el contenido */) {
-        // Implementación pendiente...
-    }
-
-    /**
-     * Getters and setters
+     * Obtiene el DAO para los datos personales.
+     * @return El DAO de datos personales.
      */
     public Datos_PersonalesDAOImpl getDpDAO() {
         return dpDAO;
     }
 
+    /**
+     * Establece el DAO para los datos personales.
+     * @param dpDAO El nuevo DAO de datos personales.
+     */
     public void setDpDAO(Datos_PersonalesDAOImpl dpDAO) {
         this.dpDAO = dpDAO;
     }
 
+    /**
+     * Obtiene el DAO para las películas.
+     * @return El DAO de películas.
+     */
     public PeliculaDAOImpl getPeliDAO() {
         return peliDAO;
     }
 
+    /**
+     * Establece el DAO para las películas.
+     * @param peliDAO El nuevo DAO de películas.
+     */
     public void setPeliDAO(PeliculaDAOImpl peliDAO) {
         this.peliDAO = peliDAO;
     }
 
+    /**
+     * Obtiene el DAO para los usuarios.
+     * @return El DAO de usuarios.
+     */
     public UsuarioDAOImpl getUsrDAO() {
         return usrDAO;
     }
 
+    /**
+     * Establece el DAO para los usuarios.
+     * @param usrDAO El nuevo DAO de usuarios.
+     */
     public void setUsrDAO(UsuarioDAOImpl usrDAO) {
         this.usrDAO = usrDAO;
     }
 
+    /**
+     * Obtiene el gestor de cargadores y comunicación con la DB.
+     * @return El objeto CargadoresyComunicacionDB.
+     */
     public CargadoresyComunicacionDB getCargadoresyComunDB() {
         return cargadoresyComunDB;
     }
 
+    /**
+     * Establece el gestor de cargadores y comunicación con la DB.
+     * @param cargadoresyComunDB El nuevo objeto CargadoresyComunicacionDB.
+     */
     public void setCargadoresyComunDB(CargadoresyComunicacionDB cargadoresyComunDB) {
         this.cargadoresyComunDB = cargadoresyComunDB;
     }
 
+    /**
+     * Obtiene la lista de usuarios en memoria.
+     * @return La lista de usuarios.
+     */
     public List<Usuario> getListaUSuario() {
         return listaUSuario;
     }
 
+    /**
+     * Establece la lista de usuarios en memoria.
+     * @param listaUSuario La nueva lista de usuarios.
+     */
     public void setListaUSuario(List<Usuario> listaUSuario) {
         this.listaUSuario = listaUSuario;
     }
 
+    /**
+     * Obtiene la lista de películas en memoria.
+     * @return La lista de películas.
+     */
     public List<Pelicula> getListaPelicula() {
         return listaPelicula;
     }
 
+    /**
+     * Establece la lista de películas en memoria.
+     * @param listaPelicula La nueva lista de películas.
+     */
     public void setListaPelicula(List<Pelicula> listaPelicula) {
         this.listaPelicula = listaPelicula;
+    }
+
+    /**
+     * Obtiene la lista de reseñas en memoria.
+     * @return La lista de reseñas.
+     */
+    public List<Resenia> getListaResenia() {
+        return listaResenia;
+    }
+
+    /**
+     * Establece la lista de reseñas en memoria.
+     * @param listaResenia La nueva lista de reseñas.
+     */
+    public void setListaResenia(List<Resenia> listaResenia) {
+        this.listaResenia = listaResenia;
     }
 }

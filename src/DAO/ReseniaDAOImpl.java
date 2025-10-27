@@ -146,8 +146,6 @@ public class ReseniaDAOImpl implements ReseniaDAO {
     @Override
     public List<Resenia> devolverListaResenia() {
         List<Resenia> lista = new ArrayList<>();
-        // Este método sería muy ineficiente si se llama a buscarPorId en un bucle.
-        // Por simplicidad, lo dejamos así, pero una implementación real usaría JOINs.
         String sql = "SELECT ID FROM RESENIA";
         try (Connection conn = ConexionDB.conectar();
                 Statement stmt = conn.createStatement();
@@ -160,5 +158,37 @@ public class ReseniaDAOImpl implements ReseniaDAO {
             return null;
         }
         return lista;
+    }
+
+    /**
+     * Actualiza una reseña existente en la base de datos.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param resenia La reseña con los datos a actualizar.
+     * @return true si se actualizó correctamente, false en caso contrario.
+     */
+    @Override
+    public boolean actualizar(Resenia resenia) {
+        if (resenia == null || resenia.getIdDB() <= 0) {
+            System.out.println("❌ La reseña es nula o inválida. No se puede actualizar.");
+            return false;
+        }
+        String sql = "UPDATE RESENIA SET APROBADO = ? WHERE ID = ?";
+        try (Connection conn = ConexionDB.conectar();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, resenia.getAprobado());
+            pstmt.setInt(2, resenia.getIdDB());
+            if (pstmt.executeUpdate() > 0) {
+                System.out.println("✅ Estado de la reseña actualizado correctamente.");
+                return true;
+            } else {
+                System.out.println("⚠️ No se encontró una reseña con el ID proporcionado para actualizar.");
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("❌ Error al actualizar la reseña: " + e.getMessage());
+            return false;
+        }
     }
 }

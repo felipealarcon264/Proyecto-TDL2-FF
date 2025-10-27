@@ -75,7 +75,13 @@ public class CargadoresyComunicacionDB {
         // Indice real en la lista.
         int indiceSeleccionado = seleccionPelicula - 1;
         System.out.println("Resenia para la pelicula [" + listaPelicula.get(indiceSeleccionado).getTitulo() + "]");
-        int calificacion = this.ingresarNumeroValido(scanner, "Ingrese la calificacion: ");
+        int calificacion;
+        do {
+            calificacion = this.ingresarNumeroValido(scanner, "Ingrese la calificacion (0-5): ");
+            if (calificacion < 0 || calificacion > 5) {
+                System.out.println("❌ Calificación fuera de rango. Debe ser entre 0 y 5. Intente de nuevo.");
+            }
+        } while (calificacion < 0 || calificacion > 5); //Calificaciones 0-5
         System.out.println("Ingrese el comentario: ");
         comentario = scanner.nextLine();
         System.out.println("\n--- Confirmación de Carga: Reseña ---");
@@ -515,7 +521,7 @@ public class CargadoresyComunicacionDB {
      * @param mensaje El mensaje a mostrar al usuario para solicitar la entrada.
      * @return El número entero válido ingresado por el usuario.
      */
-    private int ingresarNumeroValido(Scanner scanner, String mensaje) {
+    public int ingresarNumeroValido(Scanner scanner, String mensaje) {
         int numero;
         while (true) {
             System.out.print(mensaje);
@@ -527,6 +533,30 @@ public class CargadoresyComunicacionDB {
                 // Si la conversión falla, es porque no se ingresó un número válido.
                 System.out.println("❌ Entrada no válida. Por favor, ingrese solo números enteros.");
             }
+        }
+    }
+
+    /**
+     * Pide al usuario que ingrese un número entero y valida que esté en un rango.
+     * Pide reintentar si se ingresa algo que no es un número o está fuera de rango.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
+     * @param scanner El objeto Scanner ya inicializado.
+     * @param mensaje El mensaje a mostrar al usuario.
+     * @param min     El valor mínimo inclusivo.
+     * @param max     El valor máximo inclusivo.
+     * @return El número entero válido ingresado por el usuario.
+     */
+    public int ingresarNumeroValido(Scanner scanner, String mensaje, int min, int max) {
+        int numero;
+        while (true) {
+            numero = ingresarNumeroValido(scanner, mensaje);
+            if (numero >= min && numero <= max) {
+                return numero;
+            }
+            System.out.println("❌ Número fuera de rango. Debe ser entre " + min + " y " + max + ". Intente de nuevo.");
         }
     }
 }
