@@ -54,13 +54,14 @@ public abstract class Contenido {
     /**
      * Constructor para crear una instancia de Contenido con datos esenciales.
      * 
-     * @param idContenido Identificador único del contenido.
+     * @param idDB Identificador único del contenido.
      * @param titulo      Título del contenido.
      * @param director    Director del contenido.
      * @param duracion    Duración en minutos.
      */
-    public Contenido(String titulo, String director, int duracion, String resumen, Genero genero) {
+    public Contenido(int idDB,String titulo, String director, int duracion, String resumen, Genero genero) {
         // No se necesita en la segunda entrega.this.idContenido = idContenido;
+        this.idDB= idDB;
         this.titulo = titulo;
         this.director = director;
         this.duracion = duracion;

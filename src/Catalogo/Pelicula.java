@@ -26,14 +26,13 @@ public class Pelicula extends Contenido {
      * Llama al constructor correspondiente de la clase padre para inicializar los
      * datos.
      *
-     * @param idContenido Identificador único de la película.
+     * @param idDB Identificador único de la película.
      * @param titulo      Título de la película.
      * @param director    Director de la película.
      * @param duracion    Duración en minutos.
      */
     public Pelicula(int idDB, String titulo, String director, int duracion, String resumen, Genero genero) {
-        super(titulo, director, duracion, resumen, genero);
-        this.setIdDB(idDB);
+        super(idDB, titulo, director, duracion, resumen, genero);
     }
 
     /**

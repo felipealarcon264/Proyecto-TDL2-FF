@@ -328,8 +328,7 @@ public class CargadoresyComunicacionDB {
             resumen = scanner.nextLine();
             System.out.print("Ingrese el director: ");
             director = scanner.nextLine();
-            System.out.print("Ingrese la duracion: ");
-            duracion = scanner.nextInt();
+            duracion = ingresarNumeroValido(scanner,"Ingrese la duracion: ");
             genero = seleccionarGenero(scanner);
             System.out.println("CONFIRMACION DE CARGA -> PELICULA.");
             System.out.println("Datos ingresados:" +
@@ -468,7 +467,7 @@ public class CargadoresyComunicacionDB {
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
      * @param correo       El correo a validar.
-     * @param listaUsuario Suponemos que lo envia la plataforma actualizada!
+     * @param listaUSuario Suponemos que lo envia la plataforma actualizada!
      * @return true si el correo está registrado, false en caso
      *         contrario.
      */
