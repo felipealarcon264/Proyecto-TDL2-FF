@@ -14,4 +14,5 @@ public interface Datos_PersonalesDAO {
     public boolean borrar(Datos_Personales datosPersonales);
     public Datos_Personales buscarPorDNI(int dni);
     public Datos_Personales buscarPorID(int id);
+    public boolean actualizar(Datos_Personales datosPersonales);
 }

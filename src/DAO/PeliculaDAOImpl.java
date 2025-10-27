@@ -8,7 +8,6 @@ import java.util.List;
 
 import Catalogo.Pelicula;
 import DataBase.ConexionDB;
-
 import Enums.Genero;
 
 /**
@@ -110,7 +109,8 @@ public class PeliculaDAOImpl implements PeliculaDAO {
                 String generoSTR = rs.getString("GENERO");
                 Genero generoEnum = Genero.valueOf(generoSTR.toUpperCase());
                 System.out.println("ℹ️ Película [" + titulo + "] encontrada.");
-                return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"), rs.getInt("DURACION"),
+                return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"),
+                        rs.getInt("DURACION"),
                         rs.getString("RESUMEN"), generoEnum);
             } else
                 System.out.println("❌ Película [" + titulo + "] no encontrada en la base de datos.");
@@ -139,7 +139,8 @@ public class PeliculaDAOImpl implements PeliculaDAO {
             var rs = pstmt.executeQuery();
             if (rs.next()) {
                 Genero generoEnum = Genero.valueOf(rs.getString("GENERO").toUpperCase());
-                return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"), rs.getInt("DURACION"),
+                return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"),
+                        rs.getInt("DURACION"),
                         rs.getString("RESUMEN"), generoEnum);
             }
             return null; // No se encontró película con ese ID
@@ -154,7 +155,8 @@ public class PeliculaDAOImpl implements PeliculaDAO {
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
-     * @return Una lista con todas las películas de la base de datos, o null si ocurre un error.
+     * @return Una lista con todas las películas de la base de datos, o null si
+     *         ocurre un error.
      */
     @Override
     public List<Pelicula> devolverListaPelicula() {
@@ -183,5 +185,18 @@ public class PeliculaDAOImpl implements PeliculaDAO {
         }
         return lista;
 
+    }
+
+    /**
+     * Actualiza una peliucla de la base de datos.
+     * 
+     * @param pelicula El objeto con la pelicula a actualizar.
+     * @return true si se actualizó correctamente, false en caso contrario.
+     */
+    @Override
+    public boolean actualizar(Pelicula pelicula) {
+        // Implementacion no necesaria para el entregable Nro 2.
+        System.out.println("FUNCIONALIDAD NO IMPLEMENTADA");
+        return false;
     }
 }

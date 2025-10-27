@@ -151,4 +151,16 @@ public class Datos_PersonalesDAOImpl implements Datos_PersonalesDAO {
         }
     }
 
+    /**
+     * Actualiza los datos personales en la base de datos.
+     * @param datosPersonales El objeto con los datos a actualizar.
+     * @return true si se actualizó correctamente, false en caso contrario.
+     */
+    @Override
+    public boolean actualizar(Datos_Personales datosPersonales) {
+        //Implementacion no necesaria para el entregable Nro 2.
+        System.out.println("FUNCIONALIDAD NO IMPLEMENTADA");
+        return false;
+    }
+
 }

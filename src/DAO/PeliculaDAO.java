@@ -15,5 +15,6 @@ public interface PeliculaDAO {
     public Pelicula buscarPorTitulo(String titulo);
     public List<Pelicula> devolverListaPelicula();
     public Pelicula buscarPorId(int id);
+    public boolean actualizar(Pelicula pelicula);
 
 }

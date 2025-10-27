@@ -324,4 +324,16 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             return null;
         }
     }
+
+    /**
+     * Actualiza un usuario existente en la base de datos.
+     * @param usr El usuario con los datos a actualizar.
+     * @return true si se actualizó correctamente, false en caso contrario.
+     */
+    @Override
+    public boolean actualizar(Usuario usr) {
+        //Implementacion no necesaria para el entregable Nro 2.
+        System.out.println("FUNCIONALIDAD NO IMPLEMENTADA");
+        return false;
+    }
 }

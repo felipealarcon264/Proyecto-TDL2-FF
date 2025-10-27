@@ -20,4 +20,5 @@ public interface UsuarioDAO {
     public void ListarTodosLosUsuariosEnPantalla();
     public List<Usuario> devolverListaUsuarios();
     public Usuario buscarPorId(int id);
+    public boolean actualizar(Usuario usr);
 }
