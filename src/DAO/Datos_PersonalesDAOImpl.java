@@ -15,14 +15,24 @@ import java.util.List;
  * Implementación de la interfaz Datos_PersonalesDAO para la gestión de datos
  * personales en la base de datos.
  * 
- * @author Grupo 4 - Taller de lenguajes II
- * @version 1.1
+ * @author Grupo 4 - Proyecto TDL2
+ * @version 1.0
+ * 
  */
 
 public class Datos_PersonalesDAOImpl implements Datos_PersonalesDAO {
     /**
+     * Constructor por defecto.
+     */
+    public Datos_PersonalesDAOImpl() {
+    }
+
+    /**
      * Guarda datos personales en la base de datos y devuelve el ID generado.
      * Asume que los datos ya están validados.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      *
      * @param dp Datos_Personales a guardar.
      * @return El ID autogenerado por la base de datos si la inserción fue exitosa
@@ -72,12 +82,13 @@ public class Datos_PersonalesDAOImpl implements Datos_PersonalesDAO {
      * Recupera el valor del dni del objeto Datos_Personales para usarlo en la
      * consulta SQL.
      * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
      * @param dp Datos_Personales a borrar
      * @return true si se borraron los datos personales correctamente, false en caso
      *         contrario
      * 
-     * @autor Grupo 4 - Taller de lenguajes II
-     * @version 1.1
      */
     @Override
     public boolean borrar(Datos_Personales dp) {
@@ -105,11 +116,12 @@ public class Datos_PersonalesDAOImpl implements Datos_PersonalesDAO {
     /**
      * Buscar datos personales por DNI
      * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
      * @param dni DNI a buscar
      * @return Datos_Personales o null si no se encuentra
      * 
-     * @autor Grupo 4 - Taller de lenguajes II
-     * @version 1.0
      */
     @Override
     public Datos_Personales buscarPorDNI(int dni) {
@@ -132,7 +144,7 @@ public class Datos_PersonalesDAOImpl implements Datos_PersonalesDAO {
     /**
      * Buscar datos personales por ID
      * 
-     * @autor Grupo 4 - Taller de lenguajes II
+     * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
      * 
      * @param id ID a buscar
@@ -160,6 +172,9 @@ public class Datos_PersonalesDAOImpl implements Datos_PersonalesDAO {
     /**
      * Actualiza los datos personales en la base de datos.
      * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
      * @param datosPersonales El objeto con los datos a actualizar.
      * @return true si se actualizó correctamente, false en caso contrario.
      */
@@ -173,10 +188,10 @@ public class Datos_PersonalesDAOImpl implements Datos_PersonalesDAO {
     /**
      * Devuelve una lista con todos los datos personales de la base de datos.
      * 
-     * @autor Grupo 4 - Taller de lenguajes II
+     * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
      * 
-     * @return Lista
+     * @return Lista con todos los datos personales de la DB.
      */
     @Override
     public List<Datos_Personales> devolverListaDatosPersonales() {

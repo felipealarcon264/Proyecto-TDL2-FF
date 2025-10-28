@@ -14,8 +14,6 @@ import Catalogo.Pelicula;
 import Catalogo.Resenia;
 import Utilidades.Comparadores.*;
 
-//No se necesita en la segunda entrega.import Reportes.ReporteManager;
-
 /**
  * Clase principal que representa la plataforma de streaming.
  * Gestiona los usuarios, el catalogo de contenidos y el acceso
@@ -26,19 +24,14 @@ import Utilidades.Comparadores.*;
  */
 public class Plataforma {
 
-    // Ver aclaraciones en Readme.
-    // Quitamos el controlador de reportes y listas innecesarias.
-
     private Datos_PersonalesDAOImpl dpDAO;
     private PeliculaDAOImpl peliDAO;
     private UsuarioDAOImpl usrDAO;
     private ReseniaDAOImpl resDAO;
     private CargadoresyComunicacionDB cargadoresyComunDB;
+
     /**
      * Constructor de la Plataforma.
-     * 
-     * @author Grupo 4 - Proyecto TDL2
-     * @version 1.0
      */
     public Plataforma() {
         this.dpDAO = new Datos_PersonalesDAOImpl();
@@ -52,7 +45,7 @@ public class Plataforma {
      * Verifica el tipo de usuario (ej: "ADMINISTRADOR", "CUENTA").
      * 
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.1
+     * @version 1.0
      * 
      * @param usuario El usuario a verificar.
      * @return Un String indicando el tipo.
@@ -70,6 +63,8 @@ public class Plataforma {
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
+     * 
+     * @param scanner Entrada por teclado.
      * 
      */
     public void cargarYguardarCuenta(Scanner scanner) {
@@ -114,7 +109,7 @@ public class Plataforma {
         this.peliDAO.guardar(pelicula); // Si es null, el DAO se encarga de dar error.
     }
 
-   /**
+    /**
      * Se encarga de cargar y guardar una reseña en la base de datos, se puede
      * cancelar.
      * Todos los mensajes se indican en guardar y cargaPelicula.
@@ -123,13 +118,12 @@ public class Plataforma {
      * @version 1.0
      * 
      * @param scanner El Scanner para leer la entrada del usuario.
+     * @param usuario Usuario que realiza la reseña.
      */
-    public void cargarYguardarReseña(Scanner scanner,Usuario usuario) {
+    public void cargarYguardarReseña(Scanner scanner, Usuario usuario) {
         Resenia reseña = this.cargadoresyComunDB.cargaResenia(scanner, usuario);
         this.resDAO.guardar(reseña); // Si es null, el DAO se encarga de dar error.
     }
-
-
 
     /**
      * Elimina una pelicula existente de la base de datos tambien en la lista de
@@ -138,8 +132,10 @@ public class Plataforma {
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
      * @param pelicula La película a eliminar.
-     * @return true si se pudo borrar de la DB y de la lista, false en caso contrario.
+     * @return true si se pudo borrar de la DB y de la lista, false en caso
+     *         contrario.
      */
     public boolean eliminarPelicula(Pelicula pelicula) {
         return peliDAO.borrar(pelicula);
@@ -152,8 +148,10 @@ public class Plataforma {
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.2
+     * 
      * @param resenia La reseña a eliminar.
-     * @return true si se pudo borrar de la DB y de la lista, false en caso contrario.
+     * @return true si se pudo borrar de la DB y de la lista, false en caso
+     *         contrario.
      */
     public boolean eliminarResenia(Resenia resenia) {
         return resDAO.borrar(resenia);
@@ -165,25 +163,29 @@ public class Plataforma {
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
-     * @param resenia La reseña a actualizar.
-     * @return true si se pudo actualizar, false en caso contrario.
+     * 
+     * @param resenia La reseña a actualizar su estado aprobado||desaprobado.
+     * @return true si actualizo la resenia, false en caso contrario.
      */
     public boolean actualizarEstadoResenia(Resenia resenia) {
         return resDAO.actualizar(resenia);
     }
 
     /**
-     * Filtra y devuelve una lista de reseñas que pertenecen a un usuario específico.
+     * Filtra y devuelve una lista de reseñas que pertenecen a un usuario
+     * específico.
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
      * @param idUsuario El ID del usuario cuyas reseñas se quieren obtener.
      * @return Una lista de objetos {@link Resenia}.
      */
     public List<Resenia> obtenerReseniasDeUsuario(int idUsuario) {
         List<Resenia> reseniasDelUsuario = new java.util.ArrayList<>();
         List<Resenia> todasLasResenias = resDAO.devolverListaResenia(); // Se busca en la DB
-        if (todasLasResenias == null) return reseniasDelUsuario; // En caso de error en DAO
+        if (todasLasResenias == null)
+            return reseniasDelUsuario; // En caso de error en DAO
         for (Resenia resenia : todasLasResenias) {
             if (resenia.getUsuario() != null && resenia.getUsuario().getIdDB() == idUsuario) {
                 reseniasDelUsuario.add(resenia);
@@ -197,6 +199,7 @@ public class Plataforma {
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
      * @param idUsuario El ID del usuario.
      * @return true si se encontró y mostró al menos una reseña, false en caso
      *         contrario.
@@ -294,8 +297,10 @@ public class Plataforma {
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
      * @param usuario El usuario a eliminar.
-     * @return true si se pudo borrar de la DB y de la lista, false en caso contrario.
+     * @return true si se pudo borrar de la DB y de la lista, false en caso
+     *         contrario.
      */
     public boolean eliminarUsuario(Usuario usuario) {
         return usrDAO.borrar(usuario);
@@ -306,9 +311,11 @@ public class Plataforma {
      * Siempre suponemos que un correo no se puede ingresar dos veces por lo que
      * a la primera coincidencia retorna true.
      * 
-     * @param correo El correo a validar.
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
+     * @param correo     El correo a validar.
+     * @param contrasena La contraseña a validar.
      * @return true si el correo está registrado, false en caso
      *         contrario.
      */
@@ -332,8 +339,10 @@ public class Plataforma {
 
     /**
      * Valida si un correo existe en la lista de usuarios de la plataforma.
+     * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
      * @param correo El correo a verificar.
      * @return true si el correo existe, false en caso contrario.
      */
@@ -355,28 +364,8 @@ public class Plataforma {
     }
 
     /**
-     * YA ESTA HECHO EN SERVICIO
-     * Crea una nueva instancia de Cuenta (Usuario tipo cliente).
-     * Nota: Este método probablemente solo crea el objeto; el guardado se haría
-     * aparte.
-     * NO IMPLEMENTADO.
-     * 
-     * @author Grupo 4 - Proyecto TDL2
-     * @version 1.0
-     * @param correo     El correo para la nueva cuenta.
-     * @param contrasena La contraseña para la nueva cuenta.
-     * @return El nuevo objeto Usuario (tipo Cuenta) creado.
-     */
-    public Usuario crearCuenta(String correo, String contrasena) {
-        return null;
-    }
-
-    /**
-     * Getters y Setters
-     */
-
-    /**
      * Obtiene el DAO para los datos personales.
+     * 
      * @return El DAO de datos personales.
      */
     public Datos_PersonalesDAOImpl getDpDAO() {
@@ -385,6 +374,7 @@ public class Plataforma {
 
     /**
      * Establece el DAO para los datos personales.
+     * 
      * @param dpDAO El nuevo DAO de datos personales.
      */
     public void setDpDAO(Datos_PersonalesDAOImpl dpDAO) {
@@ -393,6 +383,7 @@ public class Plataforma {
 
     /**
      * Obtiene el DAO para las películas.
+     * 
      * @return El DAO de películas.
      */
     public PeliculaDAOImpl getPeliDAO() {
@@ -401,6 +392,7 @@ public class Plataforma {
 
     /**
      * Establece el DAO para las películas.
+     * 
      * @param peliDAO El nuevo DAO de películas.
      */
     public void setPeliDAO(PeliculaDAOImpl peliDAO) {
@@ -409,6 +401,7 @@ public class Plataforma {
 
     /**
      * Obtiene el DAO para los usuarios.
+     * 
      * @return El DAO de usuarios.
      */
     public UsuarioDAOImpl getUsrDAO() {
@@ -417,6 +410,7 @@ public class Plataforma {
 
     /**
      * Establece el DAO para los usuarios.
+     * 
      * @param usrDAO El nuevo DAO de usuarios.
      */
     public void setUsrDAO(UsuarioDAOImpl usrDAO) {
@@ -425,6 +419,7 @@ public class Plataforma {
 
     /**
      * Obtiene el gestor de cargadores y comunicación con la DB.
+     * 
      * @return El objeto CargadoresyComunicacionDB.
      */
     public CargadoresyComunicacionDB getCargadoresyComunDB() {
@@ -433,6 +428,7 @@ public class Plataforma {
 
     /**
      * Establece el gestor de cargadores y comunicación con la DB.
+     * 
      * @param cargadoresyComunDB El nuevo objeto CargadoresyComunicacionDB.
      */
     public void setCargadoresyComunDB(CargadoresyComunicacionDB cargadoresyComunDB) {
@@ -441,6 +437,7 @@ public class Plataforma {
 
     /**
      * Obtiene el DAO para las reseñas.
+     * 
      * @return El DAO de reseñas.
      */
     public ReseniaDAOImpl getResDAO() {
@@ -449,6 +446,7 @@ public class Plataforma {
 
     /**
      * Establece el DAO para las reseñas.
+     * 
      * @param resDAO El nuevo DAO de reseñas.
      */
     public void setResDAO(ReseniaDAOImpl resDAO) {

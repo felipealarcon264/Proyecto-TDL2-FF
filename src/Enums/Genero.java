@@ -2,14 +2,17 @@ package Enums;
 
 /**
  * Enumeración que representa los géneros de contenido audiovisual.
- * Se utiliza para clasificar el contenido y para las preferencias de los perfiles.
+ * Se utiliza para clasificar el contenido y para las preferencias de los
+ * perfiles.
  *
  * @author Grupo 4 - Proyecto TDL2
  * @version 1.0
+ * 
  */
 public enum Genero {
     /**
-     * Género de acción, centrado en secuencias de combate, persecuciones y aventura.
+     * Género de acción, centrado en secuencias de combate, persecuciones y
+     * aventura.
      */
     ACCION,
 

@@ -10,6 +10,7 @@ import Enums.Genero;
  *
  * @author Grupo 4 - Proyecto TDL2
  * @version 1.0
+ * 
  */
 public class Pelicula extends Contenido {
 
@@ -26,10 +27,12 @@ public class Pelicula extends Contenido {
      * Llama al constructor correspondiente de la clase padre para inicializar los
      * datos.
      *
-     * @param idDB Identificador único de la película.
-     * @param titulo      Título de la película.
-     * @param director    Director de la película.
-     * @param duracion    Duración en minutos.
+     * @param idDB     Identificador único de la película.
+     * @param titulo   Título de la película.
+     * @param director Director de la película.
+     * @param duracion Duración en segundos.
+     * @param resumen  Resumen de la pelicula.
+     * @param genero   Genero de la pelicula.
      */
     public Pelicula(int idDB, String titulo, String director, int duracion, String resumen, Genero genero) {
         super(idDB, titulo, director, duracion, resumen, genero);
@@ -38,6 +41,8 @@ public class Pelicula extends Contenido {
     /**
      * Muestra los valores de una pelicula.
      * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * 
      * @return String con todos los valores.
      */

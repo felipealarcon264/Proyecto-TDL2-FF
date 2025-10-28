@@ -15,7 +15,14 @@ import java.sql.Statement;
 public class InicializadorDB {
 
     /**
+     * Constructor por defecto.
+     */
+    public InicializadorDB() {
+    }
+
+    /**
      * Metodo para crear todas las tablas de la base de datos.
+     * Informa si se crearon correctamente o si ocurrió un error.
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
@@ -25,9 +32,6 @@ public class InicializadorDB {
         try (Connection connection = ConexionDB.conectar();
                 Statement stmt = connection.createStatement()) {
 
-            /**
-             * Tabla DATOS_PERSONALES
-             */
             String sql = """
                         CREATE TABLE IF NOT EXISTS DATOS_PERSONALES (
                             ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -38,9 +42,6 @@ public class InicializadorDB {
                     """;
             stmt.executeUpdate(sql);
 
-            /**
-             * Tabla PELICULA
-             */
             sql = """
                         CREATE TABLE IF NOT EXISTS PELICULA (
                             ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -53,9 +54,6 @@ public class InicializadorDB {
                     """;
             stmt.executeUpdate(sql);
 
-            /**
-             * Tabla USUARIO
-             */
             sql = """
                         CREATE TABLE IF NOT EXISTS USUARIO (
                             ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -70,9 +68,6 @@ public class InicializadorDB {
                     """;
             stmt.executeUpdate(sql);
 
-            /**
-             * Tabla RESENIA
-             */
             sql = """
                         CREATE TABLE IF NOT EXISTS RESENIA (
                             ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,

@@ -18,6 +18,11 @@ import Entes.Usuario;
  */
 
 public class UsuarioDAOImpl implements UsuarioDAO {
+    /**
+     * Constructor por defecto.
+     */
+    public UsuarioDAOImpl() {
+    }
 
     /**
      * Guarda un usuario nuevo a la base de datos.
@@ -25,7 +30,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
      * completo.
      * Se tomaron todas las precauciones en caso de errores.
      * 
-     * @author Grupo 4 - Taller de lenguajes II
+     * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
      * 
      * @param usr El usuario a guardar
@@ -73,7 +78,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
      * Usuario y datos personales estan ligados fuertemente, si elimino uno elimino
      * a los dos
      * 
-     * @author Grupo 4 - Taller de lenguajes II
+     * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
      * 
      * @param usr usuario a borrar.
@@ -113,11 +118,11 @@ public class UsuarioDAOImpl implements UsuarioDAO {
      * Busca un usuario validando su ingreso y lo retorna.
      * Es inteligente directamente devuelve un administrador o una cuenta!
      * 
-     * @author Grupo 4 - Taller de lenguajes II
+     * @author Grupo 4 - Proyecto TDL2
      * @version 1.3
      * 
-     * @param email
-     * @param contrasena
+     * @param email Email el usuario a buscar.
+     * @param contrasena Constraseña del usuario a busca.
      * @return Usuario si lo encuentra, null en caso contrario.
      */
     @Override
@@ -153,6 +158,12 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     /**
      * Busca un usuario por su email, util para que los administradores borren.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
+     * @param email Email del usuario a buscar
+     * @return El usuario encontrado, caso contrario retorna null.
      */
     @Override
     public Usuario buscarPorEmail(String email) {
@@ -189,7 +200,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
      * Lista todos los Usuarios guardados en la DB y los muestra en pantalla
      * Mejoramos la eficiencia con el JOIN
      * 
-     * @author Grupo 4 - Taller de lenguajes II
+     * @author Grupo 4 - Proyecto TDL2
      * @version 1.2
      * 
      */
@@ -243,6 +254,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
      * @param id El ID del usuario a buscar.
      * @return El objeto Usuario (Administrador o Cuenta) si se encuentra, o null
      *         en caso contrario.
@@ -277,6 +289,10 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     /**
      * Actualiza un usuario existente en la base de datos.
+     * NO IMPLEMENTADO - NO LO NECESITAMOS EN EL ENTREGABLE 2.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * 
      * @param usr El usuario con los datos a actualizar.
      * @return true si se actualizó correctamente, false en caso contrario.
@@ -291,7 +307,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     /**
      * Devuelve una lista con todos los usuarios de la base de datos cargados.
      * 
-     * @author Grupo 4 - Taller de lenguajes II
+     * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
      * 
      * @return Lista cargada con todos los usuarios de la base de datos.

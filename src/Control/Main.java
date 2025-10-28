@@ -13,17 +13,25 @@ import Servicio.CargadoresyComunicacionDB;
  * con el usuario.
  * 
  * @author Grupo 4 - Proyecto TDL2
- * @version 1.0
+ * @version 1.3
  * 
  */
 public class Main {
     /**
-     * Código de escape ANSI para cambiar el color del texto a rojo en la consola.
+     * Constructor por defecto.
      */
-    public static final String ANSI_RED = "\u001B[31m";
+    public Main() {
+    }
+
+    /**
+     * Código de escape ANSI para cambiar el color del texto a azul en la consola.
+     * NO ES NECESARIO
+     */
+    public static final String ANSI_BLUE = "\u001B[34m";
     /**
      * Código de escape ANSI para resetear el color del texto en la consola al
      * predeterminado.
+     * NO ES NECESARIO
      */
     public static final String ANSI_RESET = "\u001B[0m";
 
@@ -41,25 +49,24 @@ public class Main {
         // inicializador de tablas
         InicializadorDB inicializadorDB = new InicializadorDB();
         inicializadorDB.crearTablas(); // Comentado para no borrar la DB en cada ejecución
-        // fin inicializador de tablas 
+        // fin inicializador de tablas
 
         System.out.println();
         System.out.println();
         System.out.println(
-                ANSI_RED + "ALCLARACION: ESTE MENSAJE NO PERTENECERIA REALMENTE A LA APLICACION" + '\n' +
+                ANSI_BLUE + "ALCLARACION: ESTE MENSAJE NO PERTENECERIA REALMENTE A LA APLICACION" + '\n' +
                         "USTED PUEDE INGRESAR SU CORREO Y CONTRASEÑA Y DEPENDIENDO SI ES" + '\n' +
                         "ADMINISTRADOR O CUENTA TIENE DIFERENTES OPCIONES." + '\n' +
                         "INICIALMENTE LE PERMITE INICIAR SECION, REGISTRARSE O SALIR DE LA APP." + '\n' +
                         "SI CIERRA LA SESION VUELVE AL INICIO." + '\n' +
                         "BASE DE DATOS CARGADA, EJECUTAR CARPETA CON LA BASE DE DATOS, SQL EN README." + '\n' +
-                        "HAY VARIAS ACLARACIONES EN EL README."+ '\n' +
+                        "HAY VARIAS ACLARACIONES EN EL README." + '\n' +
                         "USUARIOS DE PRUEBA:" + '\n' +
                         "ADMINISTRADOR: Correo: 1, Contraseña: 1." + '\n' +
                         "CUENTA: Correo: 2, Contraseña: 2." + '\n' + ANSI_RESET);
         simulacion(in);
 
         in.close();
-
     }
 
     /**
@@ -67,12 +74,13 @@ public class Main {
      * Pide ingresar los datos y dependiendo entra a Administrador o Cuenta a su vez
      * si no existen los datos pregunta si quieres crear una cuenta.
      * Los Administradores se cargaran directamente desde la base de datos.
-     * Usuarios de prueba: //NO SOL VALIDOS REALMENTE.
+     * Usuarios de prueba: //NO SON VALIDOS REALMENTE, NO CUMPLE CON EL STANDARD.
      * Administrador: Correo: 1, Contraseña: 1.
      * Cuanta: Correo: 2, Contraseña: 2.
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
      * @param in Scanner para leer la entrada del usuario.
      */
     public static void simulacion(Scanner in) {

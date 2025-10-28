@@ -19,24 +19,17 @@ import Catalogo.Resenia;
  * CARGADORES Y COMUNICACION CON BASE DE DATOS CON DICHOS CARGADORES.
  * 
  * @author Grupo 4 - Proyecto TDL2
- * @version 1.1
+ * @version 1.7
  * 
  */
 public class CargadoresyComunicacionDB {
-    /*
-     * Ingresar un usuario y una contraseña que el sistema valida.
-     * -
-     * Si la validación es exitosa, mostrar un listado numerado con los títulos de
-     * las
-     * películas disponibles.
-     * -
-     * El usuario indica un número de película válido.
-     * -
-     * A continuación se solicitan todos los datos de la reseña (calificación,
-     * comentario).
-     * -
-     * Si el usuario confirma, se guarda en la base de datos.
+    /**
+     * Cargador por defecto.
      */
+
+    public CargadoresyComunicacionDB() {
+
+    }
 
     /**
      * Carga de una resenia por teclado.
@@ -45,13 +38,13 @@ public class CargadoresyComunicacionDB {
      * se asegura que el indice seleccionado sea valido.
      * 
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.1
-     * @param scanner        El Scanner para leer la entrada del usuario.
-     * @param listaPelicula La lista de peliculas disponibles para reseñar.
-     * @param usuario        El usuario que está realizando la reseña.
+     * @version 1.0
+     * 
+     * @param scanner El Scanner para leer la entrada del usuario.
+     * @param usuario El usuario que está realizando la reseña.
      * @return Un objeto {@link Resenia} con los datos cargados, o null si el
      *         usuario cancela la operación o la lista de películas está vacía.
-     */    
+     */
     public Resenia cargaResenia(Scanner scanner, Usuario usuario) {
         String comentario;
         int seleccionPelicula;
@@ -84,7 +77,7 @@ public class CargadoresyComunicacionDB {
             if (calificacion < 0 || calificacion > 5) {
                 System.out.println("❌ Calificación fuera de rango. Debe ser entre 0 y 5. Intente de nuevo.");
             }
-        } while (calificacion < 0 || calificacion > 5); //Calificaciones 0-5
+        } while (calificacion < 0 || calificacion > 5); // Calificaciones 0-5
         System.out.println("Ingrese el comentario: ");
         comentario = scanner.nextLine();
         System.out.println("\n--- Confirmación de Carga: Reseña ---");
@@ -93,7 +86,7 @@ public class CargadoresyComunicacionDB {
                 "\nComentario: " + comentario);
         boolean datosValidos = confirmacion(scanner);
         if (datosValidos)
-            return new Resenia(-1,calificacion, comentario, 0, usuario, listaPelicula.get(indiceSeleccionado));
+            return new Resenia(-1, calificacion, comentario, 0, usuario, listaPelicula.get(indiceSeleccionado));
         else
             return null;
     }
@@ -172,7 +165,8 @@ public class CargadoresyComunicacionDB {
             }
         }
         System.out.println("Datos confirmados...");
-        return new Datos_Personales(-1,nombre, apellido, dni); //Retorna un id no valido eso se asegura de brindarselo la base de datos.
+        return new Datos_Personales(-1, nombre, apellido, dni); // Retorna un id no valido eso se asegura de brindarselo
+                                                                // la base de datos.
     }
 
     /**
@@ -182,15 +176,14 @@ public class CargadoresyComunicacionDB {
      * Dentro del proceso luego de confirmar Datos_Personales primero los carga en
      * la base da datos. De alguna manera si o si se tiene que lograr la carga sino
      * puede generar errores futuros.
-     * Toma todos los requerimientos de validaciones.
      * Los correos se guardan en minuscula.
      * Se puede cancelar.
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
      * 
-     * @param scanner      El Scanner para leer la entrada del usuario.
-     *                     existentes. (Ya no se pasa la lista)
+     * @param scanner El Scanner para leer la entrada del usuario.
+     *                existentes. (Ya no se pasa la lista)
      * @return Un objeto Administrador generado, o null si se cancela la carga.
      */
     public Administrador cargaAdministrador(Scanner scanner) {
@@ -248,14 +241,13 @@ public class CargadoresyComunicacionDB {
      * Dentro del proceso luego de confirmar Datos_Personales primero los carga en
      * la base da datos. De alguna manera si o si se tiene que lograr la carga sino
      * puede generar errores futuros.
-     * Toma todos los requerimientos de validaciones.
      * Se puede cancelar.
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
      * 
-     * @param scanner      El Scanner para leer la entrada del usuario.
-     *                     existentes. (Ya no se pasa la lista)
+     * @param scanner El Scanner para leer la entrada del usuario.
+     *                existentes. (Ya no se pasa la lista)
      * @return Un objeto Cuenta generado, o null si se cancela la carga.
      */
     public Cuenta cargaCuenta(Scanner scanner) {
@@ -312,6 +304,7 @@ public class CargadoresyComunicacionDB {
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
      * @param scanner El Scanner para leer la entrada del usuario.
      * @return Una pelicula o null en caso de cancelar la carga.
      */
@@ -331,7 +324,7 @@ public class CargadoresyComunicacionDB {
             resumen = scanner.nextLine();
             System.out.print("Ingrese el director: ");
             director = scanner.nextLine();
-            duracion = ingresarNumeroValido(scanner,"Ingrese la duracion: ");
+            duracion = ingresarNumeroValido(scanner, "Ingrese la duracion: ");
             genero = seleccionarGenero(scanner);
             System.out.println("CONFIRMACION DE CARGA -> PELICULA.");
             System.out.println("Datos ingresados:" +
@@ -383,6 +376,7 @@ public class CargadoresyComunicacionDB {
      *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
      * @param scanner El Scanner para leer la entrada del usuario.
      * @return El enum Genero seleccionado por el usuario.
      */
@@ -469,8 +463,9 @@ public class CargadoresyComunicacionDB {
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
      * @param correo       El correo a validar.
-     * @param listaUSuario Suponemos que lo envia la plataforma actualizada!
+     * @param listaUSuario Se pide a la base de datos.
      * @return true si el correo está registrado, false en caso
      *         contrario.
      */

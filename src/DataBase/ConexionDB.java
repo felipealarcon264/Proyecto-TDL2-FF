@@ -13,6 +13,12 @@ import java.sql.SQLException;
  */
 
 public class ConexionDB {
+    /**
+     * Constructor por defecto.
+     */
+    public ConexionDB() {
+    }
+
     private static final String URL = "jdbc:sqlite:plataforma.db";
 
     /**
@@ -21,6 +27,8 @@ public class ConexionDB {
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
      * 
+     * @throws SQLException Si ocurre un error al conectar a la base de datos.
+     * @return Objeto Connection a la base de datos.
      */
     public static Connection conectar() throws SQLException {
         return DriverManager.getConnection(URL);

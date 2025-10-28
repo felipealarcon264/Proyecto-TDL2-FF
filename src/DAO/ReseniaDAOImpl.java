@@ -9,7 +9,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import Catalogo.Contenido;
 import Catalogo.Resenia;
 import DataBase.ConexionDB;
@@ -25,12 +24,18 @@ import Entes.Datos_Personales;
  * 
  */
 public class ReseniaDAOImpl implements ReseniaDAO {
+    /**
+     * Constructor por defecto.
+     */
+    public ReseniaDAOImpl() {
+    }
 
     /**
      * Guarda una reseña en la base de datos.
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
      * @param resenia La reseña a guardar.
      * @return true si se guardó correctamente, false en caso contrario.
      */
@@ -73,6 +78,7 @@ public class ReseniaDAOImpl implements ReseniaDAO {
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
      * @param resenia La reseña a borrar.
      * @return true si se borró correctamente, false en caso contrario.
      */
@@ -104,6 +110,7 @@ public class ReseniaDAOImpl implements ReseniaDAO {
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
      * @param id El ID de la reseña a buscar.
      * @return Un objeto Resenia si se encuentra, o null en caso contrario.
      */
@@ -142,6 +149,7 @@ public class ReseniaDAOImpl implements ReseniaDAO {
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
      * @return Una lista de objetos Resenia.
      */
     @Override
@@ -149,38 +157,44 @@ public class ReseniaDAOImpl implements ReseniaDAO {
         List<Resenia> lista = new ArrayList<>();
         // Consulta optimizada con JOIN para evitar el problema N+1
         String sql = """
-            SELECT
-                r.ID AS resenia_id, r.CALIFICACION, r.COMENTARIO, r.APROBADO,
-                u.ID AS usuario_id, u.NOMBRE_USUARIO, u.EMAIL, u.CONTRASENA, u.ROL,
-                dp.ID AS dp_id, dp.NOMBRE, dp.APELLIDO, dp.DNI,
-                p.ID AS pelicula_id, p.TITULO, p.DIRECTOR, p.DURACION, p.RESUMEN, p.GENERO
-            FROM RESENIA r
-            JOIN USUARIO u ON r.ID_USUARIO = u.ID
-            JOIN DATOS_PERSONALES dp ON u.ID_DATOS_PERSONALES = dp.ID
-            JOIN PELICULA p ON r.ID_PELICULA = p.ID
-        """;
+                    SELECT
+                        r.ID AS resenia_id, r.CALIFICACION, r.COMENTARIO, r.APROBADO,
+                        u.ID AS usuario_id, u.NOMBRE_USUARIO, u.EMAIL, u.CONTRASENA, u.ROL,
+                        dp.ID AS dp_id, dp.NOMBRE, dp.APELLIDO, dp.DNI,
+                        p.ID AS pelicula_id, p.TITULO, p.DIRECTOR, p.DURACION, p.RESUMEN, p.GENERO
+                    FROM RESENIA r
+                    JOIN USUARIO u ON r.ID_USUARIO = u.ID
+                    JOIN DATOS_PERSONALES dp ON u.ID_DATOS_PERSONALES = dp.ID
+                    JOIN PELICULA p ON r.ID_PELICULA = p.ID
+                """;
 
         try (Connection conn = ConexionDB.conectar();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 // Reconstruir Datos_Personales
-                Datos_Personales dp = new Datos_Personales(rs.getInt("dp_id"), rs.getString("NOMBRE"), rs.getString("APELLIDO"), rs.getInt("DNI"));
+                Datos_Personales dp = new Datos_Personales(rs.getInt("dp_id"), rs.getString("NOMBRE"),
+                        rs.getString("APELLIDO"), rs.getInt("DNI"));
 
                 // Reconstruir Usuario (Cuenta o Administrador)
                 Usuario usuario = null;
                 if ("CUENTA".equals(rs.getString("ROL"))) {
-                    usuario = new Entes.Cuenta(rs.getInt("usuario_id"), rs.getString("NOMBRE_USUARIO"), rs.getString("EMAIL"), rs.getString("CONTRASENA"), dp, rs.getString("ROL"));
+                    usuario = new Entes.Cuenta(rs.getInt("usuario_id"), rs.getString("NOMBRE_USUARIO"),
+                            rs.getString("EMAIL"), rs.getString("CONTRASENA"), dp, rs.getString("ROL"));
                 } else { // Asumimos que si no es CUENTA, es ADMINISTRADOR
-                    usuario = new Entes.Administrador(rs.getInt("usuario_id"), rs.getString("NOMBRE_USUARIO"), rs.getString("EMAIL"), rs.getString("CONTRASENA"), dp, rs.getString("ROL"));
+                    usuario = new Entes.Administrador(rs.getInt("usuario_id"), rs.getString("NOMBRE_USUARIO"),
+                            rs.getString("EMAIL"), rs.getString("CONTRASENA"), dp, rs.getString("ROL"));
                 }
 
                 // Reconstruir Pelicula
-                Catalogo.Pelicula pelicula = new Catalogo.Pelicula(rs.getInt("pelicula_id"), rs.getString("TITULO"), rs.getString("DIRECTOR"), rs.getInt("DURACION"), rs.getString("RESUMEN"), Enums.Genero.valueOf(rs.getString("GENERO")));
+                Catalogo.Pelicula pelicula = new Catalogo.Pelicula(rs.getInt("pelicula_id"), rs.getString("TITULO"),
+                        rs.getString("DIRECTOR"), rs.getInt("DURACION"), rs.getString("RESUMEN"),
+                        Enums.Genero.valueOf(rs.getString("GENERO")));
 
                 // Reconstruir Resenia y añadirla a la lista
-                lista.add(new Resenia(rs.getInt("resenia_id"), rs.getInt("CALIFICACION"), rs.getString("COMENTARIO"), rs.getInt("APROBADO"), usuario, pelicula));
+                lista.add(new Resenia(rs.getInt("resenia_id"), rs.getInt("CALIFICACION"), rs.getString("COMENTARIO"),
+                        rs.getInt("APROBADO"), usuario, pelicula));
             }
         } catch (SQLException e) {
             System.out.println("❌ Error al listar las reseñas: " + e.getMessage());
@@ -196,6 +210,7 @@ public class ReseniaDAOImpl implements ReseniaDAO {
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
+     * 
      * @param resenia La reseña con los datos a actualizar.
      * @return true si se actualizó correctamente, false en caso contrario.
      */

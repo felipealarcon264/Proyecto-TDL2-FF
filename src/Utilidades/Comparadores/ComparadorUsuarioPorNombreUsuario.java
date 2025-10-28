@@ -12,6 +12,21 @@ import java.util.Comparator;
  * 
  */
 public class ComparadorUsuarioPorNombreUsuario implements Comparator<Usuario> {
+    /**
+     * Constructor por defecto.
+     */
+    public ComparadorUsuarioPorNombreUsuario() {
+    }
+
+    /**
+     * Compara dos objetos Usuario basándose en su nombre de usuario.
+     *
+     * @param u1 El primer objeto Usuario a comparar.
+     * @param u2 El segundo objeto Usuario a comparar.
+     * @return Un entero negativo, cero, o un entero positivo si el nombre de
+     *         usuario del primer objeto es lexicográficamente menor, igual o
+     *         mayor que el del segundo.
+     */
 
     @Override
     public int compare(Usuario u1, Usuario u2) {

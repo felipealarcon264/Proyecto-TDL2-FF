@@ -15,8 +15,14 @@ import Servicio.CargadoresyComunicacionDB;
  * 
  * @author Grupo 4 - Proyecto TDL2
  * @version 1.0
+ * 
  */
 public class MenuManager {
+    /**
+     * Constructor por defecto.
+     */
+    public MenuManager(){
+    }
 
     /**
      * Simula la sesión de un administrador, mostrando su menú de opciones.
@@ -83,7 +89,7 @@ public class MenuManager {
                 case "5":
                     System.out.println("\n--- ⚖️ Gestionar Reseñas ⚖️ ---");
                     java.util.List<Resenia> todasLasResenias = plataforma.getResDAO().devolverListaResenia();
-                    
+
                     if (todasLasResenias == null || todasLasResenias.isEmpty()) {
                         System.out.println("ℹ️ No hay reseñas para gestionar.");
                         break;
@@ -96,7 +102,8 @@ public class MenuManager {
                     }
                     System.out.println("\n0. Cancelar operación");
 
-                    int seleccion = cargadores.ingresarNumeroValido(in, "👉 Ingresa el número de la reseña (0 para cancelar): ", 0, todasLasResenias.size());
+                    int seleccion = cargadores.ingresarNumeroValido(in,
+                            "👉 Ingresa el número de la reseña (0 para cancelar): ", 0, todasLasResenias.size());
 
                     if (seleccion == 0) {
                         System.out.println("Operación cancelada.");
@@ -173,7 +180,8 @@ public class MenuManager {
                     }
                     System.out.println("\n0. Cancelar operación");
 
-                    int seleccion = cargadores.ingresarNumeroValido(in, "👉 Ingresa el número de la reseña a eliminar (0 para cancelar): ", 0, misResenias.size());
+                    int seleccion = cargadores.ingresarNumeroValido(in,
+                            "👉 Ingresa el número de la reseña a eliminar (0 para cancelar): ", 0, misResenias.size());
 
                     if (seleccion == 0) {
                         System.out.println("Operación cancelada.");

@@ -19,6 +19,11 @@ import Enums.Genero;
  */
 
 public class PeliculaDAOImpl implements PeliculaDAO {
+    /**
+     * Constructor por defecto.
+     */
+    public PeliculaDAOImpl() {
+    }
 
     /**
      * Guarda una película en la base de datos.
@@ -26,6 +31,7 @@ public class PeliculaDAOImpl implements PeliculaDAO {
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
+     * 
      * @param pelicula La película a guardar.
      * @return true si se logró guardar la película, false en caso contrario.
      */
@@ -64,15 +70,20 @@ public class PeliculaDAOImpl implements PeliculaDAO {
      *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
+     * 
      * @param pelicula La película que se quiere borrar.
      * @return true si la pelicula se borro correctamente, false en caso contrario.
      */
     @Override
-    public boolean borrar(Catalogo.Pelicula pelicula) {
+    public boolean borrar(Pelicula pelicula) {
         if (buscarPorTitulo(pelicula.getTitulo()) == null) {
             System.out.println("❌ La película no existe en la base de datos. No se puede borrar.");
             return false;
         }
+        if (buscarPorTitulo(pelicula.getTitulo()).getDuracion() != pelicula.getDuracion()) {
+            System.out.println("❌ La película no existe en la base de datos. No se puede borrar.");
+            return false;
+        } // Nos aseguramos que no sea nuestra pelicula.
         String sql = "DELETE FROM PELICULA WHERE TITULO = ?";
         try (Connection conn = ConexionDB.conectar();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -155,6 +166,7 @@ public class PeliculaDAOImpl implements PeliculaDAO {
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
+     * 
      * @return Una lista con todas las películas de la base de datos, o null si
      *         ocurre un error.
      */
@@ -189,6 +201,9 @@ public class PeliculaDAOImpl implements PeliculaDAO {
 
     /**
      * Actualiza una peliucla de la base de datos.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * 
      * @param pelicula El objeto con la pelicula a actualizar.
      * @return true si se actualizó correctamente, false en caso contrario.

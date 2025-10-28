@@ -2,6 +2,10 @@ ACLARACION IMPORTANTE: LAS ANOTACIONES SE HICIERON MEDIANTE EL USO DE NOTAS DE V
 
 ---
 
+PARA EJECUTAR EL .JAR DESDE LA CARPETA DEL PROYECTO: java -cp "TDL2.jar:lib/sqlite-jdbc-3.50.3.0.jar" Control.Main
+
+
+---
 # ## Registro de Decisiones de Diseño y Avance (Entregable 2)
 
 **Proyecto:** Plataforma de Streaming TDL2
@@ -15,6 +19,7 @@ ACLARACION IMPORTANTE: LAS ANOTACIONES SE HICIERON MEDIANTE EL USO DE NOTAS DE V
 La filosofía de este entregable fue la **simplificación extrema** para enfocarse en el requisito de persistencia.
 
 * **Simplificación del Modelo (Principio General):** Se simplificó la lógica para que las clases y métodos contengan solo lo *estrictamente necesario* para la entrega 2. Las secciones de código o los atributos que se consideran esenciales para el proyecto final pero irrelevantes para esta etapa de persistencia han sido **comentados** (marcados con `//No se necesita en la segunda entrega.`).
+* **Eliminación de Código Innecesario:** Se procedió a borrar directamente una cantidad significativa de código y métodos que no estaban implementados o no eran funcionales, ya que no aportaban valor a los objetivos de este entregable y solo añadían complejidad innecesaria al proyecto.
 * **Decisión de Géneros y Listas:** Para la entidad `Pelicula`, se simplificó el manejo de listas (como géneros, elenco, etc.) para guardar/leer **solo un elemento clave** (el primer género, el primer actor) directamente en las columnas `TEXT` de la tabla `PELICULA`. Esto evita la complejidad de las tablas intermedias para las relaciones **muchos a muchos**, lo cual no es requerido en esta POC.
 * **Métodos Internos (Login):** Se eliminaron métodos como `iniciarSesion()` de las clases `Administrador` y `Cuenta`, ya que la lógica de validación ahora reside en el `UsuarioDAO` (al buscar por credenciales) y en la capa de servicio (`Plataforma` o `Main`).
 
