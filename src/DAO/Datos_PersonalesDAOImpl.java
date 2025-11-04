@@ -129,12 +129,13 @@ public class Datos_PersonalesDAOImpl implements Datos_PersonalesDAO {
         try (Connection conn = ConexionDB.conectar();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, dni);
-            var rs = pstmt.executeQuery();
-            if (rs.next())
-                return new Datos_Personales(rs.getInt("ID"), rs.getString("NOMBRE"), rs.getString("APELLIDO"),
-                        rs.getInt("DNI"));
-            else
-                return null;
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next())
+                    return new Datos_Personales(rs.getInt("ID"), rs.getString("NOMBRE"), rs.getString("APELLIDO"),
+                            rs.getInt("DNI"));
+                else
+                    return null;
+            }
         } catch (SQLException e) {
             System.out.println("Error al buscar los datos personales: " + e.getMessage());
             return null;
@@ -157,12 +158,13 @@ public class Datos_PersonalesDAOImpl implements Datos_PersonalesDAO {
         try (Connection conn = ConexionDB.conectar();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
-            var rs = pstmt.executeQuery();
-            if (rs.next())
-                return new Datos_Personales(rs.getInt("ID"), rs.getString("NOMBRE"), rs.getString("APELLIDO"),
-                        rs.getInt("DNI"));
-            else
-                return null;
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next())
+                    return new Datos_Personales(rs.getInt("ID"), rs.getString("NOMBRE"), rs.getString("APELLIDO"),
+                            rs.getInt("DNI"));
+                else
+                    return null;
+            }
         } catch (SQLException e) {
             System.out.println("Error al buscar los datos personales: " + e.getMessage());
             return null;

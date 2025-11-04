@@ -147,12 +147,13 @@ public class PeliculaDAOImpl implements PeliculaDAO {
         try (Connection conn = ConexionDB.conectar();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
-            var rs = pstmt.executeQuery();
-            if (rs.next()) {
-                Genero generoEnum = Genero.valueOf(rs.getString("GENERO").toUpperCase());
-                return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"),
-                        rs.getInt("DURACION"),
-                        rs.getString("RESUMEN"), generoEnum);
+            try (java.sql.ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    Genero generoEnum = Genero.valueOf(rs.getString("GENERO").toUpperCase());
+                    return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"),
+                            rs.getInt("DURACION"),
+                            rs.getString("RESUMEN"), generoEnum);
+                }
             }
             return null; // No se encontró película con ese ID
         } catch (SQLException e) {

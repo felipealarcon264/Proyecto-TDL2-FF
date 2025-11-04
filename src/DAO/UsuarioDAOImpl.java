@@ -132,21 +132,22 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, email);
             pstmt.setString(2, contrasena);
-            var rs = pstmt.executeQuery();
-            if (rs.next()) {
-                String nombreUsuario = rs.getString("NOMBRE_USUARIO");
-                String rol = rs.getString("ROL");
-                int idDB = rs.getInt("ID");
-                Datos_PersonalesDAOImpl dpImpl = new Datos_PersonalesDAOImpl(); // Para recuperar los datos personales
-                Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
-                if (rol.equals("ADMINISTRADOR")) {
-                    System.out.println("ℹ️ Administrador encontrado [" + nombreUsuario + "]");
-                    return new Entes.Administrador(idDB, nombreUsuario, email, contrasena, dp, rol);
-                } else if (rol.equals("CUENTA")) {
-                    System.out.println("ℹ️ Cuenta encontrada [" + nombreUsuario + "]");
-                    return new Entes.Cuenta(idDB, nombreUsuario, email, contrasena, dp, rol);
-                } else
-                    return null;
+            try (java.sql.ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    String nombreUsuario = rs.getString("NOMBRE_USUARIO");
+                    String rol = rs.getString("ROL");
+                    int idDB = rs.getInt("ID");
+                    Datos_PersonalesDAOImpl dpImpl = new Datos_PersonalesDAOImpl(); // Para recuperar los datos personales
+                    Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
+                    if (rol.equals("ADMINISTRADOR")) {
+                        System.out.println("ℹ️ Administrador encontrado [" + nombreUsuario + "]");
+                        return new Entes.Administrador(idDB, nombreUsuario, email, contrasena, dp, rol);
+                    } else if (rol.equals("CUENTA")) {
+                        System.out.println("ℹ️ Cuenta encontrada [" + nombreUsuario + "]");
+                        return new Entes.Cuenta(idDB, nombreUsuario, email, contrasena, dp, rol);
+                    } else
+                        return null;
+                }
             }
             System.out.println("❌ Usuario no encontrado.");
             return null;
@@ -171,22 +172,23 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         try (java.sql.Connection conn = ConexionDB.conectar();
                 java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, email);
-            var rs = pstmt.executeQuery();
-            if (rs.next()) {
-                int idDB = rs.getInt("ID");
-                String nombreUsuario = rs.getString("NOMBRE_USUARIO");
-                String contrasena = rs.getString("CONTRASENA");
-                String rol = rs.getString("ROL");
-                Datos_PersonalesDAOImpl dpImpl = new Datos_PersonalesDAOImpl();
-                Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
-                if (rol.equals("ADMINISTRADOR")) {
-                    System.out.println("ℹ️ Administrador encontrado [" + nombreUsuario + "]");
-                    return new Entes.Administrador(idDB, nombreUsuario, email, contrasena, dp, rol);
-                } else if (rol.equals("CUENTA")) {
-                    System.out.println("ℹ️ Cuenta encontrada [" + nombreUsuario + "]");
-                    return new Entes.Cuenta(idDB, nombreUsuario, email, contrasena, dp, rol);
-                } else
-                    return null;
+            try (java.sql.ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int idDB = rs.getInt("ID");
+                    String nombreUsuario = rs.getString("NOMBRE_USUARIO");
+                    String contrasena = rs.getString("CONTRASENA");
+                    String rol = rs.getString("ROL");
+                    Datos_PersonalesDAOImpl dpImpl = new Datos_PersonalesDAOImpl();
+                    Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
+                    if (rol.equals("ADMINISTRADOR")) {
+                        System.out.println("ℹ️ Administrador encontrado [" + nombreUsuario + "]");
+                        return new Entes.Administrador(idDB, nombreUsuario, email, contrasena, dp, rol);
+                    } else if (rol.equals("CUENTA")) {
+                        System.out.println("ℹ️ Cuenta encontrada [" + nombreUsuario + "]");
+                        return new Entes.Cuenta(idDB, nombreUsuario, email, contrasena, dp, rol);
+                    } else
+                        return null;
+                }
             }
             System.out.println("❌ Usuario no encontrado.");
             return null;
@@ -265,19 +267,20 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         try (java.sql.Connection conn = ConexionDB.conectar();
                 java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
-            var rs = pstmt.executeQuery();
-            if (rs.next()) {
-                String nombreUsuario = rs.getString("NOMBRE_USUARIO");
-                String email = rs.getString("EMAIL");
-                String contrasena = rs.getString("CONTRASENA");
-                String rol = rs.getString("ROL");
-                Datos_PersonalesDAOImpl dpImpl = new Datos_PersonalesDAOImpl();
-                Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
+            try (java.sql.ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    String nombreUsuario = rs.getString("NOMBRE_USUARIO");
+                    String email = rs.getString("EMAIL");
+                    String contrasena = rs.getString("CONTRASENA");
+                    String rol = rs.getString("ROL");
+                    Datos_PersonalesDAOImpl dpImpl = new Datos_PersonalesDAOImpl();
+                    Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
 
-                if ("ADMINISTRADOR".equals(rol)) {
-                    return new Administrador(id, nombreUsuario, email, contrasena, dp, rol);
-                } else if ("CUENTA".equals(rol)) {
-                    return new Cuenta(id, nombreUsuario, email, contrasena, dp, rol);
+                    if ("ADMINISTRADOR".equals(rol)) {
+                        return new Administrador(id, nombreUsuario, email, contrasena, dp, rol);
+                    } else if ("CUENTA".equals(rol)) {
+                        return new Cuenta(id, nombreUsuario, email, contrasena, dp, rol);
+                    }
                 }
             }
             return null;

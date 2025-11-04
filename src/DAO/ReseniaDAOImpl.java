@@ -120,22 +120,23 @@ public class ReseniaDAOImpl implements ReseniaDAO {
         try (Connection conn = ConexionDB.conectar();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
-            ResultSet rs = pstmt.executeQuery();
+            try (ResultSet rs = pstmt.executeQuery()) {
 
-            if (rs.next()) {
-                UsuarioDAO usuarioDAO = new UsuarioDAOImpl();
-                PeliculaDAO peliculaDAO = new PeliculaDAOImpl();
+                if (rs.next()) {
+                    UsuarioDAO usuarioDAO = new UsuarioDAOImpl();
+                    PeliculaDAO peliculaDAO = new PeliculaDAOImpl();
 
-                Usuario usuario = usuarioDAO.buscarPorId(rs.getInt("ID_USUARIO"));
-                Contenido contenido = peliculaDAO.buscarPorId(rs.getInt("ID_PELICULA"));
+                    Usuario usuario = usuarioDAO.buscarPorId(rs.getInt("ID_USUARIO"));
+                    Contenido contenido = peliculaDAO.buscarPorId(rs.getInt("ID_PELICULA"));
 
-                return new Resenia(
-                        rs.getInt("ID"),
-                        rs.getInt("CALIFICACION"),
-                        rs.getString("COMENTARIO"),
-                        rs.getInt("APROBADO"),
-                        usuario,
-                        contenido);
+                    return new Resenia(
+                            rs.getInt("ID"),
+                            rs.getInt("CALIFICACION"),
+                            rs.getString("COMENTARIO"),
+                            rs.getInt("APROBADO"),
+                            usuario,
+                            contenido);
+                }
             }
             return null;
         } catch (SQLException e) {
