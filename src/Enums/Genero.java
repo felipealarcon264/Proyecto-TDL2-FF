@@ -1,4 +1,4 @@
-package Enums;
+package enums;
 
 /**
  * Enumeración que representa los géneros de contenido audiovisual.

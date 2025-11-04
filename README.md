@@ -2,7 +2,7 @@ ACLARACION IMPORTANTE: LAS ANOTACIONES SE HICIERON MEDIANTE EL USO DE NOTAS DE V
 
 ---
 
-PARA EJECUTAR EL .JAR DESDE LA CARPETA DEL PROYECTO: java -cp "TDL2.jar:lib/sqlite-jdbc-3.50.3.0.jar" Control.Main
+PARA EJECUTAR EL .JAR DESDE LA CARPETA DEL PROYECTO: java -cp "TDL2.jar:lib/sqlite-jdbc-3.50.3.0.jar" control.Main
 
 
 ---
@@ -35,7 +35,7 @@ Se tomó la decisión de **no crear tablas separadas** para `Administrador` y `C
 * **Columna Discriminadora:** Se añadió el campo `rol` (String) a la clase `Usuario` y a la tabla, el cual indica si la instancia recuperada es un **'ADMINISTRADOR'** o una **'CUENTA'**.
 * **DAO Polimórfico:** El método `buscarPorEmailyContrasena` (o similar) en el `UsuarioDAO` lee este campo `rol` y, en función de su valor, devuelve la instancia concreta correcta (`new Entes.Administrador(...)` o `new Entes.Cuenta(...)`).
 
-### B. Gestión de Identidad (ID y Claves Foráneas)
+### B. GestiÃ³n de Identidad (ID y Claves ForÃ¡neas)
 
 Se implementó una estrategia robusta para manejar la identidad de los objetos:
 

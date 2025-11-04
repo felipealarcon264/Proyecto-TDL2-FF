@@ -1,6 +1,6 @@
-package Catalogo;
+package catalogo;
 
-import Enums.Genero;
+import enums.Genero;
 
 /**
  * Representa una Película dentro de la plataforma.

@@ -1,13 +1,17 @@
-package Control;
+package control;
 
 import java.util.Scanner;
 
-import Catalogo.Pelicula;
-import Catalogo.Resenia;
-import Entes.Administrador;
-import Entes.Cuenta;
-import Entes.Usuario;
-import Servicio.CargadoresyComunicacionDB;
+import ente.Administrador;
+import ente.Cuenta;
+
+import catalogo.Pelicula;
+import catalogo.Resenia;
+import ente.Usuario;
+import servicio.ServicioPelicula;
+import servicio.ServicioResenia;
+import servicio.ServicioUsuario;
+
 
 /**
  * Gestiona los menús y la interacción con el usuario para las diferentes
@@ -21,18 +25,21 @@ public class MenuManager {
     /**
      * Constructor por defecto.
      */
-    public MenuManager(){
+    public MenuManager() {
     }
 
     /**
      * Simula la sesión de un administrador, mostrando su menú de opciones.
      * 
-     * @param in         El Scanner para leer la entrada del usuario.
-     * @param adm        El objeto Administrador que ha iniciado sesión.
-     * @param plataforma La instancia principal de la plataforma.
+     * @param in  El Scanner para leer la entrada del usuario.
+     * @param adm El objeto Administrador que ha iniciado sesión.
      */
-    public static void simulacionAdm(Scanner in, Administrador adm, Plataforma plataforma) {
+    public void simulacionAdm(Scanner in, Administrador adm) {
         System.out.println("👋 ¡Hola, Administrador " + adm.getDatosPersonales().getNombre() + "!");
+        ServicioPelicula servicioPelicula = new ServicioPelicula();
+        ServicioUsuario servicioUsuario = new ServicioUsuario();
+        ServicioResenia servicioResenia = new ServicioResenia();
+
         while (true) {
             System.out.println("\n--- Menú de Administrador ---");
             System.out.println("1. Agregar película");
@@ -45,50 +52,49 @@ public class MenuManager {
 
             String opcion = in.nextLine();
             String aux;
-            CargadoresyComunicacionDB cargadores = new CargadoresyComunicacionDB();
-
             switch (opcion) {
                 case "1":
-                    plataforma.cargarYguardarPelicula(in);
+                    servicioPelicula.cargarYguardarPelicula(in);
                     break;
 
                 case "2":
                     System.out.println("\n--- 🎬 Lista de Películas 🎬 ---");
-                    java.util.List<Pelicula> peliculas = plataforma.getPeliDAO().devolverListaPelicula();
+                    java.util.List<Pelicula> peliculas = servicioPelicula.getPeliculaDao().devolverListaPelicula();
                     if (peliculas != null && !peliculas.isEmpty()) {
                         for (Pelicula pelicula : peliculas) {
                             System.out.println(pelicula + "\n");
                         }
                         System.out.print("👉 Ingresa el título EXACTO de la película a eliminar: ");
                         aux = in.nextLine();
-                        Pelicula peliculaAEliminar = plataforma.getPeliDAO().buscarPorTitulo(aux);
+                        Pelicula peliculaAEliminar = servicioPelicula.getPeliculaDao().buscarPorTitulo(aux);
                         if (peliculaAEliminar != null) {
-                            plataforma.eliminarPelicula(peliculaAEliminar);
+                            servicioPelicula.eliminarPelicula(peliculaAEliminar);
                         }
                     } else
                         System.out.println("ℹ️ No hay películas para mostrar.");
                     break;
                 case "3":
-                    plataforma.ordenarListaUsuario(in);
+                    servicioUsuario.ordenarListaUsuario(in);
                     // La lista ya se muestra dentro del método ordenarListaUsuario.
                     break;
                 case "4":
                     System.out.println("\n--- 👥 Lista de Usuarios 👥 ---");
-                    java.util.List<Usuario> usuarios = plataforma.getUsrDAO().devolverListaUsuarios();
+                    java.util.List<Usuario> usuarios = servicioUsuario.getUsuarioDao().devolverListaUsuarios();
                     for (Usuario usuario : usuarios) {
                         System.out.println(usuario + "\n");
                     }
                     System.out.print("👉 Ingresa el email EXACTO del usuario a eliminar: ");
                     aux = in.nextLine();
-                    Usuario usuarioAEliminar = plataforma.getUsrDAO().buscarPorEmail(aux);
+                    Usuario usuarioAEliminar = servicioUsuario.getUsuarioDao().buscarPorEmail(aux);
                     if (usuarioAEliminar != null) {
-                        plataforma.eliminarUsuario(usuarioAEliminar);
+                        servicioUsuario.eliminarUsuario(usuarioAEliminar);
                     }
                     break;
 
                 case "5":
                     System.out.println("\n--- ⚖️ Gestionar Reseñas ⚖️ ---");
-                    java.util.List<Resenia> todasLasResenias = plataforma.getResDAO().devolverListaResenia();
+                    java.util.List<Resenia> todasLasResenias = servicioResenia.getReseniaDAOImpl()
+                            .devolverListaResenia();
 
                     if (todasLasResenias == null || todasLasResenias.isEmpty()) {
                         System.out.println("ℹ️ No hay reseñas para gestionar.");
@@ -102,7 +108,7 @@ public class MenuManager {
                     }
                     System.out.println("\n0. Cancelar operación");
 
-                    int seleccion = cargadores.ingresarNumeroValido(in,
+                    int seleccion = ingresarNumeroValido(in,
                             "👉 Ingresa el número de la reseña (0 para cancelar): ", 0, todasLasResenias.size());
 
                     if (seleccion == 0) {
@@ -112,7 +118,7 @@ public class MenuManager {
 
                     Resenia reseniaSeleccionada = todasLasResenias.get(seleccion - 1);
                     reseniaSeleccionada.setAprobado(1 - reseniaSeleccionada.getAprobado());
-                    plataforma.actualizarEstadoResenia(reseniaSeleccionada);
+                    servicioResenia.actualizarEstadoResenia(reseniaSeleccionada);
                     break;
                 case "6":
                     System.out.println("🚪 Cerrando sesión...");
@@ -132,7 +138,10 @@ public class MenuManager {
      * @param cta        El objeto Cuenta que ha iniciado sesión.
      * @param plataforma La instancia principal de la plataforma.
      */
-    public static void simulacionCta(Scanner in, Cuenta cta, Plataforma plataforma) {
+    public void simulacionCta(Scanner in, Cuenta cta) {
+        ServicioPelicula servicioPelicula = new ServicioPelicula();
+        ServicioResenia servicioResenia = new ServicioResenia();
+
         System.out.println("👋 ¡Hola, " + cta.getDatosPersonales().getNombre() + "!");
         while (true) {
             System.out.println("\n--- Menú de Cuenta ---");
@@ -144,29 +153,27 @@ public class MenuManager {
             System.out.print("Ingrese su opción (1-5): ");
 
             String opcion = in.nextLine();
-            CargadoresyComunicacionDB cargadores = new CargadoresyComunicacionDB();
-
             switch (opcion) {
                 case "1":
-                    plataforma.ordenarListaPelicula(in);
-                    java.util.List<Pelicula> listaPeliculas = plataforma.getPeliDAO().devolverListaPelicula();
+                    servicioPelicula.ordenarListaPelicula(in);
+                    java.util.List<Pelicula> listaPeliculas = servicioPelicula.getPeliculaDao().devolverListaPelicula();
                     for (Pelicula pelicula : listaPeliculas) {
                         System.out.println(pelicula + "\n");
                     } // La lista se muestra aquí también por si el usuario no quiere ordenar.
                     break;
                 case "2":
-                    plataforma.cargarYguardarReseña(in, cta);
+                    servicioResenia.cargarYguardarReseña(in, cta);
                     break;
                 case "3":
                     System.out.println("\n--- ✍️ Mis Reseñas ✍️ ---");
-                    boolean encontradas = plataforma.mostrarReseniasDeUsuario(cta.getIdDB());
+                    boolean encontradas = servicioResenia.mostrarReseniasDeUsuario(cta.getIdDB());
                     if (!encontradas) {
                         System.out.println("ℹ️ Aún no has creado ninguna reseña.");
                     }
                     break;
                 case "4":
                     System.out.println("\n--- 🗑️ Eliminar Reseña 🗑️ ---");
-                    java.util.List<Resenia> misResenias = plataforma.obtenerReseniasDeUsuario(cta.getIdDB());
+                    java.util.List<Resenia> misResenias = servicioResenia.obtenerReseniasDeUsuario(cta.getIdDB());
 
                     if (misResenias.isEmpty()) {
                         System.out.println("ℹ️ No tienes reseñas para eliminar.");
@@ -180,7 +187,7 @@ public class MenuManager {
                     }
                     System.out.println("\n0. Cancelar operación");
 
-                    int seleccion = cargadores.ingresarNumeroValido(in,
+                    int seleccion = ingresarNumeroValido(in,
                             "👉 Ingresa el número de la reseña a eliminar (0 para cancelar): ", 0, misResenias.size());
 
                     if (seleccion == 0) {
@@ -188,7 +195,7 @@ public class MenuManager {
                         break;
                     }
 
-                    plataforma.eliminarResenia(misResenias.get(seleccion - 1));
+                    servicioResenia.eliminarResenia(misResenias.get(seleccion - 1));
                     break;
                 case "5":
                     System.out.println("🚪 Cerrando sesión...");
@@ -197,6 +204,56 @@ public class MenuManager {
                     System.out.println("-------------------------------------");
                     System.out.println("Error: Opción no válida. Intente de nuevo.");
                     System.out.println("-------------------------------------");
+            }
+        }
+    }
+
+    /**
+     * Pide al usuario que ingrese un número entero y valida que esté en un rango.
+     * Pide reintentar si se ingresa algo que no es un número o está fuera de rango.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
+     * @param scanner El objeto Scanner ya inicializado.
+     * @param mensaje El mensaje a mostrar al usuario.
+     * @param min     El valor mínimo inclusivo.
+     * @param max     El valor máximo inclusivo.
+     * @return El número entero válido ingresado por el usuario.
+     */
+    private int ingresarNumeroValido(Scanner scanner, String mensaje, int min, int max) {
+        int numero;
+        while (true) {
+            numero = ingresarNumeroValido(scanner, mensaje);
+            if (numero >= min && numero <= max) {
+                return numero;
+            }
+            System.out.println("❌ Número fuera de rango. Debe ser entre " + min + " y " + max + ". Intente de nuevo.");
+        }
+    }
+
+    /**
+     * Pide al usuario que ingrese un número entero y valida la entrada.
+     * Pide reintentar si se ingresa algo que no es un número.
+     * 
+     * @author Gemini.
+     * @version 1.0.
+     * 
+     * @param scanner El objeto Scanner ya inicializado.
+     * @param mensaje El mensaje a mostrar al usuario para solicitar la entrada.
+     * @return El número entero válido ingresado por el usuario.
+     */
+    private int ingresarNumeroValido(Scanner scanner, String mensaje) {
+        int numero;
+        while (true) {
+            System.out.print(mensaje);
+            String linea = scanner.nextLine(); // Leer siempre la línea completa.
+            try {
+                numero = Integer.parseInt(linea); // Intentar convertir la línea a entero.
+                return numero; // Si tiene éxito, devolver el número y salir del método.
+            } catch (NumberFormatException e) {
+                // Si la conversión falla, es porque no se ingresó un número válido.
+                System.out.println("❌ Entrada no válida. Por favor, ingrese solo números enteros.");
             }
         }
     }

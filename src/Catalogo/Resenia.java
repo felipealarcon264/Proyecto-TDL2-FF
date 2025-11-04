@@ -1,6 +1,6 @@
-package Catalogo;
+package catalogo;
 
-import Entes.Usuario;
+import ente.Usuario;
 
 /**
  * Representa una reseña hecha por un usuario sobre un contenido específico.

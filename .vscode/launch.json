@@ -4,22 +4,26 @@
     // Para obtener más información, visite: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
         {
             "type": "java",
-            "name": "Current File", // Configuración para ejecutar el archivo actual
+            "name": "Aplicacion",
             "request": "launch",
-            "mainClass": "${file}"
-            // Podrías añadir vmArgs aquí también si ejecutas archivos individuales que usen SQLite
-            // "vmArgs": "--enable-native-access=ALL-UNNAMED" 
+            "mainClass": "control.Aplicacion",
+            "projectName": "Proyecto-TDL2-FF_44c2c3f9"
         },
         {
             "type": "java",
-            "name": "Main", // Configuración específica para tu clase Main
+            "name": "Current File",
             "request": "launch",
-            "mainClass": "Control.Main", // Tu clase principal
-            "projectName": "Proyecto-TDL2-FF_44c2c3f9", // El nombre de tu proyecto
-            "vmArgs": "--enable-native-access=ALL-UNNAMED" // <-- LÍNEA AÑADIDA AQUÍ
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "Control.Main",
+            "projectName": "Proyecto-TDL2-FF_44c2c3f9",
+            "vmArgs": "--enable-native-access=ALL-UNNAMED"
         }
     ]
 }

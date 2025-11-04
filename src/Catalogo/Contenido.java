@@ -1,6 +1,6 @@
-package Catalogo;
+package catalogo;
 
-import Enums.Genero;
+import enums.Genero;
 
 /**
  * Clase base abstracta para todo el contenido audiovisual de la plataforma.
