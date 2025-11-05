@@ -6,10 +6,10 @@ import java.util.List;
 import dao.interfaces.UsuarioDAO;
 import basededatos.ConexionDB;
 
-import ente.Administrador;
-import ente.Cuenta;
-import ente.Datos_Personales;
-import ente.Usuario;
+import modelo.ente.Administrador;
+import modelo.ente.Cuenta;
+import modelo.ente.Datos_Personales;
+import modelo.ente.Usuario;
 
 /**
  * Implementacion de la interfaz UsuarioDAO
@@ -88,7 +88,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
      * 
      */
     @Override
-    public boolean borrar(ente.Usuario usr) {
+    public boolean borrar(modelo.ente.Usuario usr) {
         if (usr == null || usr.getIdDB() <= 0) {
             System.out.println("❌ El usuario es nulo o inválido. No se puede borrar.");
             return false;
@@ -128,7 +128,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
      * @return Usuario si lo encuentra, null en caso contrario.
      */
     @Override
-    public ente.Usuario buscarPorEmailyContrasena(String email, String contrasena) {
+    public modelo.ente.Usuario buscarPorEmailyContrasena(String email, String contrasena) {
         String sql = "SELECT * FROM USUARIO WHERE EMAIL = ? AND CONTRASENA = ?";
         try (java.sql.Connection conn = ConexionDB.conectar();
                 java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -143,10 +143,10 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                     Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
                     if (rol.equals("ADMINISTRADOR")) {
                         System.out.println("â„¹ï¸ Administrador encontrado [" + nombreUsuario + "]");
-                        return new ente.Administrador(idDB, nombreUsuario, email, contrasena, dp, rol);
+                        return new modelo.ente.Administrador(idDB, nombreUsuario, email, contrasena, dp, rol);
                     } else if (rol.equals("CUENTA")) {
                         System.out.println("â„¹ï¸ Cuenta encontrada [" + nombreUsuario + "]");
-                        return new ente.Cuenta(idDB, nombreUsuario, email, contrasena, dp, rol);
+                        return new modelo.ente.Cuenta(idDB, nombreUsuario, email, contrasena, dp, rol);
                     } else
                         return null;
                 }
@@ -184,10 +184,10 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                     Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
                     if (rol.equals("ADMINISTRADOR")) {
                         System.out.println("â„¹ï¸ Administrador encontrado [" + nombreUsuario + "]");
-                        return new ente.Administrador(idDB, nombreUsuario, email, contrasena, dp, rol);
+                        return new modelo.ente.Administrador(idDB, nombreUsuario, email, contrasena, dp, rol);
                     } else if (rol.equals("CUENTA")) {
                         System.out.println("â„¹ï¸ Cuenta encontrada [" + nombreUsuario + "]");
-                        return new ente.Cuenta(idDB, nombreUsuario, email, contrasena, dp, rol);
+                        return new modelo.ente.Cuenta(idDB, nombreUsuario, email, contrasena, dp, rol);
                     } else
                         return null;
                 }

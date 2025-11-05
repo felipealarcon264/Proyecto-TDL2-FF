@@ -1,8 +1,8 @@
 package dao.interfaces;
 
-import java.util.List;
+import modelo.catalogo.Resenia;
 
-import catalogo.Resenia;
+import java.util.List;
 
 /**
  * Interfaz DAO para la gestión de reseñas.

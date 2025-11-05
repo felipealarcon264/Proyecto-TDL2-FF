@@ -1,14 +1,14 @@
 package servicio;
 
-import java.util.List;
-import java.util.Scanner;
-
-import catalogo.Pelicula;
+import modelo.catalogo.Pelicula;
 import comparadores.ComparadorPeliculaPorDuracion;
 import comparadores.ComparadorPeliculaPorGenero;
 import comparadores.ComparadorPeliculaPorTitulo;
 import dao.implementaciones.PeliculaDAOImpl;
-import enums.Genero;
+import modelo.enums.Genero;
+
+import java.util.List;
+import java.util.Scanner;
 
 public class ServicioPelicula {
     PeliculaDAOImpl peliculaDao;

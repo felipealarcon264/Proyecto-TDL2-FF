@@ -2,7 +2,7 @@ package dao.interfaces;
 
 import java.util.List;
 
-import ente.Usuario;
+import modelo.ente.Usuario;
 
 /**
  * Interfaz DAO para la gestión de usuarios.

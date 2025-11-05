@@ -2,7 +2,7 @@ package comparadores;
 
 import java.util.Comparator;
 
-import catalogo.Pelicula;
+import modelo.catalogo.Pelicula;
 
 /**
  * Implementación de Comparator para ordenar objetos Pelicula
@@ -30,7 +30,7 @@ public class ComparadorPeliculaPorDuracion implements Comparator<Pelicula> {
 
     @Override
     public int compare(Pelicula p1, Pelicula p2) {
-        // Integer.compare es la forma estándar y segura de comparar dos enteros.
+        // "Integer. compare" es la forma estándar y segura de comparar dos enteros.
         return Integer.compare(p1.getDuracion(), p2.getDuracion());
     }
 }

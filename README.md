@@ -71,7 +71,27 @@ Se estableció una regla de negocio estricta entre las entidades `Usuario` y `Da
 * **Lógica de Aprobación:** Al registrarse, la reseña se guarda en la base de datos en estado **sin aprobar** (mediante la columna `APROBADO` en la tabla `RESENIA`).
 * **Permisos (Roles):** La creación de la reseña y su posterior eliminación son exclusivas de la `Cuenta` que la creó. La aprobación o desaprobación queda a cargo del `Administrador`.
 
+## IV. Refactorización y Mejoras de Arquitectura (Post-Corrección)
 
+Sección destinada a registrar las mejoras y refactorizaciones aplicadas al código base después de la corrección del Entregable 2, siguiendo las pautas de la cátedra.
+
+---
+
+### 2025-11-05: Refactorización de Arquitectura de Capas
+
+Siguiendo las correcciones, se realizó una refactorización profunda de la estructura de paquetes para implementar una arquitectura de capas (Controlador-Servicio-DAO) más clara y mantenible.
+
+* **Agrupación del Modelo:** Se consolidaron todos los paquetes relacionados con el modelo de datos (`ente`, `catalogo`, `enums`) dentro de un paquete principal `modelo`.
+    * **Razón:** Mejorar la cohesión y seguir la convención de agrupar todas las entidades de negocio (`modelo.ente`), objetos de datos (`modelo.catalogo`) y enumeraciones (`modelo.enums`) en una única ubicación central.
+
+* **Creación de la Capa de Servicio:** Se creó el paquete `servicio`.
+    * **Razón:** Albergar toda la lógica de negocio (validaciones, orquestación de DAOs), desacoplando esta responsabilidad de la capa de control.
+
+* **Separación de la Capa DAO:** Se aplicó el Patrón de Diseño DAO de forma estricta. El paquete `dao` ahora se divide en `dao.interfaces` (los contratos o "qué" se puede hacer) y `dao.implementaciones` (la lógica JDBC o "cómo" se hace).
+    * **Razón:** Separar la abstracción de la implementación, una práctica estándar que facilita el mantenimiento y fue un punto clave de la corrección.
+
+* **Simplificación del Controlador:** Se eliminó la clase `Plataforma` y se renombró la clase `Main` a `Aplicacion`.
+    * **Razón:** Centralizar el punto de entrada y el flujo principal en `Aplicacion`, eliminando la clase `Plataforma` que resultaba redundante, tal como se indicó en la corrección.
 
 
 COMANDO SQL DE PRUEBA.

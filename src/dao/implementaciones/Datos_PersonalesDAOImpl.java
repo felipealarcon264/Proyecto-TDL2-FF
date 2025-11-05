@@ -1,18 +1,13 @@
 package dao.implementaciones;
 
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import basededatos.ConexionDB;
+import dao.interfaces.Datos_PersonalesDAO;
+import modelo.ente.Datos_Personales;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-
-import dao.interfaces.Datos_PersonalesDAO;
-import basededatos.ConexionDB;
-import ente.Datos_Personales;
 
 /**
  * Implementación de la interfaz Datos_PersonalesDAO para la gestión de datos

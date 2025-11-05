@@ -2,7 +2,7 @@ package dao.interfaces;
 
 import java.util.List;
 
-import ente.Datos_Personales;
+import modelo.ente.Datos_Personales;
 
 /**
  * Interfaz DAO para la gestión de datos personales.

@@ -1,9 +1,9 @@
 package servicio;
 
-import java.util.Scanner;
-
 import dao.implementaciones.Datos_PersonalesDAOImpl;
-import ente.Datos_Personales;
+import modelo.ente.Datos_Personales;
+
+import java.util.Scanner;
 
 
 public class ServicioDatos_Personales {

@@ -1,14 +1,15 @@
 package dao.implementaciones;
 
+import basededatos.ConexionDB;
+import modelo.catalogo.Pelicula;
+import dao.interfaces.PeliculaDAO;
+import modelo.enums.Genero;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import enums.Genero;
-import dao.interfaces.PeliculaDAO;
-import basededatos.ConexionDB;
-import catalogo.Pelicula;
 
 /**
  * Implementacion de la interfaz PeliculaDAO

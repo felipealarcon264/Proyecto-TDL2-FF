@@ -49,7 +49,7 @@ public class InicializadorDB {
                             TITULO TEXT(100) NOT NULL,
                             RESUMEN TEXT(500),
                             DIRECTOR TEXT(100) NOT NULL,
-                            DURACION REAL NOT NULL
+                            DURACION INTEGER NOT NULL
                         );
                     """;
             stmt.executeUpdate(sql);
@@ -58,7 +58,7 @@ public class InicializadorDB {
                         CREATE TABLE IF NOT EXISTS USUARIO (
                             ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                             NOMBRE_USUARIO TEXT NOT NULL,
-                            EMAIL TEXT NOT NULL,
+                            EMAIL TEXT NOT NULL UNIQUE,
                             CONTRASENA TEXT NOT NULL,
                             ID_DATOS_PERSONALES INTEGER NOT NULL,
                             ROL TEXT NOT NULL,

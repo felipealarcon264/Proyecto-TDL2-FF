@@ -2,7 +2,7 @@ package comparadores;
 
 import java.util.Comparator;
 
-import catalogo.Pelicula;
+import modelo.catalogo.Pelicula;
 
 /**
  * Implementación de Comparator para ordenar objetos Pelicula

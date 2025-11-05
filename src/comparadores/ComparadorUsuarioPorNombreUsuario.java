@@ -2,7 +2,7 @@ package comparadores;
 
 import java.util.Comparator;
 
-import ente.Usuario;
+import modelo.ente.Usuario;
 
 /**
  * Implementación de Comparator para ordenar objetos Usuario

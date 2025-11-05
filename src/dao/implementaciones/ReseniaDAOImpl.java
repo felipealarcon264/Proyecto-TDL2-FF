@@ -1,23 +1,19 @@
 package dao.implementaciones;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import basededatos.ConexionDB;
 import dao.interfaces.PeliculaDAO;
 import dao.interfaces.ReseniaDAO;
 import dao.interfaces.UsuarioDAO;
-import ente.Datos_Personales;
-import ente.Usuario;
-import catalogo.Contenido;
-import catalogo.Resenia;
+import modelo.catalogo.Pelicula;
+import modelo.catalogo.Resenia;
+import modelo.ente.Datos_Personales;
+import modelo.ente.Usuario;
+import modelo.catalogo.Contenido;
+
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implementacion de la interfaz ReseniaDAO para la gestión de reseñas en la
@@ -185,17 +181,17 @@ public class ReseniaDAOImpl implements ReseniaDAO {
                 // Reconstruir Usuario (Cuenta o Administrador)
                 Usuario usuario = null;
                 if ("CUENTA".equals(rs.getString("ROL"))) {
-                    usuario = new ente.Cuenta(rs.getInt("usuario_id"), rs.getString("NOMBRE_USUARIO"),
+                    usuario = new modelo.ente.Cuenta(rs.getInt("usuario_id"), rs.getString("NOMBRE_USUARIO"),
                             rs.getString("EMAIL"), rs.getString("CONTRASENA"), dp, rs.getString("ROL"));
                 } else { // Asumimos que si no es CUENTA, es ADMINISTRADOR
-                    usuario = new ente.Administrador(rs.getInt("usuario_id"), rs.getString("NOMBRE_USUARIO"),
+                    usuario = new modelo.ente.Administrador(rs.getInt("usuario_id"), rs.getString("NOMBRE_USUARIO"),
                             rs.getString("EMAIL"), rs.getString("CONTRASENA"), dp, rs.getString("ROL"));
                 }
 
                 // Reconstruir Pelicula
-                catalogo.Pelicula pelicula = new catalogo.Pelicula(rs.getInt("pelicula_id"), rs.getString("TITULO"),
+                Pelicula pelicula = new Pelicula(rs.getInt("pelicula_id"), rs.getString("TITULO"),
                         rs.getString("DIRECTOR"), rs.getInt("DURACION"), rs.getString("RESUMEN"),
-                        enums.Genero.valueOf(rs.getString("GENERO")));
+                        modelo.enums.Genero.valueOf(rs.getString("GENERO")));
 
                 // Reconstruir Resenia y añadirla a la lista
                 lista.add(new Resenia(rs.getInt("resenia_id"), rs.getInt("CALIFICACION"), rs.getString("COMENTARIO"),

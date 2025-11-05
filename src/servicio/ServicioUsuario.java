@@ -1,29 +1,30 @@
 package servicio;
 
+import comparadores.ComparadorUsuarioPorEmail;
+import comparadores.ComparadorUsuarioPorNombreUsuario;
+import dao.implementaciones.Datos_PersonalesDAOImpl;
+import dao.implementaciones.UsuarioDAOImpl;
+import modelo.ente.Administrador;
+import modelo.ente.Cuenta;
+import modelo.ente.Datos_Personales;
+import modelo.ente.Usuario;
+
 import java.util.List;
 import java.util.Scanner;
 
-import comparadores.ComparadorUsuarioPorEmail;
-import comparadores.ComparadorUsuarioPorNombreUsuario;
-import dao.implementaciones.UsuarioDAOImpl;
-import ente.Administrador;
-import ente.Cuenta;
-import ente.Datos_Personales;
-import ente.Usuario;
-
 public class ServicioUsuario {
     UsuarioDAOImpl usuarioDao;
-
+    Datos_PersonalesDAOImpl datosPersonalesDao;
     public ServicioUsuario() {
         this.usuarioDao = new UsuarioDAOImpl();
     }
 
     /**
      * Valida si un correo existe en la lista de usuarios de la base de datos.
-     * 
+     *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
-     * 
+     *
      * @param correo El correo a verificar.
      * @return true si el correo existe, false en caso contrario.
      */
@@ -48,10 +49,10 @@ public class ServicioUsuario {
      * Verifica si un correo electrónico ya está registrado en la base de datos.
      * Siempre suponemos que un correo no se puede ingresar dos veces por lo que
      * a la primera coincidencia retorna true.
-     * 
+     *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
-     * 
+     *
      * @param correo     El correo a validar.
      * @param contrasena La contraseña a validar.
      * @return true si el correo está registrado, false en caso
@@ -78,10 +79,10 @@ public class ServicioUsuario {
     /**
      * Reemplazo de agregarUsuario.
      * Crea un usario y lo carga en la base de datos.
-     * 
+     *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
-     * 
+     *
      * @param scanner El Scanner para leer la entrada del usuario.
      */
     public void cargarYguardarAdministrador(Scanner scanner) {
@@ -102,10 +103,10 @@ public class ServicioUsuario {
      * puede generar errores futuros.
      * Los correos se guardan en minuscula.
      * Se puede cancelar.
-     * 
+     *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
-     * 
+     *
      * @param scanner El Scanner para leer la entrada del usuario.
      *                existentes. (Ya no se pasa la lista)
      * @return Un objeto Administrador generado, o null si se cancela la carga.
@@ -160,12 +161,12 @@ public class ServicioUsuario {
 
     /**
      * Crea un usario y lo carga en la base de datos.
-     * 
+     *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
-     * 
+     *
      * @param scanner Entrada por teclado.
-     * 
+     *
      */
     public void cargarYguardarCuenta(Scanner scanner) {
         Cuenta cta = cargaCuenta(scanner);
@@ -184,10 +185,10 @@ public class ServicioUsuario {
      * la base da datos. De alguna manera si o si se tiene que lograr la carga sino
      * puede generar errores futuros.
      * Se puede cancelar.
-     * 
+     *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
-     * 
+     *
      * @param scanner El Scanner para leer la entrada del usuario.
      *                existentes. (Ya no se pasa la lista)
      * @return Un objeto Cuenta generado, o null si se cancela la carga.
@@ -243,10 +244,10 @@ public class ServicioUsuario {
     /**
      * Pregunta por pantalla que manera de ordenacion de la lista de Usuarios se
      * requiere.
-     * 
+     *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
-     * 
+     *
      * @param in El Scanner para leer la entrada del usuario.
      */
     public void ordenarListaUsuario(Scanner in) {
@@ -280,10 +281,10 @@ public class ServicioUsuario {
     /**
      * Elimina un usuario existente de la base de datos.
      * Los mensajes seran emitidos por el metodo borrar.
-     * 
+     *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
-     * 
+     *
      * @param usuario El usuario a eliminar.
      * @return true si se pudo borrar de la DB y de la lista, false en caso
      *         contrario.
@@ -294,10 +295,10 @@ public class ServicioUsuario {
 
     /**
      * Solicita al usuario la confirmación de los datos ingresados.
-     * 
+     *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
-     * 
+     *
      * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
      * @return true si el usuario confirma, false en caso contrario.
      */
@@ -320,7 +321,7 @@ public class ServicioUsuario {
      *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
-     * 
+     *
      * @param email El correo electrónico (String) a verificar.
      * @return true si el email cumple las condiciones simples, false en caso
      *         contrario.
@@ -353,10 +354,10 @@ public class ServicioUsuario {
      * Verifica si un correo electrónico ya está registrado en la base de datos.
      * Siempre suponemos que un correo no se puede ingresar dos veces por lo que
      * a la primera coincidencia retorna true.
-     * 
+     *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
-     * 
+     *
      * @param correo       El correo a validar.
      * @param listaUSuario Se pide a la base de datos.
      * @return true si el correo está registrado, false en caso

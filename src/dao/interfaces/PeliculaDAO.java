@@ -1,8 +1,8 @@
 package dao.interfaces;
 
-import java.util.List;
+import modelo.catalogo.Pelicula;
 
-import catalogo.Pelicula;
+import java.util.List;
 
 /**
  * Interfaz DAO para la gestión de películas.

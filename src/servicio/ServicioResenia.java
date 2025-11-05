@@ -1,13 +1,14 @@
 package servicio;
 
-import java.util.List;
-import java.util.Scanner;
-
-import catalogo.Pelicula;
-import catalogo.Resenia;
+import dao.interfaces.PeliculaDAO;
+import modelo.catalogo.Pelicula;
+import modelo.catalogo.Resenia;
 import dao.implementaciones.PeliculaDAOImpl;
 import dao.implementaciones.ReseniaDAOImpl;
-import ente.Usuario;
+import modelo.ente.Usuario;
+
+import java.util.List;
+import java.util.Scanner;
 
 public class ServicioResenia {
     ReseniaDAOImpl reseniaDao;
