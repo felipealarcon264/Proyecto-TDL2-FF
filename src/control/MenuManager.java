@@ -6,9 +6,8 @@ import modelo.ente.Administrador;
 import modelo.ente.Cuenta;
 import modelo.ente.Usuario;
 import servicio.ServicioPelicula;
-import servicio.ServicioResenia;
 import servicio.ServicioUsuario;
-
+import servicio.ServicioResenia;
 import java.util.Scanner;
 
 
@@ -53,7 +52,7 @@ public class MenuManager {
             String aux;
             switch (opcion) {
                 case "1":
-                    servicioPelicula.cargarYguardarPelicula(in);
+                    servicioPelicula.cargarYGuardarPelicula(in);
                     break;
 
                 case "2":

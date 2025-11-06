@@ -3,18 +3,21 @@ package servicio;
 import dao.interfaces.PeliculaDAO;
 import modelo.catalogo.Pelicula;
 import modelo.catalogo.Resenia;
-import dao.implementaciones.PeliculaDAOImpl;
-import dao.implementaciones.ReseniaDAOImpl;
+import dao.FactoryDAO;
+import dao.interfaces.ReseniaDAO;
 import modelo.ente.Usuario;
+
 
 import java.util.List;
 import java.util.Scanner;
 
 public class ServicioResenia {
-    ReseniaDAOImpl reseniaDao;
+    ReseniaDAO reseniaDAO;
+    PeliculaDAO peliculaDAO;
 
     public ServicioResenia() {
-        this.reseniaDao = new ReseniaDAOImpl();
+        this.reseniaDAO = FactoryDAO.getReseniaDAO();
+        this.peliculaDAO = FactoryDAO.getPeliculaDAO();
     }
 
     /**
@@ -30,13 +33,13 @@ public class ServicioResenia {
      */
     public void cargarYguardarReseña(Scanner scanner, Usuario usuario) {
         Resenia reseña = cargaResenia(scanner, usuario);
-        reseniaDao.guardar(reseña); // Si es null, el DAO se encarga de dar error.
+        reseniaDAO.guardar(reseña); // Si es null, el DAO se encarga de dar error.
     }
 
     /**
-     * Carga de una resenia por teclado.
+     * Carga de una reseña por teclado.
      * Importante se le envia una lista de peliculas/contenidos para decidir a cual
-     * hacer la resenia.
+     * hacer la reseña.
      * se asegura que el indice seleccionado sea valido.
      * 
      * @author Grupo 4 - Proyecto TDL2
@@ -50,7 +53,7 @@ public class ServicioResenia {
     public Resenia cargaResenia(Scanner scanner, Usuario usuario) {
         String comentario;
         int seleccionPelicula;
-        List<Pelicula> listaPelicula = new PeliculaDAOImpl().devolverListaPelicula(); // Se obtiene la lista de la DB
+        List<Pelicula> listaPelicula = peliculaDAO.devolverListaPelicula(); // Se obtiene la lista de la DB
         System.out.println("\n--- ✍️ Carga de Reseña ✍️ ---");
         if (listaPelicula == null || listaPelicula.isEmpty()) {
             System.out.println("ℹ️ No hay películas disponibles para reseñar.");
@@ -75,7 +78,7 @@ public class ServicioResenia {
         System.out.println("Resenia para la pelicula [" + listaPelicula.get(indiceSeleccionado).getTitulo() + "]");
         int calificacion;
         do {
-            calificacion = this.ingresarNumeroValido(scanner, "Ingrese la calificacion (0-5): ");
+            calificacion = this.ingresarNumeroValido(scanner, "Ingrese la calificación (0-5): ");
             if (calificacion < 0 || calificacion > 5) {
                 System.out.println("❌ Calificación fuera de rango. Debe ser entre 0 y 5. Intente de nuevo.");
             }
@@ -84,7 +87,7 @@ public class ServicioResenia {
         comentario = scanner.nextLine();
         System.out.println("\n--- Confirmación de Carga: Reseña ---");
         System.out.println("Datos ingresados:" +
-                "\nCalificacion: " + calificacion +
+                "\nCalificación: " + calificacion +
                 "\nComentario: " + comentario);
         boolean datosValidos = confirmacion(scanner);
         if (datosValidos)
@@ -105,7 +108,7 @@ public class ServicioResenia {
      *         contrario.
      */
     public boolean eliminarResenia(Resenia resenia) {
-        return reseniaDao.borrar(resenia);
+        return reseniaDAO.borrar(resenia);
     }
 
     /**
@@ -118,7 +121,7 @@ public class ServicioResenia {
      * @return true si actualizo la resenia, false en caso contrario.
      */
     public boolean actualizarEstadoResenia(Resenia resenia) {
-        return reseniaDao.actualizar(resenia);
+        return reseniaDAO.actualizar(resenia);
     }
 
     /**
@@ -152,7 +155,7 @@ public class ServicioResenia {
      */
     public List<Resenia> obtenerReseniasDeUsuario(int idUsuario) {
         List<Resenia> reseniasDelUsuario = new java.util.ArrayList<>();
-        List<Resenia> todasLasResenias = reseniaDao.devolverListaResenia(); // Se busca en la DB
+        List<Resenia> todasLasResenias = reseniaDAO.devolverListaResenia(); // Se busca en la DB
         if (todasLasResenias == null)
             return reseniasDelUsuario; // En caso de error en DAO
         for (Resenia resenia : todasLasResenias) {
@@ -208,12 +211,12 @@ public class ServicioResenia {
         return confirmacion.equalsIgnoreCase("S");
     }
 
-    public ReseniaDAOImpl getReseniaDAOImpl() {
-        return reseniaDao;
+    public ReseniaDAO getReseniaDAOImpl() {
+        return reseniaDAO;
     }
 
-    public void setReseniaDAOImpl(ReseniaDAOImpl reseniaDAOImpl) {
-        this.reseniaDao = reseniaDAOImpl;
+    public void setReseniaDAOImpl(ReseniaDAO reseniaDAOImpl) {
+        this.reseniaDAO = reseniaDAOImpl;
     }
 
 }

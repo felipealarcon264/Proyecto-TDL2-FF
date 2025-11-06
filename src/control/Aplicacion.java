@@ -157,7 +157,7 @@ public class Aplicacion {
      * Solicita al usuario la confirmación de los datos ingresados.
      * 
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.1
+     * @version 4.0
      * 
      * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
      * @return true si el usuario confirma, false en caso contrario.

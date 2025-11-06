@@ -2,8 +2,11 @@ package servicio;
 
 import comparadores.ComparadorUsuarioPorEmail;
 import comparadores.ComparadorUsuarioPorNombreUsuario;
-import dao.implementaciones.Datos_PersonalesDAOImpl;
-import dao.implementaciones.UsuarioDAOImpl;
+
+import dao.FactoryDAO;
+import dao.interfaces.Datos_PersonalesDAO;
+import dao.interfaces.UsuarioDAO;
+
 import modelo.ente.Administrador;
 import modelo.ente.Cuenta;
 import modelo.ente.Datos_Personales;
@@ -13,24 +16,28 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ServicioUsuario {
-    UsuarioDAOImpl usuarioDao;
-    Datos_PersonalesDAOImpl datosPersonalesDao;
+    // usa las interfaces;
+    UsuarioDAO usuarioDAO;
+    Datos_PersonalesDAO datosPersonalesDAO;
+
     public ServicioUsuario() {
-        this.usuarioDao = new UsuarioDAOImpl();
+        this.usuarioDAO = FactoryDAO.getUsuarioDAO();
+        this.datosPersonalesDAO = FactoryDAO.getDatosPersonalesDAO();
     }
+
 
     /**
      * Valida si un correo existe en la lista de usuarios de la base de datos.
      *
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.0
+     * @version 4.0
      *
      * @param correo El correo a verificar.
      * @return true si el correo existe, false en caso contrario.
      */
     public boolean validarCorreo(String correo) {
         // Se obtiene la lista directamente de la DB para validar
-        List<Usuario> listaUsuario = usuarioDao.devolverListaUsuarios();
+        List<Usuario> listaUsuario = usuarioDAO.devolverListaUsuarios();
         if (listaUsuario == null) {
             System.out.println("Error: No se pudo obtener la lista de usuarios para validar.");
             return false;
@@ -51,7 +58,7 @@ public class ServicioUsuario {
      * a la primera coincidencia retorna true.
      *
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.0
+     * @version 4.0
      *
      * @param correo     El correo a validar.
      * @param contrasena La contraseña a validar.
@@ -60,7 +67,7 @@ public class ServicioUsuario {
      */
     public boolean validarUsuario(String correo, String contrasena) {
         // Se obtiene la lista directamente de la DB para validar
-        List<Usuario> listaUsuario = usuarioDao.devolverListaUsuarios();
+        List<Usuario> listaUsuario = usuarioDAO.devolverListaUsuarios();
         if (listaUsuario == null) {
             System.out.println("Error: No se pudo obtener la lista de usuarios para validar.");
             return false;
@@ -81,7 +88,7 @@ public class ServicioUsuario {
      * Crea un usario y lo carga en la base de datos.
      *
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.1
+     * @version 4.0
      *
      * @param scanner El Scanner para leer la entrada del usuario.
      */
@@ -91,7 +98,7 @@ public class ServicioUsuario {
             System.out.println("No se guardo nada en la base de datos.");
             return;
         }
-        usuarioDao.guardar(adm); // El DAO ya imprime el mensaje de éxito.
+        usuarioDAO.guardar(adm); // El DAO ya imprime el mensaje de éxito.
     }
 
     /**
@@ -105,7 +112,7 @@ public class ServicioUsuario {
      * Se puede cancelar.
      *
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.1
+     * @version 4.0
      *
      * @param scanner El Scanner para leer la entrada del usuario.
      *                existentes. (Ya no se pasa la lista)
@@ -113,7 +120,6 @@ public class ServicioUsuario {
      */
     public Administrador cargaAdministrador(Scanner scanner) {
         System.out.println("[CARGA DE UN ADMINISTRADOR]");
-        UsuarioDAOImpl usrDAO = new UsuarioDAOImpl(); // Para validar correo
         String nombreUsuario = "";
         String email = "";
         String contrasena = "";
@@ -131,7 +137,7 @@ public class ServicioUsuario {
             nombreUsuario = scanner.nextLine();
             System.out.print("Ingrese el email: ");
             email = scanner.nextLine().toLowerCase();
-            while (correoExistente(email, usrDAO.devolverListaUsuarios())) { // Se consulta la DB
+            while (correoExistente(email, usuarioDAO.devolverListaUsuarios())) { // Se consulta la DB
                 System.out.print("Email ya registrado. Ingrese otro email: ");
                 email = scanner.nextLine().toLowerCase();
             }
@@ -163,7 +169,7 @@ public class ServicioUsuario {
      * Crea un usario y lo carga en la base de datos.
      *
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.1
+     * @version 4.0
      *
      * @param scanner Entrada por teclado.
      *
@@ -174,7 +180,7 @@ public class ServicioUsuario {
             System.out.println("No se guardo nada en la base de datos.");
             return;
         }
-        usuarioDao.guardar(cta); // El DAO ya imprime el mensaje de éxito.
+        usuarioDAO.guardar(cta); // El DAO ya imprime el mensaje de éxito.
     }
 
     /**
@@ -187,7 +193,7 @@ public class ServicioUsuario {
      * Se puede cancelar.
      *
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.1
+     * @version 4.0
      *
      * @param scanner El Scanner para leer la entrada del usuario.
      *                existentes. (Ya no se pasa la lista)
@@ -195,7 +201,6 @@ public class ServicioUsuario {
      */
     public Cuenta cargaCuenta(Scanner scanner) {
         System.out.println("[CARGA DE UNA CUENTA]");
-        UsuarioDAOImpl usrDAO = new UsuarioDAOImpl(); // Para validar correo
         String nombreUsuario = "";
         String email = "";
         String contrasena = "";
@@ -213,7 +218,7 @@ public class ServicioUsuario {
             nombreUsuario = scanner.nextLine();
             System.out.print("Ingrese el email: ");
             email = scanner.nextLine().toLowerCase();
-            while (correoExistente(email, usrDAO.devolverListaUsuarios())) { // Se consulta la DB
+            while (correoExistente(email, usuarioDAO.devolverListaUsuarios())) { // Se consulta la DB
                 System.out.print("Email ya registrado. Ingrese otro email: ");
                 email = scanner.nextLine().toLowerCase();
             }
@@ -255,7 +260,7 @@ public class ServicioUsuario {
         System.out.println("1. Ordenar por Email (A-Z).");
         System.out.println("2. Ordenar por Nombre de usuario (A-Z).");
         System.out.print("Ingrese su opción (1-2): ");
-        List<Usuario> listaUsuario = usuarioDao.devolverListaUsuarios(); // Se obtiene la lista de la DB
+        List<Usuario> listaUsuario = usuarioDAO.devolverListaUsuarios(); // Se obtiene la lista de la DB
 
         while (true) {
             String opcion = in.nextLine();
@@ -290,7 +295,7 @@ public class ServicioUsuario {
      *         contrario.
      */
     public boolean eliminarUsuario(Usuario usuario) {
-        return usuarioDao.borrar(usuario);
+        return usuarioDAO.borrar(usuario);
     }
 
     /**
@@ -342,12 +347,9 @@ public class ServicioUsuario {
         }
 
         // 4. Verifica si el '@' es el último carácter
-        if (arrobaIndex == email.length() - 1) {
-            return false; // No hay nada después del '@'
-        }
+        return arrobaIndex != email.length() - 1; // No hay nada después del '@'
 
         // 5. Si pasó todas las verificaciones, es válido (según estas reglas simples)
-        return true;
     }
 
     /**
@@ -379,11 +381,11 @@ public class ServicioUsuario {
         return false;
     }
 
-    public UsuarioDAOImpl getUsuarioDao() {
-        return usuarioDao;
+    public UsuarioDAO getUsuarioDao() {
+        return usuarioDAO;
     }
 
-    public void setUsuarioDao(UsuarioDAOImpl usuarioDao) {
-        this.usuarioDao = usuarioDao;
+    public void setUsuarioDao(UsuarioDAO usuarioDao) {
+        this.usuarioDAO = usuarioDao;
     }
 }

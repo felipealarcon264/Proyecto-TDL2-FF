@@ -1,15 +1,16 @@
 package servicio;
 
-import dao.implementaciones.Datos_PersonalesDAOImpl;
+import dao.FactoryDAO;
 import modelo.ente.Datos_Personales;
-
+import dao.interfaces.Datos_PersonalesDAO;
 import java.util.Scanner;
 
 
 public class ServicioDatos_Personales {
-    Datos_PersonalesDAOImpl dpDao;
+    Datos_PersonalesDAO datosPersonalesDAO;
+
     public ServicioDatos_Personales() {
-        this.dpDao = new Datos_PersonalesDAOImpl();
+        this.datosPersonalesDAO = FactoryDAO.getDatosPersonalesDAO();
     }
     /**
      * Carga los datos personales desde la entrada estándar (consola).
@@ -17,7 +18,7 @@ public class ServicioDatos_Personales {
      * un número entero positivo.
      * En caso de datos inválidos, solicita al usuario que reingrese los datos.
      * Verifica que el dni no haya sigo ingresado previamente a la base de datos.
-     * finalmente solicita confirmación de los datos ingresados caso contrario
+     * Finalmente, solicíta confirmación de los datos ingresados caso contrario
      * reinicia el proceso.
      * Se puede cancelar.
      * 
@@ -34,7 +35,7 @@ public class ServicioDatos_Personales {
         String nombre = "";
         String apellido = "";
         int dni = -1;
-        Datos_PersonalesDAOImpl DPdao = new Datos_PersonalesDAOImpl();
+
         while (!datosValidos) {
             System.out.print("Ingrese el nombre: ");
             nombre = scanner.nextLine();
@@ -54,15 +55,14 @@ public class ServicioDatos_Personales {
                 try {
                     dni = scanner.nextInt();
                     dniValido = true;
-                } catch (Exception e) {
+                } catch (Exception err) {
                     System.out.print("DNI inválido. Ingrese un número entero: ");
-                    dniValido = false;
                 }
                 if (dni < 0 && dniValido) {
                     System.out.print("DNI inválido. Ingrese un número entero positivo: ");
                     dniValido = false;
                 }
-                if (DPdao.buscarPorDNI(dni) != null && dniValido) {
+                if (datosPersonalesDAO.buscarPorDNI(dni) != null && dniValido) {
                     System.out.print("DNI ya ingresado previamente. Ingrese un DNI diferente: ");
                     dniValido = false;
                 }
@@ -73,7 +73,7 @@ public class ServicioDatos_Personales {
                     "\nNombre: " + nombre +
                     "\nApellido: " + apellido +
                     "\nDNI: " + dni);
-            System.out.println("CONFIRMACION DE CARGA -> DATOS PERSONALES.");
+            System.out.println("CONFIRMACIÓN DE CARGA -> DATOS PERSONALES.");
             datosValidos = confirmacion(scanner);
             if (!datosValidos) {
                 System.out.println("Quieres cancelar la carga? ");
@@ -85,15 +85,14 @@ public class ServicioDatos_Personales {
             }
         }
         System.out.println("Datos confirmados...");
-        return new Datos_Personales(-1, nombre, apellido, dni); // Retorna un id no valido eso se asegura de brindarselo
-                                                                // la base de datos.
+        return new Datos_Personales(-1, nombre, apellido, dni); // Retorna un id no valido eso se asegura de brindárselo a la base de datos
     }
 
     /**
      * Solicita al usuario la confirmación de los datos ingresados.
      * 
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.1
+     * @version 4.0
      * 
      * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
      * @return true si el usuario confirma, false en caso contrario.
@@ -113,7 +112,7 @@ public class ServicioDatos_Personales {
      * minúsculas).
      * 
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.1
+     * @version 4.0
      * 
      * @param texto La cadena de texto a verificar.
      * @return true si la cadena contiene solo letras, false en caso contrario.

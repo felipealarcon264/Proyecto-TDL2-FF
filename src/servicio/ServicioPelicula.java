@@ -4,17 +4,20 @@ import modelo.catalogo.Pelicula;
 import comparadores.ComparadorPeliculaPorDuracion;
 import comparadores.ComparadorPeliculaPorGenero;
 import comparadores.ComparadorPeliculaPorTitulo;
-import dao.implementaciones.PeliculaDAOImpl;
-import modelo.enums.Genero;
+// para el FactoryDAO
+import dao.interfaces.PeliculaDAO;
+import dao.FactoryDAO;
 
+import modelo.enums.Genero;
 import java.util.List;
 import java.util.Scanner;
 
 public class ServicioPelicula {
-    PeliculaDAOImpl peliculaDao;
+    PeliculaDAO peliculaDAO;
 
     public ServicioPelicula() {
-        this.peliculaDao = new PeliculaDAOImpl();
+
+        this.peliculaDAO = FactoryDAO.getPeliculaDAO();
     }
 
     /**
@@ -22,14 +25,14 @@ public class ServicioPelicula {
      * Permite al usuario administrador ingresar los datos y confirmarlos.
      * 
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.0
+     * @version 4.0
      * 
      * @param scanner El Scanner para leer la entrada del usuario.
      * @return Una pelicula o null en caso de cancelar la carga.
      */
     public Pelicula cargaPelicula(Scanner scanner) {
-        System.out.println(" 🎬CARGA DE PELICULA🎬");
-        // titulo resumen director duracion genero
+        System.out.println(" 🎬CARGA DE PELÍCULA🎬");
+        // título resumen director duracion género
         String titulo = "";
         String resumen = "";
         String director = "";
@@ -43,14 +46,14 @@ public class ServicioPelicula {
             resumen = scanner.nextLine();
             System.out.print("Ingrese el director: ");
             director = scanner.nextLine();
-            duracion = ingresarNumeroValido(scanner, "Ingrese la duracion: ");
+            duracion = ingresarNumeroValido(scanner, "Ingrese la duración: ");
             genero = seleccionarGenero(scanner);
-            System.out.println("CONFIRMACION DE CARGA -> PELICULA.");
+            System.out.println("CONFIRMACIÓN DE CARGA -> PELÍCULA.");
             System.out.println("Datos ingresados:" +
                     "\nTitulo: " + titulo +
                     "\nResumen: " + resumen +
                     "\nDirector: " + director +
-                    "\nDuracion: " + duracion +
+                    "\nDuración: " + duracion +
                     "\nGenero: " + genero);
             datosValidos = confirmacion(scanner);
             if (!datosValidos) {
@@ -73,13 +76,13 @@ public class ServicioPelicula {
      * Todos los mensajes se indican en guardar y cargaPelicula.
      *
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.0
+     * @version 4.0
      * 
      * @param scanner El Scanner para leer la entrada del usuario.
      */
-    public void cargarYguardarPelicula(Scanner scanner) {
+    public void cargarYGuardarPelicula(Scanner scanner) {
         Pelicula pelicula = this.cargaPelicula(scanner);
-        this.peliculaDao.guardar(pelicula); // Si es null, el DAO se encarga de dar error.
+        this.peliculaDAO.guardar(pelicula); // Si es null, el DAO se encarga de dar error.
     }
 
     /**
@@ -87,14 +90,14 @@ public class ServicioPelicula {
      * Los mensajes seran emitidos por el metodo borrar.
      * 
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.0
+     * @version 4.0
      * 
      * @param pelicula La película a eliminar.
      * @return true si se pudo borrar de la DB y de la lista, false en caso
      *         contrario.
      */
     public boolean eliminarPelicula(Pelicula pelicula) {
-        return peliculaDao.borrar(pelicula);
+        return peliculaDAO.borrar(pelicula);
     }
 
     /**
@@ -102,7 +105,7 @@ public class ServicioPelicula {
      * requiere.
      * 
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.0
+     * @version 4.0
      * 
      * @param in El Scanner para leer la entrada del usuario.
      */
@@ -112,7 +115,7 @@ public class ServicioPelicula {
         System.out.println("2. Ordenar por Duración (menor a mayor).");
         System.out.println("3. Ordenar por Género (alfabético).");
         System.out.print("Ingrese su opción (1-3): ");
-        List<Pelicula> listaPelicula = this.peliculaDao.devolverListaPelicula(); // Se obtiene la lista de la DB
+        List<Pelicula> listaPelicula = this.peliculaDAO.devolverListaPelicula(); // Se obtiene la lista de la DB
 
         while (true) {
             String opcion = in.nextLine();
@@ -142,7 +145,7 @@ public class ServicioPelicula {
      * Solicita al usuario la confirmación de los datos ingresados.
      * 
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.1
+     * @version 4.0
      * 
      * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
      * @return true si el usuario confirma, false en caso contrario.
@@ -161,8 +164,8 @@ public class ServicioPelicula {
      * Pide al usuario que ingrese un número entero y valida la entrada.
      * Pide reintentar si se ingresa algo que no es un número.
      * 
-     * @author Gemini.
-     * @version 1.0.
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 4.0.
      * 
      * @param scanner El objeto Scanner ya inicializado.
      * @param mensaje El mensaje a mostrar al usuario para solicitar la entrada.
@@ -187,14 +190,13 @@ public class ServicioPelicula {
      * Solicita al usuario que seleccione un género de la lista de forma segura.
      * El método mostrará un menú y se repetirá indefinidamente hasta que el
      * usuario ingrese una opción válida (un número del 1 al 5).
-     * 
      * Lee la entrada como un String para prevenir errores de tipo .
      *
      * @author Grupo 4 - Proyecto TDL2
-     * @version 1.0
+     * @version 4.0
      * 
      * @param scanner El Scanner para leer la entrada del usuario.
-     * @return El enum Genero seleccionado por el usuario.
+     * @return El enum Género seleccionado por el usuario.
      */
     private Genero seleccionarGenero(Scanner scanner) {
 
@@ -234,11 +236,11 @@ public class ServicioPelicula {
         }
     }
 
-    public PeliculaDAOImpl getPeliculaDao() {
-        return peliculaDao;
+    public PeliculaDAO getPeliculaDao() {
+        return peliculaDAO;
     }
 
-    public void setPeliculaDao(PeliculaDAOImpl peliculaDao) {
-        this.peliculaDao = peliculaDao;
+    public void setPeliculaDao(PeliculaDAO peliculaDao) {
+        this.peliculaDAO = peliculaDao;
     }
 }
