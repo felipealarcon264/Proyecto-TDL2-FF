@@ -94,6 +94,28 @@ Siguiendo las correcciones, se realizó una refactorización profunda de la estr
     * **Razón:** Centralizar el punto de entrada y el flujo principal en `Aplicacion`, eliminando la clase `Plataforma` que resultaba redundante, tal como se indicó en la corrección.
 
 
+
+### Cambios Implementados para la Reentrega 2
+
+Esta sección detalla las mejoras y refactorizaciones clave realizadas en base a las correcciones y buenas prácticas de desarrollo.
+
+*   **Gestión de Recursos con `try-with-resources`**:
+    *   Se mantiene y refuerza el uso de la estructura `try-with-resources` para toda interacción con la base de datos. Esto asegura que cada `Connection`, `PreparedStatement` y `ResultSet` se cierre automáticamente, previniendo fugas de recursos y errores de bloqueo (`SQLITE_BUSY`). Las conexiones se establecen bajo demanda para optimizar el rendimiento.
+
+*   **Modularización con Capa de Servicios**:
+    *   Se ha mejorado significativamente la modularización del programa introduciendo una **capa de servicios**. Se creó una clase de servicio dedicada para cada entidad principal (ej. `ServicioPelicula`, `ServicioUsuario`), encapsulando en ellas toda la lógica de negocio y orquestación de operaciones.
+
+*   **Incorporación del Patrón `FactoryDAO`**:
+    *   Se implementó el patrón de diseño `FactoryDAO` para centralizar y desacoplar la creación de las implementaciones de los DAO. Aunque no es estrictamente necesario para la escala actual del proyecto, su adopción representa una buena práctica que facilita la mantenibilidad y escalabilidad futura.
+
+*   **Refactorización de la Capa de Control**:
+    *   Se simplificó la estructura de arranque de la aplicación. La clase `Plataforma` fue eliminada para evitar redundancias conceptuales con la clase `Main` (ahora `Plataforma`). El punto de entrada y el bucle principal de la aplicación ahora residen únicamente en la clase `Plataforma`, clarificando su rol como controlador principal.
+
+*   **Reorganización de Paquetes y Estructura**:
+    *   **Nombres en minúscula**: Todos los nombres de los paquetes fueron estandarizados a minúscula (`control`, `servicio`, `dao`, `modelo`) para seguir las convenciones de Java.
+    *   **Separación de DAO**: El paquete `dao` fue dividido en `dao.interfaces` y `dao.implementaciones`, separando claramente los contratos de su lógica de persistencia con JDBC.
+    *   **Paquete `modelo`**: Se creó un paquete `modelo` para agrupar todas las clases de dominio (entidades, catálogos y enums), mejorando la cohesión del proyecto.
+
 COMANDO SQL DE PRUEBA.
 
 

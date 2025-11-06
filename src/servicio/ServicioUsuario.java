@@ -25,7 +25,6 @@ public class ServicioUsuario {
         this.datosPersonalesDAO = FactoryDAO.getDatosPersonalesDAO();
     }
 
-
     /**
      * Valida si un correo existe en la lista de usuarios de la base de datos.
      *
@@ -269,13 +268,19 @@ public class ServicioUsuario {
                     ComparadorUsuarioPorEmail comparadorPorEmail = new ComparadorUsuarioPorEmail();
                     listaUsuario.sort(comparadorPorEmail);
                     System.out.println("✅ Lista de usuarios ordenada por email.");
-                    listaUsuario.forEach(System.out::println); // Mostramos la lista ordenada
+                    for (int i = 0; i < listaUsuario.size(); i++) {
+                        System.out.println("\n--- Película N°" + (i + 1) + " ---");
+                        System.out.println(listaUsuario.get(i));
+                    } // Mostramos la lista ordenada
                     return;
                 case "2":
                     ComparadorUsuarioPorNombreUsuario comparadorPorNombreUsuario = new ComparadorUsuarioPorNombreUsuario();
                     listaUsuario.sort(comparadorPorNombreUsuario);
                     System.out.println("✅ Lista de usuarios ordenada por nombre de usuario.");
-                    listaUsuario.forEach(System.out::println); // Mostramos la lista ordenada
+                    for (int i = 0; i < listaUsuario.size(); i++) {
+                        System.out.println("\n--- Película N°" + (i + 1) + " ---");
+                        System.out.println(listaUsuario.get(i));
+                    } // Mostramos la lista ordenada
                     return;
                 default:
                     System.out.print("❌ Error: Opción no válida. Intente de nuevo: ");

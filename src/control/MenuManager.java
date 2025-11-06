@@ -10,7 +10,6 @@ import servicio.ServicioUsuario;
 import servicio.ServicioResenia;
 import java.util.Scanner;
 
-
 /**
  * Gestiona los menús y la interacción con el usuario para las diferentes
  * sesiones (Administrador y Cuenta).
@@ -59,8 +58,9 @@ public class MenuManager {
                     System.out.println("\n--- 🎬 Lista de Películas 🎬 ---");
                     java.util.List<Pelicula> peliculas = servicioPelicula.getPeliculaDao().devolverListaPelicula();
                     if (peliculas != null && !peliculas.isEmpty()) {
-                        for (Pelicula pelicula : peliculas) {
-                            System.out.println(pelicula + "\n");
+                        for (int i = 0; i < peliculas.size(); i++) {
+                            System.out.println("\n--- Película N°" + (i + 1) + " ---");
+                            System.out.println(peliculas.get(i));
                         }
                         System.out.print("👉 Ingresa el título EXACTO de la película a eliminar: ");
                         aux = in.nextLine();
@@ -78,8 +78,9 @@ public class MenuManager {
                 case "4":
                     System.out.println("\n--- 👥 Lista de Usuarios 👥 ---");
                     java.util.List<Usuario> usuarios = servicioUsuario.getUsuarioDao().devolverListaUsuarios();
-                    for (Usuario usuario : usuarios) {
-                        System.out.println(usuario + "\n");
+                    for (int i = 0; i < usuarios.size(); i++) {
+                        System.out.println("\n--- Película N°" + (i + 1) + " ---");
+                        System.out.println(usuarios.get(i));
                     }
                     System.out.print("👉 Ingresa el email EXACTO del usuario a eliminar: ");
                     aux = in.nextLine();
@@ -132,8 +133,8 @@ public class MenuManager {
     /**
      * Simula la sesión de una cuenta de usuario, mostrando su menú de opciones.
      * 
-     * @param in         El Scanner para leer la entrada del usuario.
-     * @param cta        El objeto Cuenta que ha iniciado sesión.
+     * @param in  El Scanner para leer la entrada del usuario.
+     * @param cta El objeto Cuenta que ha iniciado sesión.
      */
     public void simulacionCta(Scanner in, Cuenta cta) {
         ServicioPelicula servicioPelicula = new ServicioPelicula();
@@ -152,11 +153,7 @@ public class MenuManager {
             String opcion = in.nextLine();
             switch (opcion) {
                 case "1":
-                    servicioPelicula.ordenarListaPelicula(in);
-                    /*java.util.List<Pelicula> listaPeliculas = servicioPelicula.getPeliculaDao().devolverListaPelicula();
-                    for (Pelicula pelicula : listaPeliculas) {
-                        System.out.println(pelicula + "\n");
-                    } // La lista se muestra aquí también por si el usuario no quiere ordenar. NO CREO QUE SEA NECESARIO*/
+                    servicioPelicula.ordenaryVerListaPelicula(in);
                     break;
                 case "2":
                     servicioResenia.cargarYguardarReseña(in, cta);

@@ -102,14 +102,14 @@ public class ServicioPelicula {
 
     /**
      * Pregunta por pantalla qué manera de ordenación de la lista de Películas se
-     * requiere.
+     * requiere y la muestra en pantalla.
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 4.0
      * 
      * @param in El Scanner para leer la entrada del usuario.
      */
-    public void ordenarListaPelicula(Scanner in) {
+    public void ordenaryVerListaPelicula(Scanner in) {
         System.out.println("\n--- Ordenamiento de lista de películas ---");
         System.out.println("1. Ordenar por Título (A-Z).");
         System.out.println("2. Ordenar por Duración (menor a mayor).");
@@ -122,18 +122,18 @@ public class ServicioPelicula {
             switch (opcion) {
                 case "1":
                     listaPelicula.sort(new ComparadorPeliculaPorTitulo());
-                    System.out.println("✅ Lista de películas ordenada por título.");
-                    listaPelicula.forEach(System.out::println);
+                    System.out.println("\n✅ Lista de películas ordenada por título:");
+                    imprimirListaPeliculas(listaPelicula);
                     return;
                 case "2":
                     listaPelicula.sort(new ComparadorPeliculaPorDuracion());
-                    System.out.println("✅ Lista de películas ordenada por duración.");
-                    listaPelicula.forEach(System.out::println);
+                    System.out.println("\n✅ Lista de películas ordenada por duración:");
+                    imprimirListaPeliculas(listaPelicula);
                     return;
                 case "3":
                     listaPelicula.sort(new ComparadorPeliculaPorGenero());
-                    System.out.println("✅ Lista de películas ordenada por género.");
-                    listaPelicula.forEach(System.out::println);
+                    System.out.println("\n✅ Lista de películas ordenada por género:");
+                    imprimirListaPeliculas(listaPelicula);
                     return;
                 default:
                     System.out.print("❌ Error: Opción no válida. Intente de nuevo: ");
@@ -242,5 +242,22 @@ public class ServicioPelicula {
 
     public void setPeliculaDao(PeliculaDAO peliculaDao) {
         this.peliculaDAO = peliculaDao;
+    }
+
+    /**
+     * Imprime una lista de películas con un índice numérico y un espacio entre
+     * cada una.
+     *
+     * @param peliculas La lista de películas a imprimir.
+     */
+    private void imprimirListaPeliculas(List<Pelicula> peliculas) {
+        if (peliculas == null || peliculas.isEmpty()) {
+            System.out.println("ℹ️ No hay películas para mostrar.");
+            return;
+        }
+        for (int i = 0; i < peliculas.size(); i++) {
+            System.out.println("\n--- Película N°" + (i + 1) + " ---");
+            System.out.println(peliculas.get(i));
+        }
     }
 }

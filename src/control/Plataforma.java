@@ -17,11 +17,11 @@ import servicio.ServicioUsuario;
  * @version 1.3
  * 
  */
-public class Aplicacion {
+public class Plataforma {
     /**
      * Constructor por defecto.
      */
-    public Aplicacion() {
+    public Plataforma() {
     }
 
     /**

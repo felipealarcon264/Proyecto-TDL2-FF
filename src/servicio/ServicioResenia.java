@@ -136,9 +136,9 @@ public class ServicioResenia {
      */
     public boolean mostrarReseniasDeUsuario(int idUsuario) {
         List<Resenia> misResenias = obtenerReseniasDeUsuario(idUsuario);
-        for (Resenia resenia : misResenias) {
-            System.out.println(resenia);
-            System.out.println(); // Espacio extra
+        for (int i = 0; i < misResenias.size(); i++) {
+            System.out.println("\n--- Reseña N°" + (i + 1) + " ---");
+            System.out.println(misResenias.get(i));
         }
         return !misResenias.isEmpty();
     }
