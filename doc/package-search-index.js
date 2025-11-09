@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"basededatos"},{"l":"comparadores"},{"l":"control"},{"l":"dao"},{"l":"dao.implementaciones"},{"l":"dao.interfaces"},{"l":"modelo.catalogo"},{"l":"modelo.ente"},{"l":"modelo.enums"},{"l":"servicio"}];updateSearchResults();

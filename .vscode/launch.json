@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Plataforma",
+            "request": "launch",
+            "mainClass": "control.Plataforma",
+            "projectName": "Proyecto-TDL2-FF_44c2c3f9"
+        },
+        {
+            "type": "java",
             "name": "Aplicacion",
             "request": "launch",
             "mainClass": "control.Aplicacion",
