@@ -1,15 +1,3 @@
-**¡Absolutamente! Es una idea excelente.**
-
-La mejor forma de verlo en VS Code es como un archivo **Markdown** (`.md`). VS Code tiene un visor de Markdown incorporado que te lo mostrará con formato, títulos y bloques de código.
-
-Lo que haré es darte el texto completo en ese formato. Solo tenés que:
-
-1.  Crear un archivo nuevo en tu proyecto de VS Code (por ejemplo: `GUIA_SWING.md`).
-2.  **Copiar y pegar todo el contenido** del bloque de abajo en ese archivo.
-3.  En VS Code, podés abrir la "Vista Previa" (usualmente con un botón en la esquina superior derecha) y lo verás como un documento de estudio perfecto.
-
-Aquí lo tienes:
-
 ````markdown
 # Guía Definitiva de Swing: La Gran Base (PDFs 10.0, 10.1, 10.2)
 
