@@ -2,63 +2,12 @@ package control;
 
 import java.util.Scanner;
 
-import basededatos.InicializadorDB;
 import modelo.ente.Administrador;
 import modelo.ente.Cuenta;
 import modelo.ente.Usuario;
 import servicio.ServicioUsuario;
 
-
-/**
- * Clase principal que inicia la aplicación y gestiona el flujo de interacción
- * con el usuario.
- * 
- * @author Grupo 4 - Proyecto TDL2
- * @version 1.3
- * 
- */
-public class Plataforma {
-    /**
-     * Constructor por defecto.
-     */
-    public Plataforma() {
-    }
-
-    /**
-     * Código de escape ANSI para cambiar el color del texto a azul en la consola.
-     * NO ES NECESARIO
-     */
-    public static final String ANSI_BLUE = "\u001B[34m";
-    /**
-     * Código de escape ANSI para resetear el color del texto en la consola al
-     * predeterminado.
-     * NO ES NECESARIO
-     */
-    public static final String ANSI_RESET = "\u001B[0m";
-
-    /**
-     * Punto de entrada principal de la aplicación.
-     * Inicializa la base de datos, muestra un mensaje de bienvenida y de prueba,
-     * e inicia la simulación principal.
-     * 
-     * @param args Argumentos de línea de comandos (no se utilizan).
-     */
-    public static void main(String[] args) {
-        // SIEMPRE SE SUPONE QUE LA DB ESTA CREADA!
-        Scanner in = new Scanner(System.in);
-
-        // inicializador de tablas
-        InicializadorDB inicializadorDB = new InicializadorDB();
-        inicializadorDB.crearTablas(); // Comentado para no borrar la DB en cada ejecución
-        // fin inicializador de tablas
-
-        System.out.println();
-        System.out.println();
-        simulacion(in);
-
-        in.close();
-    }
-
+public class Login {
     /**
      * Metodo que simula al programa.
      * Pide ingresar los datos y dependiendo entra a Administrador o Cuenta a su vez

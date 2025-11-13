@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MainEliminarPruebas",
+            "request": "launch",
+            "mainClass": "vista.MainEliminarPruebas",
+            "projectName": "Proyecto-TDL2-FF_44c2c3f9"
+        },
+        {
+            "type": "java",
+            "name": "LoginVista",
+            "request": "launch",
+            "mainClass": "vista.LoginVista",
+            "projectName": "Proyecto-TDL2-FF_44c2c3f9"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "Ejemplo.Main",
