@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "VistaLogin",
+            "request": "launch",
+            "mainClass": "vista.VistaLogin",
+            "projectName": "Proyecto-TDL2-FF_44c2c3f9"
+        },
+        {
+            "type": "java",
             "name": "MainEliminarPruebas",
             "request": "launch",
             "mainClass": "vista.MainEliminarPruebas",
