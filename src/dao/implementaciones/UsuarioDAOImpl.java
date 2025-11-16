@@ -142,10 +142,10 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                     Datos_PersonalesDAOImpl dpImpl = new Datos_PersonalesDAOImpl(); // Para recuperar los datos personales
                     Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
                     if (rol.equals("ADMINISTRADOR")) {
-                        System.out.println("â„¹ï¸ Administrador encontrado [" + nombreUsuario + "]");
+                        System.out.println("Administrador encontrado [" + nombreUsuario + "]");
                         return new modelo.ente.Administrador(idDB, nombreUsuario, email, contrasena, dp, rol);
                     } else if (rol.equals("CUENTA")) {
-                        System.out.println("â„¹ï¸ Cuenta encontrada [" + nombreUsuario + "]");
+                        System.out.println("Cuenta encontrada [" + nombreUsuario + "]");
                         return new modelo.ente.Cuenta(idDB, nombreUsuario, email, contrasena, dp, rol);
                     } else
                         return null;

@@ -55,7 +55,7 @@ public class VistaLogin extends JPanel {
         // Parte E-Mail
         JPanel panelFilaEmail = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0)); // Alineado a la izq.
         panelFilaEmail.setBackground(Color.WHITE);
-        JLabel etiquetaEmail = new JLabel("E-Mail:");
+        JLabel etiquetaEmail = new JLabel("Correo Electrónico:");
         etiquetaEmail.setFont(new Font("Arial", Font.BOLD, 16));
         campoEmail = new JTextField();
         Dimension tamFijoCampos = new Dimension(250, 30); // Un ancho fijo
@@ -120,7 +120,7 @@ public class VistaLogin extends JPanel {
     }
 
     public void mostrarError(String mensaje) {
-        javax.swing.JOptionPane.showMessageDialog(this, mensaje, "Error de Login",
+        javax.swing.JOptionPane.showMessageDialog(this, mensaje, "Error de Ingreso de Sesión",
                 javax.swing.JOptionPane.ERROR_MESSAGE);
     }
 
@@ -143,19 +143,4 @@ public class VistaLogin extends JPanel {
         }
     }
 
-    public static void main(String[] args) {
-        // Crear una instancia de VistaLogin
-        VistaLogin vistaLogin = new VistaLogin();
-
-        // Crear un JFrame para contener la vista
-        javax.swing.JFrame ventana = new javax.swing.JFrame("Login de Usuario");
-        ventana.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
-        ventana.setLocationRelativeTo(null); // Centrar la ventana en la pantalla
-
-        // Añadir la VistaLogin al JFrame
-        ventana.add(vistaLogin);
-
-        // Hacer visible el JFrame
-        ventana.setVisible(true);
-    }
 }
