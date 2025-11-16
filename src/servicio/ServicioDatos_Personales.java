@@ -117,7 +117,7 @@ public class ServicioDatos_Personales {
      * @param texto La cadena de texto a verificar.
      * @return true si la cadena contiene solo letras, false en caso contrario.
      */
-    private boolean contieneSoloLetras(String texto) {
+    public boolean contieneSoloLetras(String texto) {
         if (texto == null || texto.isEmpty()) {
             return false;
         }

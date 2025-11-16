@@ -3,14 +3,13 @@ package controlador;
 import modelo.ente.Usuario;
 import servicio.ServicioUsuario;
 import vista.VistaLogin;
-import vista.VistaRegistro;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * El CONTROLADOR (C) del Login.
+ * Controlador del Login.
  * Implementa ActionListener para escuchar los botones de la Vista.
  * Conecta la Vista (VistaLogin) con el Modelo (ServicioUsuario).
  */
@@ -38,58 +37,63 @@ public class ControladorLogin implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        // 1. Averiguar qué botón se presionó
+        // Determinamos que boton se presiona.
         Object botonPresionado = e.getSource();
 
-        if (botonPresionado == vista.getBotonIngresar()) { procesarIngresoCuenta();
-        } else if (botonPresionado == vista.getBotonRegistrarse()) { procesarRegistroCuenta(); }
+        if (botonPresionado == vista.getBotonIngresar()) {
+            procesarIngresoCuenta();
+        } else if (botonPresionado == vista.getBotonRegistrarse()) {
+            procesarRegistroCuenta();
+        }
     }
 
     /**
      * Lógica para manejar el clic en "Ingresar".
      */
     private void procesarIngresoCuenta() {
-        // 1. Obtenemos los datos de la Vista
+        // Se obtienen los datos de pantalla(Vista).
         String correo = vista.getEmail();
         String contraseña = vista.getPassword();
 
-        // 2. Validamos con el Servicio (El Modelo) y cambiamos la lógica de verificarUsuario para que nos devuelva el usuario
-        // asi poder identificarlo entre Administrador o Cuenta.
+        // Valida el usuario y que rol tiene.
         Usuario usuarioLogueado = servicio.DelvolverTipoUsuario(correo, contraseña);
         if (usuarioLogueado == null) {
             vista.mostrarError("Correo o contraseña incorrectos.");
         } else {
-            // podemos implementar que tipo de ventana abrir (Administrador no necesario para el Entregable 3)
+            // Se puede escalar para abrir una ventana en caso de ser adm.
+            // No corresponde al entregable 3.
 
             if (usuarioLogueado.getRol().equals("CUENTA")) {
-                System.out.println("¡El ingreso del Usuario " + usuarioLogueado.getNombreUsuario() + " ha sido exitoso!");
+                System.out.println("¡El ingreso del Usuario " +
+                        usuarioLogueado.getNombreUsuario() + " ha sido exitoso!");
 
-                //abrir la nueva vista de bienvenida
-
+                /*Se abre la ventana para la siguiente vista */
             } else {
-                /** Para el ADMINISTRADOR no se requiere de una interfaz gráfica basándonos en el entregable 3 */
-                System.out.println("¡El ingreso del Administrador(a) " + usuarioLogueado.getNombreUsuario() + " ha sido exitoso!");
+                /**
+                 * Para el ADMINISTRADOR no se requiere de una interfaz gráfica basándonos en el
+                 * entregable 3
+                 */
+                System.out.println(
+                        "¡El ingreso del Administrador(a) " + usuarioLogueado.getNombreUsuario() + " ha sido exitoso!");
             }
-            //cierra esa ventana y libera sus recursos.
             javax.swing.SwingUtilities.getWindowAncestor(vista).dispose();
+            //Cerramos la ventana y liberamos recursos.
         }
-
     }
 
     /**
      * Lógica para manejar el clic en "Registrarse".
+     * 
      * @author Grupo 4 - Proyecto TDL2
-     * @version 4.4
+     * @version 1.0
      */
     private void procesarRegistroCuenta() {
         System.out.println("Botón 'Registrarse' presionado.");
-
-        // 1. Crear las nuevas piezas del MVC de Registro
         vista.VistaRegistro vistaRegistro = new vista.VistaRegistro();
         // Reutilizamos el servicio de usuario que ya teníamos
         new ControladorRegistro(vistaRegistro, this.servicio);
 
-        // 2. Crear la nueva ventana de Registro
+        // Se crea la ventana con la vista registro.
         JFrame ventanaRegistro = new JFrame("Plataforma TDL2 - Nuevo Usuario");
         ventanaRegistro.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ventanaRegistro.add(vistaRegistro);

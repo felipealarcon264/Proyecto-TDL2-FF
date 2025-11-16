@@ -35,20 +35,19 @@ public class ControladorRegistro implements ActionListener {
      * Logica para manejar el clic "Registrarme"
      */
     private void manejarBotonRegistro() {
-        // obtenemos los datos de la vista
+        // obtenemos los datos de la pantalla (vista).
         String nombre = vistaRegistro.getCampoNombre();
         String apellido = vistaRegistro.getCampoApellido();
         String dniStr = vistaRegistro.getCampoDNI();
+        String nomUsr = vistaRegistro.getCampoNombreUsr();
         String correoElectronico = vistaRegistro.getCampoCorreoElectronico();
         String contrasenia = vistaRegistro.getCampoContraseña();
 
-
-        // 3. Usamos el Servicio para crear y guardar la cuenta.
+        // Usamos el Servicio para crear y guardar la cuenta.
         // (Modificaremos ServicioUsuario para que acepte los datos)
-
-        // Aquí deberías usar tus Excepciones Personalizadas (Paso 3 del PDF)
+        // Usamos nuestas excepciones
         try {
-            servicioUsuario.crearNuevaCuenta(nombre, apellido, dniStr, correoElectronico, contrasenia);
+            servicioUsuario.crearNuevaCuenta(nombre, apellido, dniStr, nomUsr, correoElectronico, contrasenia);
 
             // Si todo sale bien:
             vistaRegistro.mostrarExito("¡Cuenta creada exitosamente! Ya puedes iniciar sesión.");
@@ -65,6 +64,7 @@ public class ControladorRegistro implements ActionListener {
             vistaRegistro.mostrarError("Ocurrió un error inesperado: " + e_gen.getMessage());
         }
     }
+
     private void manejarBotonVolver() {
         // Cierra la ventana de Registro
         JFrame ventanaActual = (JFrame) SwingUtilities.getWindowAncestor(vistaRegistro);

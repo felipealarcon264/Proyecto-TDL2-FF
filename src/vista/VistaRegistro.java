@@ -1,7 +1,6 @@
 package vista;
 
 import java.awt.*;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon; // Importación nueva
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -11,8 +10,9 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 /**
- * La VISTA (V) del Registro.
- * Contiene los campos para registrar un nuevo usuario, con una imagen de bienvenida.
+ * Vista del Registro.
+ * Contiene los campos para registrar un nuevo usuario, con una imagen de
+ * bienvenida.
  */
 public class VistaRegistro extends JPanel {
 
@@ -22,6 +22,7 @@ public class VistaRegistro extends JPanel {
     private JTextField campoDNI;
 
     // Campos para Usuario (Cuenta)
+    private JTextField campoNomUsr;
     private JTextField campoEmail;
     private JPasswordField campoPass;
 
@@ -33,7 +34,7 @@ public class VistaRegistro extends JPanel {
         // Establecemos el BorderLayout como layout principal para tener más control
         this.setLayout(new BorderLayout(20, 20)); // Espaciado entre componentes
         this.setBorder(new EmptyBorder(20, 20, 20, 20)); // Margen exterior
-        this.setPreferredSize(new Dimension(800,550));
+        this.setPreferredSize(new Dimension(800, 550));
         // --- Panel Superior: Imagen y Título ---
         JPanel panelSuperior = new JPanel(new BorderLayout(10, 10)); // Otro BorderLayout interno
 
@@ -62,7 +63,7 @@ public class VistaRegistro extends JPanel {
         this.add(panelSuperior, BorderLayout.NORTH); // Añadir el panel superior a la parte superior de la vista
 
         // --- Panel Central: El Formulario ---
-        JPanel panelFormulario = new JPanel(new GridLayout(5, 2, 10, 10));
+        JPanel panelFormulario = new JPanel(new GridLayout(6, 2, 10, 10));
 
         panelFormulario.add(new JLabel("Nombre:"));
         campoNombre = new JTextField();
@@ -75,6 +76,10 @@ public class VistaRegistro extends JPanel {
         panelFormulario.add(new JLabel("DNI:"));
         campoDNI = new JTextField();
         panelFormulario.add(campoDNI);
+
+        panelFormulario.add(new JLabel("Nombre de usuario:"));
+        campoNomUsr = new JTextField();
+        panelFormulario.add(campoNomUsr);
 
         panelFormulario.add(new JLabel("Email:"));
         campoEmail = new JTextField();
@@ -100,19 +105,44 @@ public class VistaRegistro extends JPanel {
 
     // --- Getters para el Controlador ---
 
-    public String getCampoNombre() { return campoNombre.getText(); }
-    public String getCampoApellido() { return campoApellido.getText(); }
-    public String getCampoDNI() { return campoDNI.getText(); }
-    public String getCampoCorreoElectronico() { return campoEmail.getText(); }
-    public String getCampoContraseña() { return new String(campoPass.getPassword()); }
-    public JButton getBotonRegistrar() { return botonRegistrar; }
-    public JButton getBotonVolver() { return botonVolver; }
+    public String getCampoNombre() {
+        return campoNombre.getText();
+    }
+
+    public String getCampoApellido() {
+        return campoApellido.getText();
+    }
+
+    public String getCampoDNI() {
+        return campoDNI.getText();
+    }
+
+    public String getCampoNombreUsr() {
+        return campoNomUsr.getText();
+    }
+
+    public String getCampoCorreoElectronico() {
+        return campoEmail.getText();
+    }
+
+    public String getCampoContraseña() {
+        return new String(campoPass.getPassword());
+    }
+
+    public JButton getBotonRegistrar() {
+        return botonRegistrar;
+    }
+
+    public JButton getBotonVolver() {
+        return botonVolver;
+    }
 
     // --- Métodos para Feedback (igual que en Login) ---
     public void mostrarError(String mensaje) {
         javax.swing.JOptionPane.showMessageDialog(this, mensaje, "Error de Registro",
                 javax.swing.JOptionPane.ERROR_MESSAGE);
     }
+
     public void mostrarExito(String mensaje) {
         javax.swing.JOptionPane.showMessageDialog(this, mensaje, "Registro Exitoso",
                 javax.swing.JOptionPane.INFORMATION_MESSAGE);

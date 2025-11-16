@@ -30,12 +30,13 @@ public class ServicioUsuario {
     }
 
     /**
-     * Busca en la base de datos que tipo de Usuario ingresa a la plataforma (Administrador o Cuenta).
+     * Busca en la base de datos que tipo de Usuario ingresa a la plataforma
+     * (Administrador o Cuenta).
      *
      * @author Grupo 4 - Proyecto TDL2
      * @version 4.0
      *
-     * @param correo El correo a verificar.
+     * @param correo     El correo a verificar.
      * @param contraseña La contraseña a verificar.
      * @return el tipo de Usuario.
      */
@@ -48,46 +49,57 @@ public class ServicioUsuario {
      * Este método es llamado por el ControladorRegistro (GUI).
      * Lanza excepciones personalizadas si la validación falla.
      *
-     * @param nombre Nombre del usuario.
+     * @param nombre   Nombre del usuario.
      * @param apellido Apellido del usuario.
-     * @param dniStr DNI (como String, para ser validado).
-     * @param email Email (debe ser único).
+     * @param dniStr   DNI (como String, para ser validado).
+     * @param email    Email (debe ser único).
      * @param password Contraseña.
-     * @throws DatosInvalidosException Si los campos están vacíos o el DNI no es un número.
-     * @throws DniYaRegistradosException Si el DNI ya existe.
+     * @throws DatosInvalidosException    Si los campos están vacíos o el DNI no es
+     *                                    un número.
+     * @throws DniYaRegistradosException  Si el DNI ya existe.
      * @throws EmailYaRegistradoException Si el email ya existe.
      */
-    public void crearNuevaCuenta(String nombre, String apellido, String dniStr, String email, String password)
+    public void crearNuevaCuenta(String nombre, String apellido, String dniStr, String nomUsr, String email,
+            String password)
             throws DatosInvalidosException, DniYaRegistradosException, EmailYaRegistradoException {
 
-        // 1. Validación de campos vacíos (requerida por PDF)
+        // Validacion de datos vacios.
         if (nombre.trim().isEmpty() || apellido.trim().isEmpty() || dniStr.trim().isEmpty() ||
                 email.trim().isEmpty() || password.isEmpty()) {
-
             throw new DatosInvalidosException("Todos los campos son obligatorios.");
         }
 
-        // 2. Validación de formato de DNI
+        // Validacion de nombre y apellido valido.
+        if (!(new ServicioDatos_Personales().contieneSoloLetras(nombre))) {
+            new DatosInvalidosException("Nombre invalido.");
+        }
+        if (!(new ServicioDatos_Personales().contieneSoloLetras(apellido))) {
+            new DatosInvalidosException("Apellido invalido.");
+        }
+
+        // Validacion formato DNI y unicidad.
         int dni;
         try {
             dni = Integer.parseInt(dniStr.trim());
+            if (datosPersonalesDAO.buscarPorDNI(dni) != null)// DNI unico.
+                throw new DniYaRegistradosException("El DNI " + dni + " ya está registrado.");
         } catch (NumberFormatException ex) {
             throw new DatosInvalidosException("El DNI debe ser un número válido.");
         }
 
-        // 3. Validación de unicidad de DNI
-        if (datosPersonalesDAO.buscarPorDNI(dni) != null) {
-            throw new DniYaRegistradosException("El DNI " + dni + " ya está registrado.");
-        }
+        // Validacion de unicidad del nombre de usuario.
+        if (nombreUsrExistente(nomUsr, usuarioDAO.devolverListaUsuarios()))
+            throw new DatosInvalidosException("El nombre de usuario " + nomUsr + " ya está registrado.");
 
-        // 4. Validación de unicidad de Email
-        if (usuarioDAO.buscarPorEmail(email) != null) {
+        // Validacion formato E-Mail y unicidad.
+        if (!esFormatoEmailSimpleValido(email))
+            throw new DatosInvalidosException("Formato de correo invalido.");
+        else if (usuarioDAO.buscarPorEmail(email) != null)
             throw new EmailYaRegistradoException("El email " + email + " ya está registrado.");
-        }
 
-        // 5. Si todo está bien, crear y guardar
+        // Si todo esta correcto se guarda
         Datos_Personales dp = new Datos_Personales(-1, nombre, apellido, dni);
-        Cuenta cta = new Cuenta(-1, nombre, email, password, dp, "CUENTA");
+        Cuenta cta = new Cuenta(-1, nomUsr, email, password, dp, "CUENTA");
 
         boolean exito = usuarioDAO.guardar(cta);
 
@@ -96,6 +108,7 @@ public class ServicioUsuario {
             throw new RuntimeException("Error desconocido al guardar en la base de datos.");
         }
     }
+
     /**
      * Verifica si un correo electrónico ya está registrado en la base de datos.
      * Siempre suponemos que un correo no se puede ingresar dos veces por lo que
@@ -104,7 +117,7 @@ public class ServicioUsuario {
      * @author Grupo 4 - Proyecto TDL2
      * @version 4.0
      *
-     * @param correo El correo a validar.
+     * @param correo     El correo a validar.
      * @param contrasena La contraseña a validar.
      * @return true si el correo está registrado, false en caso
      *         contrario.
@@ -129,6 +142,7 @@ public class ServicioUsuario {
 
     /**
      * Reemplazo de agregarUsuario.
+     * Utiliza la consola para ingresar los datos.
      * Crea un usario y lo carga en la base de datos.
      *
      * @author Grupo 4 - Proyecto TDL2
@@ -211,6 +225,7 @@ public class ServicioUsuario {
 
     /**
      * Crea un usario y lo carga en la base de datos.
+     * Utiliza la consola para ingresar los datos.
      *
      * @author Grupo 4 - Proyecto TDL2
      * @version 4.0
@@ -293,6 +308,7 @@ public class ServicioUsuario {
     /**
      * Pregunta por pantalla que manera de ordenacion de la lista de Usuarios se
      * requiere.
+     * Lo muestra por consola.
      *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
@@ -349,7 +365,7 @@ public class ServicioUsuario {
     }
 
     /**
-     * Solicita al usuario la confirmación de los datos ingresados.
+     * Solicita al usuario la confirmación de los datos ingresados por consola.
      *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
@@ -424,6 +440,34 @@ public class ServicioUsuario {
         // Busca coincidencia.
         for (Usuario usuario : listaUSuario) {
             if (usuario.getEmail() != null && usuario.getEmail().equals(correo)) {
+                return true;
+            }
+        }
+        // Si no encontro.
+        return false;
+    }
+
+    /**
+     * Verifica si un nombre de usuario ya está registrado en la base de datos.
+     * Siempre suponemos que un nombre de usuario es unico.
+     *
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     *
+     * @param nombreUsr    El nombre de usuario a validar.
+     * @param listaUSuario Se pide a la base de datos.
+     * @return true si el correo está registrado, false en caso
+     *         contrario.
+     */
+    private boolean nombreUsrExistente(String nombreUsr, List<Usuario> listaUSuario) {
+        // Maneja el caso de que la lista sea nula.
+        if (listaUSuario == null) {
+            System.out.println("Error: No se pudo obtener la lista de usuarios para validar.");
+            return false;
+        }
+        // Busca coincidencia.
+        for (Usuario usuario : listaUSuario) {
+            if (usuario.getNombreUsuario() != null && usuario.getNombreUsuario().equals(nombreUsr)) {
                 return true;
             }
         }
