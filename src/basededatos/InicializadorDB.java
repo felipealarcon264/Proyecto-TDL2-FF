@@ -41,7 +41,7 @@ public class InicializadorDB {
                         );
                     """;
             stmt.executeUpdate(sql);
-
+            // se agregó las 3 variables faltantes para el entregable 3 {Rating_Promedio, Anio, Poster}
             sql = """
                         CREATE TABLE IF NOT EXISTS PELICULA (
                             ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -49,7 +49,10 @@ public class InicializadorDB {
                             TITULO TEXT(100) NOT NULL,
                             RESUMEN TEXT(500),
                             DIRECTOR TEXT(100) NOT NULL,
-                            DURACION INTEGER NOT NULL
+                            DURACION INTEGER NOT NULL,
+                            RATING_PROMEDIO REAL,
+                            ANIO INTEGER,
+                            POSTER TEXT
                         );
                     """;
             stmt.executeUpdate(sql);

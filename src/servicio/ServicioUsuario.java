@@ -12,6 +12,10 @@ import modelo.ente.Cuenta;
 import modelo.ente.Datos_Personales;
 import modelo.ente.Usuario;
 
+import excepciones.DniYaRegistradosException;
+import excepciones.EmailYaRegistradoException;
+import excepciones.DatosInvalidosException;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -26,31 +30,72 @@ public class ServicioUsuario {
     }
 
     /**
-     * Valida si un correo existe en la lista de usuarios de la base de datos.
+     * Busca en la base de datos que tipo de Usuario ingresa a la plataforma (Administrador o Cuenta).
      *
      * @author Grupo 4 - Proyecto TDL2
      * @version 4.0
      *
      * @param correo El correo a verificar.
-     * @return true si el correo existe, false en caso contrario.
+     * @param contraseña La contraseña a verificar.
+     * @return el tipo de Usuario.
      */
-    public boolean validarCorreo(String correo) {
-        // Se obtiene la lista directamente de la DB para validar
-        List<Usuario> listaUsuario = usuarioDAO.devolverListaUsuarios();
-        if (listaUsuario == null) {
-            System.out.println("Error: No se pudo obtener la lista de usuarios para validar.");
-            return false;
-        }
-
-        for (Usuario usuario : listaUsuario) {
-            if (usuario.getEmail() != null && usuario.getEmail().equals(correo)) {
-                return true;
-            }
-        }
-        // Si no encontro.
-        return false;
+    public Usuario DelvolverTipoUsuario(String correo, String contraseña) {
+        return usuarioDAO.buscarPorEmailyContrasena(correo, contraseña);
     }
 
+    /**
+     * Crea y guarda una nueva Cuenta y sus Datos Personales.
+     * Este método es llamado por el ControladorRegistro (GUI).
+     * Lanza excepciones personalizadas si la validación falla.
+     *
+     * @param nombre Nombre del usuario.
+     * @param apellido Apellido del usuario.
+     * @param dniStr DNI (como String, para ser validado).
+     * @param email Email (debe ser único).
+     * @param password Contraseña.
+     * @throws DatosInvalidosException Si los campos están vacíos o el DNI no es un número.
+     * @throws DniYaRegistradosException Si el DNI ya existe.
+     * @throws EmailYaRegistradoException Si el email ya existe.
+     */
+    public void crearNuevaCuenta(String nombre, String apellido, String dniStr, String email, String password)
+            throws DatosInvalidosException, DniYaRegistradosException, EmailYaRegistradoException {
+
+        // 1. Validación de campos vacíos (requerida por PDF)
+        if (nombre.trim().isEmpty() || apellido.trim().isEmpty() || dniStr.trim().isEmpty() ||
+                email.trim().isEmpty() || password.isEmpty()) {
+
+            throw new DatosInvalidosException("Todos los campos son obligatorios.");
+        }
+
+        // 2. Validación de formato de DNI
+        int dni;
+        try {
+            dni = Integer.parseInt(dniStr.trim());
+        } catch (NumberFormatException ex) {
+            throw new DatosInvalidosException("El DNI debe ser un número válido.");
+        }
+
+        // 3. Validación de unicidad de DNI
+        if (datosPersonalesDAO.buscarPorDNI(dni) != null) {
+            throw new DniYaRegistradosException("El DNI " + dni + " ya está registrado.");
+        }
+
+        // 4. Validación de unicidad de Email
+        if (usuarioDAO.buscarPorEmail(email) != null) {
+            throw new EmailYaRegistradoException("El email " + email + " ya está registrado.");
+        }
+
+        // 5. Si todo está bien, crear y guardar
+        Datos_Personales dp = new Datos_Personales(-1, nombre, apellido, dni);
+        Cuenta cta = new Cuenta(-1, nombre, email, password, dp, "CUENTA");
+
+        boolean exito = usuarioDAO.guardar(cta);
+
+        if (!exito) {
+            // Un error genérico si la BD falla por otra razón
+            throw new RuntimeException("Error desconocido al guardar en la base de datos.");
+        }
+    }
     /**
      * Verifica si un correo electrónico ya está registrado en la base de datos.
      * Siempre suponemos que un correo no se puede ingresar dos veces por lo que
@@ -59,12 +104,12 @@ public class ServicioUsuario {
      * @author Grupo 4 - Proyecto TDL2
      * @version 4.0
      *
-     * @param correo     El correo a validar.
+     * @param correo El correo a validar.
      * @param contrasena La contraseña a validar.
      * @return true si el correo está registrado, false en caso
      *         contrario.
      */
-    public boolean validarUsuario(String correo, String contrasena) {
+    public boolean verificarUsuario(String correo, String contrasena) {
         // Se obtiene la lista directamente de la DB para validar
         List<Usuario> listaUsuario = usuarioDAO.devolverListaUsuarios();
         if (listaUsuario == null) {
