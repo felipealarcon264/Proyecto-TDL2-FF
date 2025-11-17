@@ -1,7 +1,5 @@
 package modelo.catalogo;
 
-import modelo.enums.Genero;
-
 /**
  * Clase base abstracta para todo el contenido audiovisual de la plataforma.
  * Define los atributos y comportamientos comunes como título, resumen,
@@ -17,7 +15,7 @@ public abstract class Contenido {
     private String resumen;
     private String director;
     private int duracion;
-    private Genero genero;
+    private String genero;
 
     /**
      * Constructor vacío.
@@ -36,7 +34,7 @@ public abstract class Contenido {
      * @param resumen  Resumen del contenido.
      * @param genero   Genero del contenido.
      */
-    public Contenido(int idDB, String titulo, String director, int duracion, String resumen, Genero genero) {
+    public Contenido(int idDB, String titulo, String director, int duracion, String resumen, String genero) {
         this.idDB = idDB;
         this.titulo = titulo;
         this.director = director;
@@ -162,7 +160,7 @@ public abstract class Contenido {
      * @version 1.0
      * @return El género del contenido.
      */
-    public Genero getGenero() {
+    public String getGenero() {
         return genero;
     }
 
@@ -173,7 +171,7 @@ public abstract class Contenido {
      * @version 1.0
      * @param genero El nuevo género del contenido.
      */
-    public void setGenero(Genero genero) {
+    public void setGenero(String genero) {
         this.genero = genero;
     }
 

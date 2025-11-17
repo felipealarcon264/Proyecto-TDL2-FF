@@ -1,6 +1,5 @@
 package modelo.catalogo;
 
-import modelo.enums.Genero;
 
 /**
  * Representa una Película dentro de la plataforma.
@@ -42,7 +41,7 @@ public class Pelicula extends Contenido {
      * @param anio     Año de lanzamiento.
      * @param poster   URL de la imagen del póster.
      */
-    public Pelicula(int idDB, String titulo, String director, int duracion, String resumen, Genero genero,
+    public Pelicula(int idDB, String titulo, String director, int duracion, String resumen, String genero,
             double ratingPromedio, int anio, String poster) {
         super(idDB, titulo, director, duracion, resumen, genero);
         this.ratingPromedio = ratingPromedio;

@@ -192,7 +192,7 @@ public class ReseniaDAOImpl implements ReseniaDAO {
                 // Reconstruir Pelicula
                 Pelicula pelicula = new Pelicula(rs.getInt("pelicula_id"), rs.getString("TITULO"),
                         rs.getString("DIRECTOR"), rs.getInt("DURACION"), rs.getString("RESUMEN"),
-                        modelo.enums.Genero.valueOf(rs.getString("GENERO")),
+                        rs.getString("GENERO"),
                         rs.getDouble("RATING_PROMEDIO"), rs.getInt("ANIO"),
                         rs.getString("POSTER"));
 

@@ -11,10 +11,14 @@ import javax.swing.JWindow;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import servicio.ServicioPelicula;
+import basededatos.InicializadorDB;
 import controlador.ControladorLogin;
 import controlador.ControladorRegistro;
 import servicio.ServicioUsuario;
+import vista.VistaHome;
 import vista.VistaLogin;
+import vista.VistaCarga;
 import vista.VistaRegistro;
 
 public class Aplicacion {
@@ -24,8 +28,15 @@ public class Aplicacion {
     public static CardLayout cardLayout;
     public static JPanel panelContenedor;
 
+    // Hacemos accesibles la vista y los servicios que se necesitarán más tarde
+    public static VistaHome vistaHome;
+    public static ServicioUsuario servicioUsuario;
+    public static ServicioPelicula servicioPelicula;
+
     public static void main(String[] args) {
-        // Ejecutamos el Splash primero
+        // --- INICIALIZACIÓN DE LA BASE DE DATOS ---
+        new InicializadorDB().crearTablas();
+        // Ejecutamos el Splash
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -79,28 +90,39 @@ public class Aplicacion {
     }
 
     private static void iniciarVentanaPrincipal() {
-        //Se crea el marco principal.
+        // Se crea el marco principal.
         ventana = new JFrame("Plataforma TDL2");
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ventana.setSize(800, 600);
         ventana.setLocationRelativeTo(null);
+
 
         // Crea el gestor de cartas (Ventanas) con CardLayout.
         cardLayout = new CardLayout();
         panelContenedor = new JPanel(cardLayout);
 
         // Lugar para instanciar los servicios.
-        ServicioUsuario servicioUsuario = new ServicioUsuario();
+        servicioUsuario = new ServicioUsuario();
+        servicioPelicula = new ServicioPelicula();
 
         // --- CARTA 1: LOGIN ---
         VistaLogin vistaLogin = new VistaLogin();
-        new ControladorLogin(vistaLogin, servicioUsuario); // Conecta C con V y M
+        new ControladorLogin(vistaLogin, servicioUsuario, servicioPelicula); // Conecta C con V y M
         panelContenedor.add(vistaLogin, "LOGIN");
 
         // --- CARTA 2: REGISTRO ---
         VistaRegistro vistaRegistro = new VistaRegistro();
-        new ControladorRegistro(vistaRegistro, servicioUsuario); // Conecta C con V y M
+        new ControladorRegistro(vistaRegistro, servicioUsuario);
         panelContenedor.add(vistaRegistro, "REGISTRO");
+
+        // --- CARTA 3: HOME ---
+        vistaHome = new VistaHome();
+        // El ControladorHome se instanciará desde el ControladorLogin al iniciar sesión.
+        panelContenedor.add(vistaHome, "HOME");
+
+        // --- CARTA 4: PANTALLA DE CARGA ---
+        VistaCarga vistaCarga = new VistaCarga();
+        panelContenedor.add(vistaCarga, "CARGA");
 
         // Agrega el "mazo" a la ventana.
         ventana.add(panelContenedor);

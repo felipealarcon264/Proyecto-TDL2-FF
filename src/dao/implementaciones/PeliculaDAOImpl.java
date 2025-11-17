@@ -3,7 +3,6 @@ package dao.implementaciones;
 import basededatos.ConexionDB;
 import modelo.catalogo.Pelicula;
 import dao.interfaces.PeliculaDAO;
-import modelo.enums.Genero;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -49,7 +48,7 @@ public class PeliculaDAOImpl implements PeliculaDAO {
             pstmt.setString(2, pelicula.getDirector());
             pstmt.setInt(3, pelicula.getDuracion());
             pstmt.setString(4, pelicula.getResumen());
-            pstmt.setString(5, pelicula.getGenero().name());
+            pstmt.setString(5, pelicula.getGenero());
             pstmt.setDouble(6, pelicula.getRatingPromedio());
             pstmt.setInt(7, pelicula.getAnio());
             pstmt.setString(8, pelicula.getPoster());
@@ -122,7 +121,7 @@ public class PeliculaDAOImpl implements PeliculaDAO {
             var rs = pstmt.executeQuery();
             if (rs.next()) {
                 String generoSTR = rs.getString("GENERO");
-                Genero generoEnum = Genero.valueOf(generoSTR.toUpperCase());
+                String generoEnum = String.valueOf(generoSTR.toUpperCase());
                 System.out.println("ℹ️ Película [" + titulo + "] encontrada.");
                 return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"),
                         rs.getInt("DURACION"),
@@ -155,7 +154,7 @@ public class PeliculaDAOImpl implements PeliculaDAO {
             pstmt.setInt(1, id);
             try (java.sql.ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    Genero generoEnum = Genero.valueOf(rs.getString("GENERO").toUpperCase());
+                    String generoEnum = String.valueOf(rs.getString("GENERO").toUpperCase());
                     return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"), rs.getInt("DURACION"),
                             rs.getString("RESUMEN"), generoEnum,
                             rs.getDouble("RATING_PROMEDIO"), rs.getInt("ANIO"),
@@ -191,7 +190,7 @@ public class PeliculaDAOImpl implements PeliculaDAO {
             while (rs.next()) {
                 // Datos de la pelicula.
                 int id = rs.getInt("ID");
-                Genero generoEnum = Genero.valueOf(rs.getString("GENERO").toUpperCase());
+                String generoEnum = String.valueOf(rs.getString("GENERO").toUpperCase());
                 String titulo = rs.getString("TITULO");
                 String resumen = rs.getString("RESUMEN");
                 String director = rs.getString("DIRECTOR");

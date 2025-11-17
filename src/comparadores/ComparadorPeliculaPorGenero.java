@@ -32,6 +32,6 @@ public class ComparadorPeliculaPorGenero implements Comparator<Pelicula> {
     public int compare(Pelicula p1, Pelicula p2) {
         // Compara la representación de texto de los modelo.enums de género.
         // .name() devuelve el nombre del enum como un String ("ACCION", "ANIME", etc.).
-        return p1.getGenero().name().compareTo(p2.getGenero().name());
+        return p1.getGenero().compareTo(p2.getGenero());
     }
 }

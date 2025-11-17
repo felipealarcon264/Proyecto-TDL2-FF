@@ -1,0 +1,93 @@
+package vista;
+
+import javax.swing.*;
+import java.awt.*;
+import java.net.URL;
+import java.net.URI;
+
+/**
+ * Un componente de tarjeta que muestra el póster y el título de una película.
+ * Se encarga de cargar la imagen del póster desde una URL en un hilo separado
+ * para no congelar la interfaz de usuario.
+ */
+public class TarjetaPelicula extends JPanel {
+
+    private JLabel etiquetaPoster;
+
+    public TarjetaPelicula(String titulo, String urlPoster, String rating) {
+        // 1. Configuración del Layout y Borde
+        setLayout(new BorderLayout(5, 5));
+        setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+        setPreferredSize(new Dimension(180, 320)); // Tamaño fijo para la tarjeta
+
+        // 2. Etiqueta para el Título y Rating
+        JLabel etiquetaTitulo = new JLabel("<html><body style='width: 120px; text-align: center;'>" + titulo + "<br><b>" + rating + " ⭐</b></body></html>");
+        etiquetaTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+        add(etiquetaTitulo, BorderLayout.SOUTH);
+
+        // 3. Etiqueta para el Póster (inicialmente con texto de carga)
+        etiquetaPoster = new JLabel("Cargando imagen...");
+        etiquetaPoster.setHorizontalAlignment(SwingConstants.CENTER);
+        etiquetaPoster.setVerticalAlignment(SwingConstants.CENTER);
+        etiquetaPoster.setOpaque(true);
+        etiquetaPoster.setBackground(Color.LIGHT_GRAY);
+        add(etiquetaPoster, BorderLayout.CENTER);
+
+        // 4. Cargar la imagen en segundo plano
+        cargarImagen(urlPoster);
+    }
+
+    private void cargarImagen(String urlPoster) {
+        // SwingWorker es la herramienta de Swing para tareas en segundo plano
+        SwingWorker<ImageIcon, Void> worker = new SwingWorker<>() {
+            
+            @Override
+            protected ImageIcon doInBackground() throws Exception {
+                // Esta parte se ejecuta en un hilo separado (NO en el de la UI)
+                try {
+                    // Forma moderna y segura de crear una URL desde un String
+                    URL url = new URI(urlPoster).toURL();
+                    ImageIcon originalIcon = new ImageIcon(url);
+
+                    // Redimensionamos la imagen para que quepa en la tarjeta
+                    Image imagenOriginal = originalIcon.getImage();
+                    // Calculamos el alto manteniendo la proporción (ancho 170px)
+                    int nuevoAncho = 170;
+                    int nuevoAlto = (int) ((double) nuevoAncho / imagenOriginal.getWidth(null) * imagenOriginal.getHeight(null));
+                    
+                    Image imagenRedimensionada = imagenOriginal.getScaledInstance(nuevoAncho, nuevoAlto, Image.SCALE_SMOOTH);
+                    
+                    return new ImageIcon(imagenRedimensionada);
+
+                } catch (Exception e) {
+                    System.err.println("No se pudo cargar la imagen: " + urlPoster);
+                    // Devolvemos null si hay un error para manejarlo en done()
+                    return null; 
+                }
+            }
+
+            @Override
+            protected void done() {
+                // Esta parte se ejecuta de vuelta en el hilo de la UI cuando doInBackground() termina
+                try {
+                    ImageIcon imagen = get(); // Obtenemos el resultado de doInBackground()
+                    if (imagen != null) {
+                        etiquetaPoster.setIcon(imagen);
+                        etiquetaPoster.setText(""); // Quitamos el texto "Cargando..."
+                    } else {
+                        // Si hubo un error, mostramos un mensaje en la tarjeta
+                        etiquetaPoster.setText("<html><center>Error al<br>cargar</center></html>");
+                        etiquetaPoster.setIcon(null);
+                    }
+                } catch (Exception e) {
+                    etiquetaPoster.setText("<html><center>Error al<br>cargar</center></html>");
+                    etiquetaPoster.setIcon(null);
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        // ¡Iniciamos el trabajador!
+        worker.execute();
+    }
+}

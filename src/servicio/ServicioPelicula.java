@@ -8,7 +8,11 @@ import comparadores.ComparadorPeliculaPorTitulo;
 import dao.interfaces.PeliculaDAO;
 import dao.FactoryDAO;
 
-import modelo.enums.Genero;
+// Se eliminó el import de modelo.enums.Genero_NOLOUSAMOS
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,18 +20,108 @@ public class ServicioPelicula {
     PeliculaDAO peliculaDAO;
 
     public ServicioPelicula() {
-
         this.peliculaDAO = FactoryDAO.getPeliculaDAO();
     }
 
     /**
+     * Importa las películas del CSV a la base de datos.
+     * Solo se ejecuta si la base de datos está vacía.
+     */
+    public void inicializarCatalogo() {
+        // 1. Si ya hay películas, no perdemos tiempo importando
+        if (!peliculaDAO.devolverListaPelicula().isEmpty()) {
+            return;
+        }
+
+        System.out.println("Iniciando importación de películas...");
+
+        // 2. Leemos el archivo desde 'src/movies_database.csv'
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                getClass().getResourceAsStream("/movies_database.csv")))) {
+            
+            String linea = br.readLine(); // Saltamos la cabecera
+            
+            while ((linea = br.readLine()) != null) {
+                // EXPRESIÓN REGULAR MÁGICA: Separa por comas PERO ignora las comas que están dentro de comillas ""
+                // Esto es vital porque el campo "Genre" viene como "Action, Adventure"
+                String[] datos = linea.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+
+                // Verificamos tener las columnas necesarias (el archivo tiene 9 columnas)
+                if (datos.length >= 9) {
+                    try {
+                        // Col 0: Release_Date (2021-12-15) -> Sacamos el año
+                        int anio = 0;
+                        if(datos[0].contains("-")) {
+                            anio = Integer.parseInt(datos[0].split("-")[0]);
+                        }
+                        
+                        // Col 1: Título
+                        String titulo = datos[1].replace("\"", ""); // Quitamos comillas si las tiene
+                        
+                        // Col 2: Resumen (Overview)
+                        String resumen = datos[2].replace("\"", "");
+
+                        // Col 5: Vote_Average (8.3)
+                        double rating = Double.parseDouble(datos[5]);
+
+                        // Col 7: Genre ("Action, Adventure") -> Tomamos solo el primero
+                        String generoStr = datos[7].replace("\"", "");
+                        if (generoStr.contains(",")) {
+                            generoStr = generoStr.split(",")[0].trim();
+                        }
+                        
+                        // CAMBIO: Ahora usamos el String directamente
+                        String genero = generoStr; 
+
+                        // Col 8: Poster_Url
+                        String poster = datos[8];
+
+                        // 3. Creamos el objeto Película
+                        Pelicula p = new Pelicula(-1,titulo,"Director",0,resumen,genero,rating,anio,poster);
+
+                        // 4. Guardamos en la BD
+                        peliculaDAO.guardar(p);
+
+                    } catch (Exception e) {
+                        System.err.println("Error al procesar línea: " + datos[1] + " -> " + e.getMessage());
+                    }
+                }
+            }
+            System.out.println("¡Importación finalizada con éxito!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // --- LÓGICA DEL TOP 10 vs RANDOM ---
+
+    public List<Pelicula> obtenerTop10() {
+        List<Pelicula> todas = peliculaDAO.devolverListaPelicula();
+        // Ordenamos por rating de mayor a menor
+        todas.sort((p1, p2) -> Double.compare(p2.getRatingPromedio(), p1.getRatingPromedio()));
+        
+        // Devolvemos las primeras 10 (o menos si no hay tantas)
+        return todas.subList(0, Math.min(10, todas.size()));
+    }
+
+    /**
+     * Retorna una lista de 10 o menos peliculas ordenadas al azar.
+     * @return lista con 10 o menos peliculas mezcladas.
+     */
+    public List<Pelicula> obtener10Aleatorias() {
+        List<Pelicula> todas = peliculaDAO.devolverListaPelicula();
+        // Mezclamos la lista
+        Collections.shuffle(todas);
+        return todas.subList(0, Math.min(10, todas.size()));
+    }
+    
+    /**
      * Carga una Pelicula desde la entrada estándar (consola).
      * Permite al usuario administrador ingresar los datos y confirmarlos.
-     * 
-     * @author Grupo 4 - Proyecto TDL2
+     * * @author Grupo 4 - Proyecto TDL2
      * @version 4.0
-     * 
-     * @param scanner El Scanner para leer la entrada del usuario.
+     * * @param scanner El Scanner para leer la entrada del usuario.
      * @return Una pelicula o null en caso de cancelar la carga.
      */
     public Pelicula cargaPelicula(Scanner scanner) {
@@ -37,7 +131,7 @@ public class ServicioPelicula {
         String resumen = "";
         String director = "";
         int duracion = -1;
-        Genero genero = null;
+        String genero = ""; // CAMBIO: Ahora es String
         int anio = 0;
         double rating = 0.0;
         String poster = "";
@@ -50,7 +144,7 @@ public class ServicioPelicula {
             System.out.print("Ingrese el director: ");
             director = scanner.nextLine();
             duracion = ingresarNumeroValido(scanner, "Ingrese la duración: ");
-            genero = seleccionarGenero(scanner);
+            genero = seleccionarGenero(scanner); // CAMBIO: Devuelve String
             anio = ingresarNumeroValido(scanner, "Ingrese el año de lanzamiento: ");
             rating = ingresarDoubleValido(scanner, "Ingrese el rating promedio (ej: 7.5): ");
             System.out.print("Ingrese la URL del poster: ");
@@ -75,6 +169,7 @@ public class ServicioPelicula {
         }
         System.out.println("Datos confirmados...");
         // Pasamos -1 como ID temporal, ya que la DB asignará el real.
+        // CAMBIO: El constructor de Pelicula debe aceptar 'genero' como String
         return new Pelicula(-1, titulo, director, duracion, resumen, genero, rating, anio, poster);
     }
 
@@ -85,8 +180,7 @@ public class ServicioPelicula {
      *
      * @author Grupo 4 - Proyecto TDL2
      * @version 4.0
-     * 
-     * @param scanner El Scanner para leer la entrada del usuario.
+     * * @param scanner El Scanner para leer la entrada del usuario.
      */
     public void cargarYGuardarPelicula(Scanner scanner) {
         Pelicula pelicula = this.cargaPelicula(scanner);
@@ -96,13 +190,11 @@ public class ServicioPelicula {
     /**
      * Elimina una pelicula existente de la base de datos/
      * Los mensajes seran emitidos por el metodo borrar.
-     * 
-     * @author Grupo 4 - Proyecto TDL2
+     * * @author Grupo 4 - Proyecto TDL2
      * @version 4.0
-     * 
-     * @param pelicula La película a eliminar.
+     * * @param pelicula La película a eliminar.
      * @return true si se pudo borrar de la DB y de la lista, false en caso
-     *         contrario.
+     * contrario.
      */
     public boolean eliminarPelicula(Pelicula pelicula) {
         return peliculaDAO.borrar(pelicula);
@@ -111,11 +203,9 @@ public class ServicioPelicula {
     /**
      * Pregunta por pantalla qué manera de ordenación de la lista de Películas se
      * requiere y la muestra en pantalla.
-     * 
-     * @author Grupo 4 - Proyecto TDL2
+     * * @author Grupo 4 - Proyecto TDL2
      * @version 4.0
-     * 
-     * @param in El Scanner para leer la entrada del usuario.
+     * * @param in El Scanner para leer la entrada del usuario.
      */
     public void ordenaryVerListaPelicula(Scanner in) {
         System.out.println("\n--- Ordenamiento de lista de películas ---");
@@ -151,11 +241,9 @@ public class ServicioPelicula {
 
     /**
      * Solicita al usuario la confirmación de los datos ingresados.
-     * 
-     * @author Grupo 4 - Proyecto TDL2
+     * * @author Grupo 4 - Proyecto TDL2
      * @version 4.0
-     * 
-     * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
+     * * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
      * @return true si el usuario confirma, false en caso contrario.
      */
     private boolean confirmacion(Scanner scanner) {
@@ -171,11 +259,9 @@ public class ServicioPelicula {
     /**
      * Pide al usuario que ingrese un número entero y valida la entrada.
      * Pide reintentar si se ingresa algo que no es un número.
-     * 
-     * @author Grupo 4 - Proyecto TDL2
+     * * @author Grupo 4 - Proyecto TDL2
      * @version 4.0.
-     * 
-     * @param scanner El objeto Scanner ya inicializado.
+     * * @param scanner El objeto Scanner ya inicializado.
      * @param mensaje El mensaje a mostrar al usuario para solicitar la entrada.
      * @return El número entero válido ingresado por el usuario.
      */
@@ -197,11 +283,9 @@ public class ServicioPelicula {
     /**
      * Pide al usuario que ingrese un número decimal y valida la entrada.
      * Pide reintentar si se ingresa algo que no es un número.
-     * 
-     * @author Grupo 4 - Proyecto TDL2
+     * * @author Grupo 4 - Proyecto TDL2
      * @version 4.0.
-     * 
-     * @param scanner El objeto Scanner ya inicializado.
+     * * @param scanner El objeto Scanner ya inicializado.
      * @param mensaje El mensaje a mostrar al usuario para solicitar la entrada.
      * @return El número double válido ingresado por el usuario.
      */
@@ -221,17 +305,14 @@ public class ServicioPelicula {
 
     /**
      * Solicita al usuario que seleccione un género de la lista de forma segura.
-     * El método mostrará un menú y se repetirá indefinidamente hasta que el
-     * usuario ingrese una opción válida (un número del 1 al 5).
-     * Lee la entrada como un String para prevenir errores de tipo .
+     * Devuelve el género como un String.
      *
      * @author Grupo 4 - Proyecto TDL2
      * @version 4.0
-     * 
-     * @param scanner El Scanner para leer la entrada del usuario.
-     * @return El enum Género seleccionado por el usuario.
+     * * @param scanner El Scanner para leer la entrada del usuario.
+     * @return El género seleccionado como String.
      */
-    private Genero seleccionarGenero(Scanner scanner) {
+    private String seleccionarGenero(Scanner scanner) {
 
         // Bucle infinito que solo se sale cuando hay un 'return'
         while (true) {
@@ -246,18 +327,18 @@ public class ServicioPelicula {
             // 1. Leer la entrada SIEMPRE como String para evitar errores
             String opcion = scanner.nextLine();
 
-            // 2. Usar un 'switch' para evaluar el String
+            // 2. Usar un 'switch' para evaluar el String y retornar el género correspondiente
             switch (opcion) {
                 case "1":
-                    return Genero.ACCION; // Opción válida, salimos del método
+                    return "ACCION"; // Opción válida, devolvemos String
                 case "2":
-                    return Genero.ANIME;
+                    return "ANIME";
                 case "3":
-                    return Genero.DRAMA;
+                    return "DRAMA";
                 case "4":
-                    return Genero.COMEDIA;
+                    return "COMEDIA";
                 case "5":
-                    return Genero.TERROR;
+                    return "TERROR";
 
                 // 3. Si no coincide con 1-5, se ejecuta el 'default'
                 default:

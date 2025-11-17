@@ -1,10 +1,12 @@
 package controlador;
 
 import modelo.ente.Usuario;
+import servicio.ServicioPelicula;
 import servicio.ServicioUsuario;
 import vista.VistaLogin;
 
 import control.Aplicacion;
+import javax.swing.SwingWorker;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,15 +19,17 @@ import java.awt.event.ActionListener;
 public class ControladorLogin implements ActionListener {
 
     private final VistaLogin vista;
-    private final ServicioUsuario servicio;
+    private final ServicioUsuario servicioUsuario;
+    private final ServicioPelicula servicioPelicula;
 
     /**
      * Constructor que recibe la Vista y el Modelo.
      * Se registra a sí mismo (this) para escuchar los botones de la vista.
      */
-    public ControladorLogin(VistaLogin vista, ServicioUsuario servicio) {
+    public ControladorLogin(VistaLogin vista, ServicioUsuario servicioUsuario, ServicioPelicula servicioPelicula) {
         this.vista = vista;
-        this.servicio = servicio;
+        this.servicioUsuario = servicioUsuario;
+        this.servicioPelicula = servicioPelicula;
 
         // Se suscribe a los eventos (clics) de los botones en la Vista
         this.vista.getBotonIngresar().addActionListener(this);
@@ -60,7 +64,7 @@ public class ControladorLogin implements ActionListener {
         String contraseña = vista.getPassword();
 
         // Valida el usuario y que rol tiene.
-        Usuario usuarioLogueado = servicio.DelvolverTipoUsuario(correo, contraseña);
+        Usuario usuarioLogueado = servicioUsuario.DelvolverTipoUsuario(correo, contraseña);
         if (usuarioLogueado == null) {
             vista.mostrarError("Correo o contraseña incorrectos.");
         } else {
@@ -71,8 +75,30 @@ public class ControladorLogin implements ActionListener {
                 System.out.println("¡El ingreso del Usuario " +
                         usuarioLogueado.getNombreUsuario() + " ha sido exitoso!");
 
-                /* Se abre la ventana para la siguiente vista */
-                // Desde este metodo podemos ingresar a otra vista con mostrarVista!
+                // 1. Mostramos la pantalla de carga INMEDIATAMENTE.
+                Aplicacion.mostrarVista("CARGA");
+
+                // 2. Creamos un SwingWorker para hacer el trabajo pesado en otro hilo.
+                SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                    @Override
+                    protected Void doInBackground() throws Exception {
+                        // ESTO SE EJECUTA EN SEGUNDO PLANO (NO CONGELA LA PANTALLA DE CARGA)
+                        // Creamos el ControladorHome, que carga la DB y las películas.
+                        new ControladorHome(Aplicacion.vistaHome, servicioPelicula, usuarioLogueado);
+                        return null;
+                    }
+
+                    @Override
+                    protected void done() {
+                        // ESTO SE EJECUTA DE VUELTA EN EL HILO DE LA INTERFAZ CUANDO doInBackground TERMINA
+                        // Ahora que todo está cargado, mostramos la vista Home.
+                        Aplicacion.mostrarVista("HOME");
+                    }
+                };
+
+                // 3. ¡Iniciamos el trabajador!
+                worker.execute();
+
             } else {
                 /**
                  * Para el ADMINISTRADOR no se requiere de una interfaz gráfica basándonos en el
