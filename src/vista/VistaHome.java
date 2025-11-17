@@ -68,7 +68,6 @@ public class VistaHome extends JPanel {
 
     // --- MÉTODOS PARA EL CONTROLADOR ---
 
-    // 1. Getters para los botones
     public JButton getBotonCerrarSesion() {
         return botonCerrarSesion;
     }
@@ -81,7 +80,7 @@ public class VistaHome extends JPanel {
         return campoBusqueda.getText();
     }
 
-    // 2. Método para limpiar la vista (MVC)
+    // Metodo para limpiar la vista.
     public void limpiarVista() {
         campoBusqueda.setText("");
         panelPeliculas.removeAll(); // Borra todas las películas viejas
@@ -89,14 +88,13 @@ public class VistaHome extends JPanel {
         panelPeliculas.repaint();
     }
 
-    // 3. Método CLAVE: Agregar una "Tarjeta" de película
-    // El Controlador llamará a esto dentro de un bucle para llenar la grilla
+    /**
+     * Crea una tarjeta para mostrar la pelicula y la agrega a la grilla.
+     * Sera llamada dentro de un bucle del controlador.
+     */
     public void agregarTarjetaPelicula(String titulo, String urlPoster, String rating) {
-
-        // Creamos una instancia de nuestra nueva tarjeta inteligente
         TarjetaPelicula tarjeta = new TarjetaPelicula(titulo, urlPoster, rating);
         panelPeliculas.add(tarjeta); // La añadimos al panel
-
         panelPeliculas.revalidate(); // Avisamos al layout manager que hay un nuevo componente
         panelPeliculas.repaint(); // Repintamos el panel
     }

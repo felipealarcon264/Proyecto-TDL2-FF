@@ -3,13 +3,7 @@ package control;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JWindow;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 
 import servicio.ServicioPelicula;
 import basededatos.InicializadorDB;
