@@ -147,4 +147,16 @@ public class VistaRegistro extends JPanel {
         javax.swing.JOptionPane.showMessageDialog(this, mensaje, "Registro Exitoso",
                 javax.swing.JOptionPane.INFORMATION_MESSAGE);
     }
+
+    /**
+     * Limpia los campos de la vista.
+     */
+    public void limpiarCampos() {
+        campoNombre.setText("");
+        campoApellido.setText("");
+        campoDNI.setText("");
+        campoEmail.setText("");
+        campoPass.setText("");
+        campoNomUsr.setText("");
+    }
 }

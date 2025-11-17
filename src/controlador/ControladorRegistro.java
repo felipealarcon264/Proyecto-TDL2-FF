@@ -2,8 +2,8 @@ package controlador;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+
+import control.Aplicacion;
 import servicio.ServicioUsuario; // Usaremos el servicio
 import vista.VistaRegistro;
 import excepciones.DatosInvalidosException;
@@ -25,16 +25,26 @@ public class ControladorRegistro implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         Object botonPresionado = e.getSource();
         if (botonPresionado == vistaRegistro.getBotonRegistrar()) {
-            manejarBotonRegistro();
+            // Si el registro es exitoso, limpiamos y volvemos al login.
+            if (manejarBotonRegistro()) {
+                vistaRegistro.limpiarCampos();
+                Aplicacion.mostrarVista("LOGIN");
+            }
+            // Si no es exitoso, no hacemos nada más, para que el usuario pueda corregir.
         } else if (botonPresionado == vistaRegistro.getBotonVolver()) {
-            manejarBotonVolver();
+            vistaRegistro.limpiarCampos(); // Limpiamos al volver
+            Aplicacion.mostrarVista("LOGIN");
         }
     }
 
     /**
      * Logica para manejar el clic "Registrarme"
+     * Para volver a la ventana de Login lo tenemos que hacer desde fuera del
+     * metodo.
+     * 
+     * @return true si el registro fue exitoso, false en caso de error.
      */
-    private void manejarBotonRegistro() {
+    private boolean manejarBotonRegistro() {
         // obtenemos los datos de la pantalla (vista).
         String nombre = vistaRegistro.getCampoNombre();
         String apellido = vistaRegistro.getCampoApellido();
@@ -51,24 +61,18 @@ public class ControladorRegistro implements ActionListener {
 
             // Si todo sale bien:
             vistaRegistro.mostrarExito("¡Cuenta creada exitosamente! Ya puedes iniciar sesión.");
-
-            // Volvemos al Login
-            manejarBotonVolver();
+            return true;
 
         } catch (DatosInvalidosException | DniYaRegistradosException | EmailYaRegistradoException e) {
             // 4. ATRAPAMOS las excepciones de negocio y las mostramos
             vistaRegistro.mostrarError(e.getMessage());
+            return false;
 
         } catch (Exception e_gen) {
             // 5. Atrapamos cualquier otro error inesperado (BD desconectada)
             vistaRegistro.mostrarError("Ocurrió un error inesperado: " + e_gen.getMessage());
+            return false;
         }
     }
 
-    private void manejarBotonVolver() {
-        // Cierra la ventana de Registro
-        JFrame ventanaActual = (JFrame) SwingUtilities.getWindowAncestor(vistaRegistro);
-        ventanaActual.dispose();
-        control.Aplicacion.main(null);
-    }
 }

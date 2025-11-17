@@ -4,7 +4,9 @@ import modelo.ente.Usuario;
 import servicio.ServicioUsuario;
 import vista.VistaLogin;
 
-import javax.swing.*;
+
+import control.Aplicacion;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -43,7 +45,7 @@ public class ControladorLogin implements ActionListener {
         if (botonPresionado == vista.getBotonIngresar()) {
             procesarIngresoCuenta();
         } else if (botonPresionado == vista.getBotonRegistrarse()) {
-            procesarRegistroCuenta();
+          Aplicacion.mostrarVista("REGISTRO");
         }
     }
 
@@ -81,12 +83,15 @@ public class ControladorLogin implements ActionListener {
         }
     }
 
-    /**
+
+    /*MOMENTANEAMENTE NO SE USA 
+
+    
      * Lógica para manejar el clic en "Registrarse".
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
-     */
+    
     private void procesarRegistroCuenta() {
         System.out.println("Botón 'Registrarse' presionado.");
         vista.VistaRegistro vistaRegistro = new vista.VistaRegistro();
@@ -105,4 +110,5 @@ public class ControladorLogin implements ActionListener {
         // 3. Cerrar la ventana de Login actual
         javax.swing.SwingUtilities.getWindowAncestor(vista).dispose();
     }
+    */
 }

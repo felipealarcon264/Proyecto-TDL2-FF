@@ -64,17 +64,17 @@ public class ServicioUsuario {
             throws DatosInvalidosException, DniYaRegistradosException, EmailYaRegistradoException {
 
         // Validacion de datos vacios.
-        if (nombre.trim().isEmpty() || apellido.trim().isEmpty() || dniStr.trim().isEmpty() ||
-                email.trim().isEmpty() || password.isEmpty()) {
+        if (nombre.trim().isEmpty() || apellido.trim().isEmpty() || dniStr.trim().isEmpty() || nomUsr.trim().isEmpty()
+                || email.trim().isEmpty() || password.isEmpty()) {
             throw new DatosInvalidosException("Todos los campos son obligatorios.");
         }
 
         // Validacion de nombre y apellido valido.
         if (!(new ServicioDatos_Personales().contieneSoloLetras(nombre))) {
-            new DatosInvalidosException("Nombre invalido.");
+            throw new DatosInvalidosException("Nombre invalido.");
         }
         if (!(new ServicioDatos_Personales().contieneSoloLetras(apellido))) {
-            new DatosInvalidosException("Apellido invalido.");
+            throw new DatosInvalidosException("Apellido invalido.");
         }
 
         // Validacion formato DNI y unicidad.
