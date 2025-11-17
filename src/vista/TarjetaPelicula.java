@@ -1,6 +1,8 @@
 package vista;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+
 import java.awt.*;
 import java.net.URL;
 import java.net.URI;
@@ -14,16 +16,19 @@ import java.net.URI;
 public class TarjetaPelicula extends JPanel {
 
     private JLabel etiquetaPoster;
+    private final Border bordeNormal = BorderFactory.createLineBorder(Color.GRAY, 1);
+    private final Border bordeResaltado = BorderFactory.createLineBorder(Color.ORANGE, 2);
 
-    public TarjetaPelicula(String titulo, String urlPoster, String rating) {
+    public TarjetaPelicula(String titulo, String urlPoster, String rating, String genero) {
         // Configuración del Layout y Borde
         setLayout(new BorderLayout(5, 5));
-        setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+        setBorder(bordeNormal); // Borde inicial
+        setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambia el cursor a una mano
         setPreferredSize(new Dimension(180, 320)); // Tamaño fijo para la tarjeta
 
-        // Etiqueta para el Título y Rating
-        JLabel etiquetaTitulo = new JLabel("<html><body style='width: 120px; text-align: center;'>" + titulo + "<br><b>"
-                + rating + " ⭐</b></body></html>");
+        // Etiqueta para el Título, Género y Rating
+        JLabel etiquetaTitulo = new JLabel("<html><body style='width: 120px; text-align: center;'>" + titulo + "<br><i>"
+                + genero + "</i><br><b>" + rating + " ⭐</b></body></html>");
         etiquetaTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         add(etiquetaTitulo, BorderLayout.SOUTH);
 
@@ -37,6 +42,23 @@ public class TarjetaPelicula extends JPanel {
 
         // Cargar la imagen en segundo plano
         cargarImagen(urlPoster);
+
+        // --- LÓGICA PARA HACERLA CLICABLE ---
+        this.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                setBorder(bordeResaltado); // Cambia el borde al entrar el ratón
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                setBorder(bordeNormal); // Vuelve al borde normal al salir
+            }
+
+            // El controlador se encargará del mouseClicked
+        });
+    }
+
+    public String getTitulo() {
+        return ((JLabel) getComponent(0)).getText();
     }
 
     private void cargarImagen(String urlPoster) {

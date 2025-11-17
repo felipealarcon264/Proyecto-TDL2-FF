@@ -64,8 +64,8 @@ public class Aplicacion {
             @Override
             public void run() {
                 try {
-                    // Simular tiempo de carga (3 segundos)
-                    Thread.sleep(3000);
+                    // Simular tiempo de carga (1.5 segundos)
+                    Thread.sleep(1500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

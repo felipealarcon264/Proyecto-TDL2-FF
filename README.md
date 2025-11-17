@@ -9,8 +9,9 @@ Este proyecto es una aplicación de escritorio desarrollada en Java con Swing qu
   - **Splash Screen**: Al iniciar, se muestra una pantalla de bienvenida (`JWindow`) durante 3 segundos.
   - **Login de Usuario**: Permite a los usuarios ingresar con su email y contraseña. La validación se realiza contra la base de datos.
   - **Registro de Nuevos Usuarios**: Un formulario completo que valida los datos (campos no vacíos, formato de email, DNI numérico) y verifica que el DNI y el email no estén ya registrados. Utiliza excepciones personalizadas para gestionar los errores de negocio.
-  - **Pantalla Principal (Home)**: Muestra un catálogo de películas en una grilla con scroll. Incluye una barra de búsqueda, un saludo personalizado ("Hola, [usuario]") y un botón para cerrar sesión.
+  - **Pantalla Principal (Home)**: Muestra un catálogo de películas en una grilla con scroll. Incluye una barra de búsqueda, un botón para refrescar con 10 películas nuevas, un menú para ordenar la vista actual (por título o género), un saludo personalizado ("Hola, [usuario]") y un botón para cerrar sesión.
   - **Pantalla de Carga**: Después de un login exitoso, se muestra una vista de "Cargando..." para indicar que se están preparando los datos en segundo plano, mejorando la experiencia de usuario.
+  - **Tarjetas de Película Interactivas**: Cada película en la grilla es un componente que muestra su póster, título, género y rating. Son interactivas, resaltando al pasar el ratón y respondiendo a los clics.
 
 - **Concurrencia y Carga Asíncrona**:
   - **Carga de Catálogo (`SwingWorker`)**: La importación de películas desde el archivo CSV y la preparación de la vista principal se ejecutan en un hilo de trabajo (`SwingWorker`) para no congelar la interfaz.

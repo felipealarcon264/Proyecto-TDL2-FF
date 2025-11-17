@@ -10,6 +10,8 @@ public class VistaHome extends JPanel {
     private JTextField campoBusqueda;
     private JButton botonBuscar;
     private JButton botonCerrarSesion;
+    private JButton botonMostrarOtras;
+    private JComboBox<String> comboOrdenar; // Nuevo componente para ordenar
     private JLabel labelUsuario;
     private JPanel panelPeliculas; // Acá agregaremos las "tarjetas" de películas dinámicamente
 
@@ -19,23 +21,36 @@ public class VistaHome extends JPanel {
         this.setBackground(Color.DARK_GRAY);
 
         // --- PANEL SUPERIOR ---
-        // Logo (West) - Buscador (Center) - Usuario y Salir (East)
+        // Logo (West) - Centro (Center) - Usuario y Salir (East)
         JPanel panelSuperior = new JPanel(new BorderLayout(20, 0));
         panelSuperior.setBackground(new Color(30, 30, 30)); // Gris oscuro
         panelSuperior.setBorder(new EmptyBorder(10, 20, 10, 20)); // Padding
-        panelSuperior.setPreferredSize(new Dimension(0, 70)); // Alto fijo
-        // Logo.
+        panelSuperior.setPreferredSize(new Dimension(0, 85)); // Alto fijo
+        // -Logo-
         JLabel labelLogo = new JLabel("TDL2");
         labelLogo.setFont(new Font("Arial", Font.BOLD, 24));
         labelLogo.setForeground(Color.ORANGE); // Estilo tipo Netflix
-        // Buscador.
-        JPanel panelBuscador = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelBuscador.setOpaque(false); // Para que se vea el fondo gris
+        // -Centro-
+        JPanel panelCentral = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        panelCentral.setOpaque(false); // Para que se vea el fondo del panel superior
+        // Panel para Ordenar y Refrescar (vertical)
+        JPanel panelOpciones = new JPanel(new GridLayout(2, 1, 0, 5));
+        panelOpciones.setOpaque(false);
+        comboOrdenar = new JComboBox<>(new String[]{"Ordenar por...", "Título (A-Z)", "Género (A-Z)"});
+        botonMostrarOtras = new JButton("Ver otras 10");
+        panelOpciones.add(comboOrdenar);
+        panelOpciones.add(botonMostrarOtras);
+        // Panel para el campo de búsqueda y botón
+        JPanel panelCampoBusqueda = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        panelCampoBusqueda.setOpaque(false);
         campoBusqueda = new JTextField(30);
         botonBuscar = new JButton("Buscar");
-        panelBuscador.add(campoBusqueda);
-        panelBuscador.add(botonBuscar);
-        // Usuario y Salir
+        panelCampoBusqueda.add(campoBusqueda);
+        panelCampoBusqueda.add(botonBuscar);
+        // Agregamos los sub-paneles
+        panelCentral.add(panelOpciones);
+        panelCentral.add(panelCampoBusqueda);
+        // -Usuario y Salir-
         JPanel panelUsuario = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelUsuario.setOpaque(false);
         labelUsuario = new JLabel("Hola, Usuario"); // Inicializamos el campo
@@ -44,10 +59,9 @@ public class VistaHome extends JPanel {
         botonCerrarSesion = new JButton("Salir");
         panelUsuario.add(labelUsuario);
         panelUsuario.add(botonCerrarSesion);
-
         // Agregamos al panelSuperior
         panelSuperior.add(labelLogo, BorderLayout.WEST);
-        panelSuperior.add(panelBuscador, BorderLayout.CENTER);
+        panelSuperior.add(panelCentral, BorderLayout.CENTER);
         panelSuperior.add(panelUsuario, BorderLayout.EAST);
 
         // Agregamos el panelSuperior al Norte de la vista principal
@@ -80,6 +94,14 @@ public class VistaHome extends JPanel {
         return campoBusqueda.getText();
     }
 
+    public JComboBox<String> getComboOrdenar() {
+        return comboOrdenar;
+    }
+
+    public JButton getBotonMostrarOtras() {
+        return botonMostrarOtras;
+    }
+
     // Metodo para limpiar la vista.
     public void limpiarVista() {
         campoBusqueda.setText("");
@@ -90,11 +112,10 @@ public class VistaHome extends JPanel {
 
     /**
      * Crea una tarjeta para mostrar la pelicula y la agrega a la grilla.
-     * Sera llamada dentro de un bucle del controlador.
+     * El controlador crea la tarjeta y la pasa a este método para ser añadida.
      */
-    public void agregarTarjetaPelicula(String titulo, String urlPoster, String rating) {
-        TarjetaPelicula tarjeta = new TarjetaPelicula(titulo, urlPoster, rating);
-        panelPeliculas.add(tarjeta); // La añadimos al panel
+    public void agregarTarjetaPelicula(TarjetaPelicula tarjeta) {
+        panelPeliculas.add(tarjeta);
         panelPeliculas.revalidate(); // Avisamos al layout manager que hay un nuevo componente
         panelPeliculas.repaint(); // Repintamos el panel
     }
