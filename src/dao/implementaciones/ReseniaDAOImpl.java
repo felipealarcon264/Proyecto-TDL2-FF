@@ -158,15 +158,16 @@ public class ReseniaDAOImpl implements ReseniaDAO {
         List<Resenia> lista = new ArrayList<>();
         // Consulta optimizada con JOIN para evitar el problema N+1
         String sql = """
-                    SELECT
-                        r.ID AS resenia_id, r.CALIFICACION, r.COMENTARIO, r.APROBADO,
-                        u.ID AS usuario_id, u.NOMBRE_USUARIO, u.EMAIL, u.CONTRASENA, u.ROL,
-                        dp.ID AS dp_id, dp.NOMBRE, dp.APELLIDO, dp.DNI,
-                        p.ID AS pelicula_id, p.TITULO, p.DIRECTOR, p.DURACION, p.RESUMEN, p.GENERO
+                SELECT
+                    r.ID AS resenia_id, r.CALIFICACION, r.COMENTARIO, r.APROBADO,
+                    u.ID AS usuario_id, u.NOMBRE_USUARIO, u.EMAIL, u.CONTRASENA, u.ROL,
+                    dp.ID AS dp_id, dp.NOMBRE, dp.APELLIDO, dp.DNI,
+                    p.ID AS pelicula_id, p.TITULO, p.DIRECTOR, p.DURACION, p.RESUMEN, p.GENERO,
+                    p.RATING_PROMEDIO, p.ANIO, p.POSTER
                     FROM RESENIA r
                     JOIN USUARIO u ON r.ID_USUARIO = u.ID
                     JOIN DATOS_PERSONALES dp ON u.ID_DATOS_PERSONALES = dp.ID
-                    JOIN PELICULA p ON r.ID_PELICULA = p.ID
+                    JOIN PELICULA p ON r.ID_PELICULA = p.ID;
                 """;
 
         try (Connection conn = ConexionDB.conectar();
@@ -191,7 +192,9 @@ public class ReseniaDAOImpl implements ReseniaDAO {
                 // Reconstruir Pelicula
                 Pelicula pelicula = new Pelicula(rs.getInt("pelicula_id"), rs.getString("TITULO"),
                         rs.getString("DIRECTOR"), rs.getInt("DURACION"), rs.getString("RESUMEN"),
-                        modelo.enums.Genero.valueOf(rs.getString("GENERO")));
+                        modelo.enums.Genero.valueOf(rs.getString("GENERO")),
+                        rs.getDouble("RATING_PROMEDIO"), rs.getInt("ANIO"),
+                        rs.getString("POSTER"));
 
                 // Reconstruir Resenia y añadirla a la lista
                 lista.add(new Resenia(rs.getInt("resenia_id"), rs.getInt("CALIFICACION"), rs.getString("COMENTARIO"),

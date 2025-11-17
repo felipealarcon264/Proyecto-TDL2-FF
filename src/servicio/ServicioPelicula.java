@@ -38,6 +38,9 @@ public class ServicioPelicula {
         String director = "";
         int duracion = -1;
         Genero genero = null;
+        int anio = 0;
+        double rating = 0.0;
+        String poster = "";
         boolean datosValidos = false;
         while (!datosValidos) {
             System.out.print("Ingrese el titulo: ");
@@ -48,13 +51,18 @@ public class ServicioPelicula {
             director = scanner.nextLine();
             duracion = ingresarNumeroValido(scanner, "Ingrese la duración: ");
             genero = seleccionarGenero(scanner);
+            anio = ingresarNumeroValido(scanner, "Ingrese el año de lanzamiento: ");
+            rating = ingresarDoubleValido(scanner, "Ingrese el rating promedio (ej: 7.5): ");
+            System.out.print("Ingrese la URL del poster: ");
+            poster = scanner.nextLine();
             System.out.println("CONFIRMACIÓN DE CARGA -> PELÍCULA.");
             System.out.println("Datos ingresados:" +
                     "\nTitulo: " + titulo +
                     "\nResumen: " + resumen +
                     "\nDirector: " + director +
                     "\nDuración: " + duracion +
-                    "\nGenero: " + genero);
+                    "\nGenero: " + genero +
+                    "\nAño: " + anio + "\nRating: " + rating + "\nPoster: " + poster);
             datosValidos = confirmacion(scanner);
             if (!datosValidos) {
                 System.out.println("Quieres cancelar la carga? ");
@@ -67,7 +75,7 @@ public class ServicioPelicula {
         }
         System.out.println("Datos confirmados...");
         // Pasamos -1 como ID temporal, ya que la DB asignará el real.
-        return new Pelicula(-1, titulo, director, duracion, resumen, genero);
+        return new Pelicula(-1, titulo, director, duracion, resumen, genero, rating, anio, poster);
     }
 
     /**
@@ -182,6 +190,31 @@ public class ServicioPelicula {
             } catch (NumberFormatException e) {
                 // Si la conversión falla, es porque no se ingresó un número válido.
                 System.out.println("❌ Entrada no válida. Por favor, ingrese solo números enteros.");
+            }
+        }
+    }
+
+    /**
+     * Pide al usuario que ingrese un número decimal y valida la entrada.
+     * Pide reintentar si se ingresa algo que no es un número.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 4.0.
+     * 
+     * @param scanner El objeto Scanner ya inicializado.
+     * @param mensaje El mensaje a mostrar al usuario para solicitar la entrada.
+     * @return El número double válido ingresado por el usuario.
+     */
+    private double ingresarDoubleValido(Scanner scanner, String mensaje) {
+        double numero;
+        while (true) {
+            System.out.print(mensaje);
+            String linea = scanner.nextLine();
+            try {
+                numero = Double.parseDouble(linea.replace(',', '.')); // Reemplaza coma por punto
+                return numero;
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Entrada no válida. Por favor, ingrese un número decimal (ej: 8.5).");
             }
         }
     }

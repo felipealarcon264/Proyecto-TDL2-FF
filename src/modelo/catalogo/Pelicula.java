@@ -14,6 +14,11 @@ import modelo.enums.Genero;
  */
 public class Pelicula extends Contenido {
 
+    // --- Atributos nuevos para el Entregable 3 ---
+    private double ratingPromedio;
+    private int anio;
+    private String poster;
+
     /**
      * Constructor vacío.
      * Llama al constructor vacío de la clase padre (Contenido).
@@ -33,9 +38,16 @@ public class Pelicula extends Contenido {
      * @param duracion Duración en segundos.
      * @param resumen  Resumen de la pelicula.
      * @param genero   Genero de la pelicula.
+     * @param ratingPromedio Calificación promedio de la película.
+     * @param anio     Año de lanzamiento.
+     * @param poster   URL de la imagen del póster.
      */
-    public Pelicula(int idDB, String titulo, String director, int duracion, String resumen, Genero genero) {
+    public Pelicula(int idDB, String titulo, String director, int duracion, String resumen, Genero genero,
+            double ratingPromedio, int anio, String poster) {
         super(idDB, titulo, director, duracion, resumen, genero);
+        this.ratingPromedio = ratingPromedio;
+        this.anio = anio;
+        this.poster = poster;
     }
 
     /**
@@ -48,6 +60,35 @@ public class Pelicula extends Contenido {
      */
     @Override
     public String toString() {
-        return "Pelicula: " + super.toString();
+        return "Pelicula: " + super.toString() +
+                ", Rating Promedio=" + ratingPromedio +
+                ", Año=" + anio +
+                ", Poster='" + poster + '\'';
+    }
+
+    // --- Getters y Setters para los nuevos atributos ---
+
+    public double getRatingPromedio() {
+        return ratingPromedio;
+    }
+
+    public void setRatingPromedio(double ratingPromedio) {
+        this.ratingPromedio = ratingPromedio;
+    }
+
+    public int getAnio() {
+        return anio;
+    }
+
+    public void setAnio(int anio) {
+        this.anio = anio;
+    }
+
+    public String getPoster() {
+        return poster;
+    }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
     }
 }

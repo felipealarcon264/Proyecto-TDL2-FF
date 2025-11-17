@@ -42,14 +42,17 @@ public class PeliculaDAOImpl implements PeliculaDAO {
             System.out.println("❌ La película es nula. No se puede guardar.");
             return false;
         }
-        String sql = "INSERT INTO PELICULA (titulo, director, duracion, resumen, genero) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO PELICULA (titulo, director, duracion, resumen, genero, rating_promedio, anio, poster) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (java.sql.Connection conn = ConexionDB.conectar();
                 java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, pelicula.getTitulo());
             pstmt.setString(2, pelicula.getDirector());
             pstmt.setInt(3, pelicula.getDuracion());
             pstmt.setString(4, pelicula.getResumen());
-            pstmt.setString(5, pelicula.getGenero().toString());
+            pstmt.setString(5, pelicula.getGenero().name());
+            pstmt.setDouble(6, pelicula.getRatingPromedio());
+            pstmt.setInt(7, pelicula.getAnio());
+            pstmt.setString(8, pelicula.getPoster());
             if (pstmt.executeUpdate() > 0) {
                 System.out.println("✅ Película guardada exitosamente.");
                 return true;
@@ -112,7 +115,7 @@ public class PeliculaDAOImpl implements PeliculaDAO {
      */
     @Override
     public Pelicula buscarPorTitulo(String titulo) {
-        String sql = "SELECT ID, TITULO, DIRECTOR, DURACION, RESUMEN, GENERO FROM PELICULA WHERE TITULO = ?";
+        String sql = "SELECT ID, TITULO, DIRECTOR, DURACION, RESUMEN, GENERO, RATING_PROMEDIO, ANIO, POSTER FROM PELICULA WHERE TITULO = ?";
         try (Connection conn = ConexionDB.conectar();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, titulo);
@@ -123,7 +126,9 @@ public class PeliculaDAOImpl implements PeliculaDAO {
                 System.out.println("ℹ️ Película [" + titulo + "] encontrada.");
                 return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"),
                         rs.getInt("DURACION"),
-                        rs.getString("RESUMEN"), generoEnum);
+                        rs.getString("RESUMEN"), generoEnum,
+                        rs.getDouble("RATING_PROMEDIO"), rs.getInt("ANIO"),
+                        rs.getString("POSTER"));
             } else
                 System.out.println("❌ Película [" + titulo + "] no encontrada en la base de datos.");
             return null;
@@ -144,16 +149,17 @@ public class PeliculaDAOImpl implements PeliculaDAO {
      */
     @Override
     public Pelicula buscarPorId(int id) {
-        String sql = "SELECT ID, TITULO, DIRECTOR, DURACION, RESUMEN, GENERO FROM PELICULA WHERE ID = ?";
+        String sql = "SELECT ID, TITULO, DIRECTOR, DURACION, RESUMEN, GENERO, RATING_PROMEDIO, ANIO, POSTER FROM PELICULA WHERE ID = ?";
         try (Connection conn = ConexionDB.conectar();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             try (java.sql.ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     Genero generoEnum = Genero.valueOf(rs.getString("GENERO").toUpperCase());
-                    return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"),
-                            rs.getInt("DURACION"),
-                            rs.getString("RESUMEN"), generoEnum);
+                    return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"), rs.getInt("DURACION"),
+                            rs.getString("RESUMEN"), generoEnum,
+                            rs.getDouble("RATING_PROMEDIO"), rs.getInt("ANIO"),
+                            rs.getString("POSTER"));
                 }
             }
             return null; // No se encontró película con ese ID
@@ -175,8 +181,8 @@ public class PeliculaDAOImpl implements PeliculaDAO {
     @Override
     public List<Pelicula> devolverListaPelicula() {
         List<Pelicula> lista = new ArrayList<>();
-        String sql = """
-                    SELECT ID, GENERO, TITULO, RESUMEN, DIRECTOR, DURACION
+        String sql = """ 
+                    SELECT ID, GENERO, TITULO, RESUMEN, DIRECTOR, DURACION, RATING_PROMEDIO, ANIO, POSTER
                      FROM PELICULA
                 """;
         try (java.sql.Connection conn = ConexionDB.conectar();
@@ -190,8 +196,12 @@ public class PeliculaDAOImpl implements PeliculaDAO {
                 String resumen = rs.getString("RESUMEN");
                 String director = rs.getString("DIRECTOR");
                 int duracion = rs.getInt("DURACION");
+                double ratingPromedio = rs.getDouble("RATING_PROMEDIO");
+                int anio = rs.getInt("ANIO");
+                String poster = rs.getString("POSTER");
                 // Se crea el objeto pelicula usando su constructor cargandolo en la lista.
-                lista.add(new Pelicula(id, titulo, director, duracion, resumen, generoEnum));
+                lista.add(new Pelicula(id, titulo, director, duracion, resumen, generoEnum, ratingPromedio, anio,
+                        poster));
             }
         } catch (Exception e) {
             System.out.println("❌ Error al listar las películas: " + e.getMessage());

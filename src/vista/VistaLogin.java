@@ -143,4 +143,12 @@ public class VistaLogin extends JPanel {
         }
     }
 
+    /**
+     * Limpia los campos de la vista.
+     */
+    public void limpiarCampos() {
+        campoEmail.setText("");
+        campoPass.setText("");
+    }
+
 }
