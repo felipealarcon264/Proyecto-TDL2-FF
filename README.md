@@ -25,6 +25,15 @@ Este proyecto es una aplicación de escritorio desarrollada en Java con Swing qu
 - **Importación de Datos desde CSV**:
   - Al iniciar sesión por primera vez, el `ServicioPelicula` lee el archivo `movies_database.csv`, procesa cada línea y guarda las películas en la base de datos. Esta operación solo se realiza si la tabla de películas está vacía.
 
+### Decisión de Diseño: Carga de Recursos con `getResourceAsStream`
+
+Para la carga del archivo `.csv`, se eligió `getClass().getResourceAsStream()` en lugar del tradicional `FileReader`.
+
+- **`FileReader`**: Depende del sistema de archivos. Si el `.jar` se mueve, la ruta al archivo se rompe.
+- **`getResourceAsStream()`**: Carga el archivo desde el classpath. Esto significa que el `.csv` se empaqueta **dentro del `.jar`**, creando una aplicación **autocontenida y portable** que funciona en cualquier máquina sin depender de archivos externos.
+
+Esta es una mejor práctica que garantiza la robustez y facilidad de distribución de la aplicación.
+
 - **Lógica de Negocio en Servicios**:
   - **Primera Visita vs. Visitas Recurrentes**: La primera vez que un usuario ingresa, se le muestran las 10 películas con mejor rating. En los accesos posteriores (dentro de la misma sesión de la aplicación), se muestran 10 películas aleatorias.
 
