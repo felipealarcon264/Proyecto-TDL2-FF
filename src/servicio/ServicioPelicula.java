@@ -2,19 +2,20 @@ package servicio;
 
 import modelo.catalogo.Pelicula;
 import comparadores.ComparadorPeliculaPorDuracion;
+import comparadores.ComparadorPeliculaPorRating;
 import comparadores.ComparadorPeliculaPorGenero;
 import comparadores.ComparadorPeliculaPorTitulo;
 // para el FactoryDAO
 import dao.interfaces.PeliculaDAO;
 import dao.FactoryDAO;
 
-// Se eliminó el import de modelo.enums.Genero_NOLOUSAMOS
+import excepciones.ErrorDeInicializacionException;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.io.InputStream;
+import java.util.*;
 
 public class ServicioPelicula {
     PeliculaDAO peliculaDAO;
@@ -26,6 +27,7 @@ public class ServicioPelicula {
     /**
      * Importa las películas del CSV a la base de datos.
      * Solo se ejecuta si la base de datos está vacía.
+     * @throws ErrorDeInicializacionException si el archivo CSV no se encuentra o no se puede leer.
      */
     public void inicializarCatalogo() {
         // 1. Si ya hay películas, no perdemos tiempo importando
@@ -35,9 +37,17 @@ public class ServicioPelicula {
 
         System.out.println("Iniciando importación de películas...");
 
+        final String nombreArchivo = "/movies_database.csv";
+        // Obtenemos el stream del recurso
+        InputStream is = getClass().getResourceAsStream(nombreArchivo);
+
+        // Verificamos si el archivo existe. Si no, lanzamos nuestra excepción.
+        if (is == null) {
+            throw new ErrorDeInicializacionException("Error crítico: El archivo '" + nombreArchivo + "' no se encontró en los recursos del proyecto.", null);
+        }
+
         // 2. Leemos el archivo desde 'src/movies_database.csv'
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                getClass().getResourceAsStream("/movies_database.csv")))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
             
             String linea = br.readLine(); // Saltamos la cabecera
             
@@ -89,8 +99,8 @@ public class ServicioPelicula {
             }
             System.out.println("¡Importación finalizada con éxito!");
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new ErrorDeInicializacionException("Error de lectura/escritura al procesar el archivo CSV.", e);
         }
     }
 
@@ -99,8 +109,7 @@ public class ServicioPelicula {
     public List<Pelicula> obtenerTop10() {
         List<Pelicula> todas = peliculaDAO.devolverListaPelicula();
         // Ordenamos por rating de mayor a menor
-        todas.sort((p1, p2) -> Double.compare(p2.getRatingPromedio(), p1.getRatingPromedio()));
-        
+        todas.sort(new ComparadorPeliculaPorRating());
         // Devolvemos las primeras 10 (o menos si no hay tantas)
         return todas.subList(0, Math.min(10, todas.size()));
     }

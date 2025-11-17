@@ -15,6 +15,7 @@ import servicio.ServicioPelicula;
 import vista.VistaHome;
 import vista.TarjetaPelicula;
 
+
 public class ControladorHome implements ActionListener {
 
     private VistaHome vista;
@@ -37,11 +38,22 @@ public class ControladorHome implements ActionListener {
         // Actualizamos el nombre de usuario en la vista.
         this.vista.setNombreUsuario(usuarioLogueado.getNombreUsuario());
         
-        // Importar datos(Si hace falta)
-        this.servicioPelicula.inicializarCatalogo();
-        
-        // 2. CARGAR LA VISTA
-        cargarContenido();
+        try {
+            // Importar datos(Si hace falta)
+            this.servicioPelicula.inicializarCatalogo();
+            
+            // 2. CARGAR LA VISTA
+            cargarContenido();
+
+        } catch (excepciones.ErrorDeInicializacionException e) {
+            // Si falla la carga del CSV, mostramos un error y cerramos.
+            javax.swing.JOptionPane.showMessageDialog(
+                null, 
+                e.getMessage() + "\nLa aplicación se cerrará.", 
+                "Error Crítico", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            System.exit(1); // Cierra la aplicación con un código de error.
+        }
     }
 
     private void cargarContenido() {
