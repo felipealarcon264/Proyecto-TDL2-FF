@@ -15,6 +15,8 @@ import java.util.*;
 
 public class ServicioPelicula {
     PeliculaDAO peliculaDAO;
+    final int MINIMO_PELICULAS = 10;
+
 
     public ServicioPelicula() {
         this.peliculaDAO = FactoryDAO.getPeliculaDAO();
@@ -110,7 +112,7 @@ public class ServicioPelicula {
         // Ordenamos por rating de mayor a menor
         todas.sort(new ComparadorPeliculaPorRating());
         // Devolvemos las primeras 10 (o menos si no hay tantas)
-        return todas.subList(0, Math.min(10, todas.size()));
+        return todas.subList(0, Math.min(MINIMO_PELICULAS, todas.size()));
     }
 
     /**
@@ -122,7 +124,7 @@ public class ServicioPelicula {
         List<Pelicula> todas = peliculaDAO.devolverListaPelicula();
         // Mezclamos la lista
         Collections.shuffle(todas);
-        return todas.subList(0, Math.min(10, todas.size()));
+        return todas.subList(0, Math.min(MINIMO_PELICULAS, todas.size()));
     }
 
     public PeliculaDAO getPeliculaDao() {

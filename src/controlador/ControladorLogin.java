@@ -82,23 +82,36 @@ public class ControladorLogin implements ActionListener {
                 SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
                     @Override
                     protected Void doInBackground() throws Exception {
-                        // ESTO SE EJECUTA EN SEGUNDO PLANO (NO CONGELA LA PANTALLA DE CARGA)
-                        // Creamos el ControladorHome, que carga la DB y las películas.
+                        // --- INICIO SECCIÓN DE CAMBIO: LÓGICA DE ESPERA ---
+                        
+                        long tiempoInicio = System.currentTimeMillis(); // Tomamos la hora de inicio
+
+                        // A. Tarea Pesada: Cargar el controlador y la DB
                         new ControladorHome(Aplicacion.vistaHome, servicioPelicula, usuarioLogueado);
+
+                        long tiempoFin = System.currentTimeMillis();
+                        long duracion = tiempoFin - tiempoInicio;
+
+                        // B. Lógica de Espera: Si fue muy rápido, esperamos lo que falta para completar mínimoTiempo
+                        final int mínimoTiempo = 2000; // 2seg
+                        if (duracion < mínimoTiempo) { 
+                            Thread.sleep(mínimoTiempo - duracion);
+                        }
+                        
+                        // --- FIN SECCIÓN DE CAMBIO ---
                         return null;
                     }
 
                     @Override
                     protected void done() {
                         // ESTO SE EJECUTA DE VUELTA EN EL HILO DE LA INTERFAZ CUANDO doInBackground TERMINA
-                        // Ahora que todo está cargado, mostramos la vista Home.
+                        // Ahora que todo está cargado y pasó el tiempo mínimo, mostramos la vista Home.
                         Aplicacion.mostrarVista("HOME");
                     }
                 };
 
                 // 3. ¡Iniciamos el trabajador!
                 worker.execute();
-
             } else {
                 /**
                  * Para el ADMINISTRADOR no se requiere de una interfaz gráfica basándonos en el
@@ -109,34 +122,4 @@ public class ControladorLogin implements ActionListener {
             }
         }
     }
-
-    /*
-     * MOMENTANEAMENTE NO SE USA
-     * 
-     * 
-     * Lógica para manejar el clic en "Registrarse".
-     * 
-     * @author Grupo 4 - Proyecto TDL2
-     * 
-     * @version 1.0
-     * 
-     * private void procesarRegistroCuenta() {
-     * System.out.println("Botón 'Registrarse' presionado.");
-     * vista.VistaRegistro vistaRegistro = new vista.VistaRegistro();
-     * // Reutilizamos el servicio de usuario que ya teníamos
-     * new ControladorRegistro(vistaRegistro, this.servicio);
-     * 
-     * // Se crea la ventana con la vista registro.
-     * JFrame ventanaRegistro = new JFrame("Plataforma TDL2 - Nuevo Usuario");
-     * ventanaRegistro.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-     * ventanaRegistro.add(vistaRegistro);
-     * ventanaRegistro.pack(); // Ajusta al tamaño de VistaRegistro
-     * ventanaRegistro.setLocationRelativeTo(null); // Centra
-     * ventanaRegistro.setResizable(false);
-     * ventanaRegistro.setVisible(true);
-     * 
-     * // 3. Cerrar la ventana de Login actual
-     * javax.swing.SwingUtilities.getWindowAncestor(vista).dispose();
-     * }
-     */
 }
