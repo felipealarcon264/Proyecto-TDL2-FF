@@ -1,6 +1,7 @@
 package vista;
 
 import javax.swing.*;
+import modelo.catalogo.Pelicula;
 import javax.swing.border.Border;
 
 import java.awt.*;
@@ -16,10 +17,13 @@ import java.net.URI;
 public class TarjetaPelicula extends JPanel {
 
     private JLabel etiquetaPoster;
+    private Pelicula pelicula; // Guardamos la referencia a la película completa
     private final Border bordeNormal = BorderFactory.createLineBorder(Color.GRAY, 1);
     private final Border bordeResaltado = BorderFactory.createLineBorder(Color.ORANGE, 2);
 
-    public TarjetaPelicula(String titulo, String urlPoster, String rating, String genero) {
+    public TarjetaPelicula(Pelicula pelicula) {
+        this.pelicula = pelicula;
+
         // Configuración del Layout y Borde
         setLayout(new BorderLayout(5, 5));
         setBorder(bordeNormal); // Borde inicial
@@ -27,8 +31,9 @@ public class TarjetaPelicula extends JPanel {
         setPreferredSize(new Dimension(180, 320)); // Tamaño fijo para la tarjeta
 
         // Etiqueta para el Título, Género y Rating
-        JLabel etiquetaTitulo = new JLabel("<html><body style='width: 120px; text-align: center;'>" + titulo + "<br><i>"
-                + genero + "</i><br><b>" + rating + " ⭐</b></body></html>");
+        String rating = String.format("%.1f", pelicula.getRatingPromedio());
+        JLabel etiquetaTitulo = new JLabel("<html><body style='width: 120px; text-align: center;'>" + pelicula.getTitulo() + "<br><i>"
+                + pelicula.getGenero() + "</i><br><b>" + rating + " ⭐</b></body></html>");
         etiquetaTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         add(etiquetaTitulo, BorderLayout.SOUTH);
 
@@ -41,7 +46,7 @@ public class TarjetaPelicula extends JPanel {
         add(etiquetaPoster, BorderLayout.CENTER);
 
         // Cargar la imagen en segundo plano
-        cargarImagen(urlPoster);
+        cargarImagen(pelicula.getPoster());
 
         // --- LÓGICA PARA HACERLA CLICABLE ---
         this.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -57,8 +62,8 @@ public class TarjetaPelicula extends JPanel {
         });
     }
 
-    public String getTitulo() {
-        return ((JLabel) getComponent(0)).getText();
+    public Pelicula getPelicula() {
+        return pelicula;
     }
 
     private void cargarImagen(String urlPoster) {

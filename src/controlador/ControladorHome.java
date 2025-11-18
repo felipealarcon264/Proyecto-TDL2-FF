@@ -1,9 +1,12 @@
 package controlador;
 
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+
+import javax.swing.JFrame;
 
 import comparadores.ComparadorPeliculaPorGenero;
 import comparadores.ComparadorPeliculaPorTitulo;
@@ -12,22 +15,23 @@ import control.Aplicacion;
 import modelo.ente.Usuario;
 import modelo.catalogo.Pelicula;
 import servicio.ServicioPelicula;
-import vista.VistaHome;
 import vista.TarjetaPelicula;
-
+import vista.VistaHome;
+import vista.VistaResenia;
 
 public class ControladorHome implements ActionListener {
 
     private VistaHome vista;
     private ServicioPelicula servicioPelicula;
     private List<Pelicula> peliculasMostradas; // Guardamos la lista actual
-    
-    // Bandera estática: recuerda si ya entramos en esta ejecución
+    private final JFrame framePrincipal; // Necesario para la modalidad del JDialog
+
     private static boolean esPrimeraVez = true;
 
-    public ControladorHome(VistaHome vista, ServicioPelicula servicioPelicula, Usuario usuarioLogueado) {
+    public ControladorHome(VistaHome vista, ServicioPelicula servicioPelicula, Usuario usuarioLogueado, JFrame framePrincipal) {
         this.vista = vista;
         this.servicioPelicula = servicioPelicula;
+        this.framePrincipal = framePrincipal;
 
         // Escuchamos los botones
         this.vista.getBotonCerrarSesion().addActionListener(this);
@@ -80,23 +84,35 @@ public class ControladorHome implements ActionListener {
         // Mandamos las películas a la vista
         for (Pelicula p : peliculasMostradas) {
             // 1. Creamos la tarjeta (componente de la vista)
-            TarjetaPelicula tarjeta = new TarjetaPelicula(
-                    p.getTitulo(),
-                    p.getPoster(),
-                    String.valueOf(p.getRatingPromedio()),
-                    p.getGenero());
+            TarjetaPelicula tarjeta = new TarjetaPelicula(p);
 
             // 2. Le añadimos la lógica del clic (responsabilidad del controlador)
             tarjeta.addMouseListener(new MouseAdapter() {
                 @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-                    System.out.println("¡Clic en la película: " + p.getTitulo() + "!");
-                    // Aquí irá la lógica para abrir la ventana de reseña
+                public void mouseClicked(MouseEvent e) {
+                    abrirVistaResenia(p);
                 }
             });
             // 3. Le pasamos la tarjeta ya lista a la vista para que la muestre
             vista.agregarTarjetaPelicula(tarjeta);
         }
+    }
+
+    /**
+     * Abre la ventana de reseña para una película específica.
+     * La ventana se crea como un JDialog modal.
+     *
+     * @param pelicula La película sobre la que se hará la reseña.
+     */
+    private void abrirVistaResenia(Pelicula pelicula) {
+        // Creamos la vista de reseña, pasándole el frame principal para que sea modal a él
+        VistaResenia vistaResenia = new VistaResenia(framePrincipal);
+
+        // Cargamos los datos de la película en la nueva vista
+        vistaResenia.cargarDatosPelicula(pelicula);
+
+        // Hacemos visible la ventana. La ejecución se bloqueará aquí hasta que se cierre.
+        vistaResenia.setVisible(true);
     }
 
     @Override

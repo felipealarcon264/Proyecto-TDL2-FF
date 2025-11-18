@@ -87,7 +87,7 @@ public class ControladorLogin implements ActionListener {
                         long tiempoInicio = System.currentTimeMillis(); // Tomamos la hora de inicio
 
                         // A. Tarea Pesada: Cargar el controlador y la DB
-                        new ControladorHome(Aplicacion.vistaHome, servicioPelicula, usuarioLogueado);
+                        new ControladorHome(Aplicacion.vistaHome, servicioPelicula, usuarioLogueado, Aplicacion.ventana);
 
                         long tiempoFin = System.currentTimeMillis();
                         long duracion = tiempoFin - tiempoInicio;

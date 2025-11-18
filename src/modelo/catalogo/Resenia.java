@@ -28,7 +28,7 @@ public class Resenia {
      * Constructor para crear una instancia de Reseña con datos iniciales.
      * 
      * @param idDB         El ID de la reseña en la base de datos.
-     * @param calificacion La puntuación dada (ej: 1 a 5).
+     * @param calificacion La puntuación dada (ej: 1 a 10).
      * @param comentario   El texto de la reseña.
      * @param aprobado     Aprobacion por parte de un adm.
      * @param usuario      El usuario que realiza la reseña.

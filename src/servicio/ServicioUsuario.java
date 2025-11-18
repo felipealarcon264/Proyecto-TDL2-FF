@@ -6,9 +6,7 @@ import dao.interfaces.UsuarioDAO;
 import modelo.ente.Cuenta;
 import modelo.ente.Datos_Personales;
 import modelo.ente.Usuario;
-import excepciones.DniYaRegistradosException;
-import excepciones.EmailYaRegistradoException;
-import excepciones.DatosInvalidosException;
+import excepciones.*;
 import java.util.List;
 
 public class ServicioUsuario {
@@ -53,12 +51,12 @@ public class ServicioUsuario {
      */
     public void crearNuevaCuenta(String nombre, String apellido, String dniStr, String nomUsr, String email,
             String password)
-            throws DatosInvalidosException, DniYaRegistradosException, EmailYaRegistradoException {
+            throws DatosInvalidosException, DniYaRegistradosException, EmailYaRegistradoException, CampoVacio {
 
         // Validacion de datos vacios.
         if (nombre.trim().isEmpty() || apellido.trim().isEmpty() || dniStr.trim().isEmpty() || nomUsr.trim().isEmpty()
                 || email.trim().isEmpty() || password.isEmpty()) {
-            throw new DatosInvalidosException("Todos los campos son obligatorios.");
+            throw new CampoVacio("Todos los campos son obligatorios.");
         }
 
         // Validacion de nombre y apellido valido.
