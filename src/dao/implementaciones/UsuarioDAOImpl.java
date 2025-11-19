@@ -123,7 +123,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.3
      * 
-     * @param email Email el usuario a buscar.
+     * @param email      Email el usuario a buscar.
      * @param contrasena Constraseña del usuario a busca.
      * @return Usuario si lo encuentra, null en caso contrario.
      */
@@ -132,14 +132,15 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         String sql = "SELECT * FROM USUARIO WHERE EMAIL = ? AND CONTRASENA = ?";
         try (java.sql.Connection conn = ConexionDB.conectar();
                 java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, email);
+            pstmt.setString(1, email.toLowerCase());// Siempre son minusculas
             pstmt.setString(2, contrasena);
             try (java.sql.ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     String nombreUsuario = rs.getString("NOMBRE_USUARIO");
                     String rol = rs.getString("ROL");
                     int idDB = rs.getInt("ID");
-                    Datos_PersonalesDAOImpl dpImpl = new Datos_PersonalesDAOImpl(); // Para recuperar los datos personales
+                    Datos_PersonalesDAOImpl dpImpl = new Datos_PersonalesDAOImpl(); // Para recuperar los datos
+                                                                                    // personales
                     Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
                     if (rol.equals("ADMINISTRADOR")) {
                         System.out.println("Administrador encontrado [" + nombreUsuario + "]");
@@ -173,7 +174,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         String sql = "SELECT * FROM USUARIO WHERE EMAIL = ?";
         try (java.sql.Connection conn = ConexionDB.conectar();
                 java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, email);
+            pstmt.setString(1, email.toLowerCase());
             try (java.sql.ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     int idDB = rs.getInt("ID");

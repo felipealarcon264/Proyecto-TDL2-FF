@@ -30,7 +30,7 @@ public class ServicioUsuario {
      * @param contraseña La contraseña a verificar.
      * @return el tipo de Usuario.
      */
-    public Usuario DelvolverTipoUsuario(String correo, String contraseña) {
+    public Usuario DelvolverUsuario(String correo, String contraseña) {
         return usuarioDAO.buscarPorEmailyContrasena(correo, contraseña);
     }
 
@@ -77,9 +77,14 @@ public class ServicioUsuario {
             throw new DatosInvalidosException("El DNI debe ser un número válido.");
         }
 
-        // Validacion de unicidad del nombre de usuario.
+        // Validacion de unicidad del nombre de usuario y tamaño.
         if (nombreUsrExistente(nomUsr, usuarioDAO.devolverListaUsuarios()))
             throw new DatosInvalidosException("El nombre de usuario " + nomUsr + " ya está registrado.");
+        if (nomUsr.length() < 4)
+            throw new DatosInvalidosException("El nombre de usuario debe tener al menos 4 caracteres.");
+        if(nomUsr.length() > 20)
+            throw new DatosInvalidosException("El nombre de usuario debe tener máximo 20 caracteres.");
+
 
         // Validacion formato E-Mail y unicidad.
         if (!esFormatoEmailSimpleValido(email))
@@ -87,9 +92,11 @@ public class ServicioUsuario {
         else if (usuarioDAO.buscarPorEmail(email) != null)
             throw new EmailYaRegistradoException("El email " + email + " ya está registrado.");
 
+
         // Si todo esta correcto se guarda
         Datos_Personales dp = new Datos_Personales(-1, nombre, apellido, dni);
-        Cuenta cta = new Cuenta(-1, nomUsr, email, password, dp, "CUENTA");
+        Cuenta cta = new Cuenta(-1, nomUsr, email.toLowerCase(), password, dp, "CUENTA");
+        //El E-Mail se guarda en minusculas.
 
         boolean exito = usuarioDAO.guardar(cta);
 

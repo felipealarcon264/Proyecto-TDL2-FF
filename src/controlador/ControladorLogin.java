@@ -46,8 +46,8 @@ public class ControladorLogin implements ActionListener {
         Object botonPresionado = e.getSource();
 
         if (botonPresionado == vista.getBotonIngresar()) {
-            procesarIngresoCuenta();
-            vista.limpiarCampos();
+            if (procesarIngresoCuenta())
+                vista.limpiarCampos();//Solo limpia si ingresamos bien los datos.
         } else if (botonPresionado == vista.getBotonRegistrarse()) {
             vista.limpiarCampos();
             Aplicacion.mostrarVista("REGISTRO");
@@ -58,15 +58,16 @@ public class ControladorLogin implements ActionListener {
      * Lógica para manejar el clic en "Ingresar".
      * Desde este metodo podemos ingresar a otra vista con mostrarVista!
      */
-    private void procesarIngresoCuenta() {
+    private boolean procesarIngresoCuenta() {
         // Se obtienen los datos de pantalla(Vista).
         String correo = vista.getEmail();
         String contraseña = vista.getPassword();
 
         // Valida el usuario y que rol tiene.
-        Usuario usuarioLogueado = servicioUsuario.DelvolverTipoUsuario(correo, contraseña);
+        Usuario usuarioLogueado = servicioUsuario.DelvolverUsuario(correo, contraseña);
         if (usuarioLogueado == null) {
             vista.mostrarError("Correo o contraseña incorrectos.");
+            return false;
         } else {
             // Se puede escalar para abrir una ventana en caso de ser adm.
             // No corresponde al entregable 3.
@@ -83,28 +84,31 @@ public class ControladorLogin implements ActionListener {
                     @Override
                     protected Void doInBackground() throws Exception {
                         // --- INICIO SECCIÓN DE CAMBIO: LÓGICA DE ESPERA ---
-                        
+
                         long tiempoInicio = System.currentTimeMillis(); // Tomamos la hora de inicio
 
                         // A. Tarea Pesada: Cargar el controlador y la DB
-                        new ControladorHome(Aplicacion.vistaHome, servicioPelicula, usuarioLogueado, Aplicacion.ventana);
+                        new ControladorHome(Aplicacion.vistaHome, servicioPelicula, usuarioLogueado,
+                                Aplicacion.ventana);
 
                         long tiempoFin = System.currentTimeMillis();
                         long duracion = tiempoFin - tiempoInicio;
 
-                        // B. Lógica de Espera: Si fue muy rápido, esperamos lo que falta para completar mínimoTiempo
+                        // B. Lógica de Espera: Si fue muy rápido, esperamos lo que falta para completar
+                        // mínimoTiempo
                         final int mínimoTiempo = 2000; // 2seg
-                        if (duracion < mínimoTiempo) { 
+                        if (duracion < mínimoTiempo) {
                             Thread.sleep(mínimoTiempo - duracion);
                         }
-                        
+
                         // --- FIN SECCIÓN DE CAMBIO ---
                         return null;
                     }
 
                     @Override
                     protected void done() {
-                        // ESTO SE EJECUTA DE VUELTA EN EL HILO DE LA INTERFAZ CUANDO doInBackground TERMINA
+                        // ESTO SE EJECUTA DE VUELTA EN EL HILO DE LA INTERFAZ CUANDO doInBackground
+                        // TERMINA
                         // Ahora que todo está cargado y pasó el tiempo mínimo, mostramos la vista Home.
                         Aplicacion.mostrarVista("HOME");
                     }
@@ -121,5 +125,6 @@ public class ControladorLogin implements ActionListener {
                         "¡El ingreso del Administrador(a) " + usuarioLogueado.getNombreUsuario() + " ha sido exitoso!");
             }
         }
+        return true;
     }
 }

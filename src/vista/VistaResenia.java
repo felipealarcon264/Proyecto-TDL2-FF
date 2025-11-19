@@ -103,11 +103,7 @@ public class VistaResenia extends JDialog {
 
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio vertical
 
-        // --- ESTADO DE LA RESEÑA (APROBADA/PENDIENTE) ---
-        lblEstado = new JLabel("Estado: Pendiente");
-        lblEstado.setFont(new Font("Arial", Font.BOLD, 12));
-        lblEstado.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panelPrincipal.add(lblEstado);
+        
 
         panelPrincipal.add(Box.createVerticalGlue()); // Espacio flexible
 
@@ -115,6 +111,12 @@ public class VistaResenia extends JDialog {
         btnGuardar = new JButton("Guardar Reseña");
         btnGuardar.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelPrincipal.add(btnGuardar);
+
+        // --- ESTADO DE LA RESEÑA (APROBADA/PENDIENTE) ---
+        lblEstado = new JLabel("Verificaremos que cumpla las condiciones antes de aprobarla!");
+        lblEstado.setFont(new Font("Arial", Font.BOLD, 12));
+        lblEstado.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelPrincipal.add(lblEstado);
     }
 
     /**
