@@ -1,6 +1,5 @@
 package modelo.catalogo;
 
-
 /**
  * Representa una Película dentro de la plataforma.
  * Es una clase concreta que hereda todos los atributos y métodos

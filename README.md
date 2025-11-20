@@ -24,6 +24,24 @@ Este proyecto es una aplicación de escritorio desarrollada en Java con Swing qu
 
 - **Importación de Datos desde CSV**:
   - Al iniciar sesión por primera vez, el `ServicioPelicula` lee el archivo `movies_database.csv`, procesa cada línea y guarda las películas en la base de datos. Esta operación solo se realiza si la tabla de películas está vacía.
+  
+  ## 🌐 Integración con Servicios Externos (API OMDb)
+
+Para cumplir con el requisito de búsqueda de contenido en línea, la aplicación se conecta a la API pública de **OMDb (Open Movie Database)**.
+
+- **Arquitectura de Conexión**:
+  - **`ServicioOMDb`**: Se implementó un servicio dedicado que encapsula la comunicación HTTP usando `java.net.http.HttpClient`.
+  - **Parseo JSON**: Se utiliza la librería externa `org.json` para interpretar las respuestas de la API y convertirlas en objetos `Pelicula`.
+  - **Manejo de Datos "Sucios"**: El servicio es robusto ante datos faltantes o formatos inconsistentes de la API (como años con guiones o valores "N/A"), asegurando que la aplicación no falle.
+
+- **Flujo de Búsqueda y UX**:
+  - **Búsqueda en Segundo Plano**: Las consultas a la API se ejecutan en hilos separados (`SwingWorker`) para evitar que la interfaz se congele ("freeze") durante la petición web.
+  - **Feedback Visual**: Se reutiliza la `VistaCarga` (GIF animado) dentro de un diálogo modal para indicar al usuario que la búsqueda está en curso.
+  - **Selección de Coincidencias**: Si la búsqueda arroja múltiples resultados, se abre una ventana de **Selección** (`VistaSeleccionOMDb`) que reutiliza el componente `TarjetaPelicula` en una grilla, permitiendo al usuario elegir visualmente el póster correcto.
+  - **Vista de Detalle**: Al seleccionar una película, se hace una segunda petición para traer la metadata completa (Sinopsis, Rating, Director) y se muestra en una **Vista de Detalle** (`VistaDetalleOMDb`) con diseño oscuro.
+
+- **Gestión de Errores**:
+  - Se implementó la excepción `ErrorApiOMDbException` para encapsular problemas de conectividad o de la API, permitiendo que los Controladores muestren mensajes amigables al usuario.
 
 ### Decisión de Diseño: Carga de Recursos con `getResourceAsStream`
 

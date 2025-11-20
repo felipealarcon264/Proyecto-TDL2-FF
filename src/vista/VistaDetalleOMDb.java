@@ -1,0 +1,85 @@
+package vista;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
+import modelo.catalogo.Pelicula;
+
+import java.awt.*;
+
+public class VistaDetalleOMDb extends JDialog {
+    private JButton botonCerrar;
+
+    public VistaDetalleOMDb(Frame propietario, Pelicula pelicula) {
+        super(propietario, "Detalle de la Película", true);
+        setSize(600, 450);
+        setLocationRelativeTo(propietario);
+        setLayout(new BorderLayout());
+        getContentPane().setBackground(new Color(30, 30, 30));
+
+        // implementacion del posterr
+        JLabel labelPoster = new JLabel();
+        labelPoster.setPreferredSize(new Dimension(250, 0));
+        labelPoster.setHorizontalAlignment(SwingConstants.CENTER);
+        labelPoster.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        // se reutiliza la lógica de TarjetaPelicula
+        try {
+            ImageIcon iconoImagen = new ImageIcon(new java.net.URL(pelicula.getPoster()));
+            Image img = iconoImagen.getImage().getScaledInstance(230, 340, Image.SCALE_SMOOTH);
+            labelPoster.setIcon(new ImageIcon(img));
+        } catch (Exception ex) {
+            labelPoster.setText("Sin Imagen");
+            labelPoster.setForeground(Color.WHITE);
+        }
+        add(labelPoster, BorderLayout.WEST);
+
+        // se muestra la info de la Pelicula
+        JPanel panelInformacion = new JPanel();
+        panelInformacion.setLayout(new BoxLayout(panelInformacion, BoxLayout.Y_AXIS));
+        panelInformacion.setBackground(new Color(30, 30, 30));
+        panelInformacion.setBorder(new EmptyBorder(20, 10, 20, 20));
+
+        JLabel labelTitulo = new JLabel("<html><h1>" + pelicula.getTitulo() + "</h1></html>");
+        labelTitulo.setForeground(Color.ORANGE);
+
+        JLabel labelDatos = new JLabel("<html><p><b>Año:</b> " + pelicula.getAnio() +
+                "<br><b>Duración:</b> " + pelicula.getDuracion() + " min" +
+                "<br><b>Director:</b> " + pelicula.getDirector() +
+                "<br><b>Género:</b> " + pelicula.getGenero() +
+                "<br><b>Rating:</b> " + pelicula.getRatingPromedio() + " ⭐</p></html>");
+        labelDatos.setForeground(Color.WHITE);
+        labelDatos.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        JTextArea txtResumen = new JTextArea(pelicula.getResumen());
+        txtResumen.setLineWrap(true);
+        txtResumen.setWrapStyleWord(true);
+        txtResumen.setEditable(false);
+        txtResumen.setBackground(new Color(50, 50, 50));
+        txtResumen.setForeground(Color.WHITE);
+        txtResumen.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.GRAY),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+
+        panelInformacion.add(labelTitulo);
+        panelInformacion.add(Box.createRigidArea(new Dimension(0, 10)));
+        panelInformacion.add(labelDatos);
+        panelInformacion.add(Box.createRigidArea(new Dimension(0, 15)));
+        panelInformacion.add(new JLabel("Sinopsis:") {{ setForeground(Color.ORANGE); }});
+        panelInformacion.add(new JScrollPane(txtResumen));
+
+        add(panelInformacion, BorderLayout.CENTER);
+
+        // el boton para cerrar
+        botonCerrar = new JButton("Cerrar");
+
+        JPanel panelSur = new JPanel();
+        panelSur.setBackground(new Color(30, 30, 30));
+        panelSur.add(botonCerrar);
+        add(panelSur, BorderLayout.SOUTH);
+    }
+
+    // getter para el controlador ControladorDetalleOMDb
+    public JButton getBotonCerrar() {
+        return botonCerrar;
+    }
+}

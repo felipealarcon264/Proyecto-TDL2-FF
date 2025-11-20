@@ -5,6 +5,7 @@ import modelo.catalogo.Pelicula;
 import javax.swing.border.Border;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.net.URI;
 
@@ -20,6 +21,8 @@ public class TarjetaPelicula extends JPanel {
     private Pelicula pelicula; // Guardamos la referencia a la película completa
     private final Border bordeNormal = BorderFactory.createLineBorder(Color.GRAY, 1);
     private final Border bordeResaltado = BorderFactory.createLineBorder(Color.ORANGE, 2);
+    private final Border bordeSeleccionado = BorderFactory.createLineBorder(Color.GREEN, 4);
+    private boolean seleccionada = false;
 
     public TarjetaPelicula(Pelicula pelicula) {
         this.pelicula = pelicula;
@@ -29,11 +32,30 @@ public class TarjetaPelicula extends JPanel {
         setBorder(bordeNormal); // Borde inicial
         setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambia el cursor a una mano
         setPreferredSize(new Dimension(180, 320)); // Tamaño fijo para la tarjeta
+        setBackground(Color.DARK_GRAY);
 
         // Etiqueta para el Título, Género y Rating
-        String rating = String.format("%.1f", pelicula.getRatingPromedio());
-        JLabel etiquetaTitulo = new JLabel("<html><body style='width: 120px; text-align: center;'>" + pelicula.getTitulo() + "<br><i>"
-                + pelicula.getGenero() + "</i><br><b>" + rating + " ⭐</b></body></html>");
+        String textoTitulo = "<html><body style='width: 120px; text-align: center; color: white;'>" + pelicula.getTitulo();
+
+        // Si tenemos género real (no es null ni "Desconocido"), lo mostramos
+        if (pelicula.getGenero() != null && !pelicula.getGenero().equals("Desconocido") && !pelicula.getGenero().equals("null")) {
+            textoTitulo += "<br><i style='color:gray'>" + pelicula.getGenero() + "</i>";
+        }
+
+        // Si tenemos rating real (mayor a 0), lo mostramos
+        if (pelicula.getRatingPromedio() > 0) {
+            String rating = String.format("%.1f", pelicula.getRatingPromedio());
+            textoTitulo += "<br><b style='color:orange'>" + rating + " ⭐</b>";
+        } else {
+            // Si no hay rating mostramos el año que sí suele venir
+            if (pelicula.getAnio() > 0) {
+                textoTitulo += "<br><b style='color:lightgray'>(" + pelicula.getAnio() + ")</b>";
+            }
+        }
+
+        textoTitulo += "</body></html>";
+
+        JLabel etiquetaTitulo = new JLabel(textoTitulo);
         etiquetaTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         add(etiquetaTitulo, BorderLayout.SOUTH);
 
@@ -42,7 +64,7 @@ public class TarjetaPelicula extends JPanel {
         etiquetaPoster.setHorizontalAlignment(SwingConstants.CENTER);
         etiquetaPoster.setVerticalAlignment(SwingConstants.CENTER);
         etiquetaPoster.setOpaque(true);
-        etiquetaPoster.setBackground(Color.LIGHT_GRAY);
+        etiquetaPoster.setBackground(new Color(50, 50, 50)); // gris oscuro
         add(etiquetaPoster, BorderLayout.CENTER);
 
         // Cargar la imagen en segundo plano
@@ -50,18 +72,34 @@ public class TarjetaPelicula extends JPanel {
 
         // --- LÓGICA PARA HACERLA CLICABLE ---
         this.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                setBorder(bordeResaltado); // Cambia el borde al entrar el ratón
+                if (!seleccionada) {
+                    setBorder(bordeResaltado); // Cambia el borde al entrar el ratón
+                }
             }
-
+            @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                setBorder(bordeNormal); // Vuelve al borde normal al salir
+               if (!seleccionada) {
+                   setBorder(bordeNormal); // Vuelve al borde normal al salir
+               }
             }
-
             // El controlador se encargará del mouseClicked
         });
     }
 
+    // cambia el estado visual de la tarjeta. True = borde grueso y False para que vuelva a la normalidad
+
+    public void setSeleccionada(Boolean seleccionada) {
+        this.seleccionada = seleccionada;
+        if (seleccionada) {
+            setBorder(bordeSeleccionado);
+            setBackground(new Color(60, 60, 60));
+        } else {
+            setBorder(bordeNormal);
+            setBackground(Color.DARK_GRAY);
+        }
+    }
     public Pelicula getPelicula() {
         return pelicula;
     }
@@ -73,6 +111,7 @@ public class TarjetaPelicula extends JPanel {
             protected ImageIcon doInBackground() throws Exception {
                 // Esta parte se ejecuta en un hilo separado (NO en el de la UI)
                 try {
+                    if (urlPoster == null || urlPoster.isEmpty() || urlPoster.equals("N/A")) return null;
                     // Forma moderna y segura de crear una URL desde un String
                     URL url = new URI(urlPoster).toURL();
                     ImageIcon originalIcon = new ImageIcon(url);
@@ -82,11 +121,11 @@ public class TarjetaPelicula extends JPanel {
                     int nuevoAncho = 170;
                     int nuevoAlto = (int) ((double) nuevoAncho / imagenOriginal.getWidth(null)
                             * imagenOriginal.getHeight(null));
-                    Image imagenRedimensionada = imagenOriginal.getScaledInstance(nuevoAncho, nuevoAlto,
-                            Image.SCALE_SMOOTH);
-
+                    // Evita la altura 0 si la imagen falla
+                    if (nuevoAlto <= 0) nuevoAlto = 250;
+                    Image imagenRedimensionada = imagenOriginal.getScaledInstance(nuevoAncho, nuevoAlto, Image.SCALE_SMOOTH);
                     return new ImageIcon(imagenRedimensionada);
-                } catch (Exception e) {
+                } catch (Exception ex) {
                     System.err.println("No se pudo cargar la imagen: " + urlPoster);
                     // Devolvemos null si hay un error para manejarlo en done()
                     return null;
