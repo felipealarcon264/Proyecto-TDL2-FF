@@ -15,8 +15,9 @@ import control.Aplicacion;
 import modelo.ente.Usuario;
 import modelo.catalogo.Pelicula;
 import servicio.ServicioPelicula;
+import servicio.ServicioResenia;
 import vista.*;
-
+import servicio.ServicioDetalleOMDb;
 import servicio.ServicioOMDb;
 import excepciones.ErrorApiOMDbException;
 
@@ -28,6 +29,7 @@ public class ControladorHome implements ActionListener {
     private List<Pelicula> peliculasMostradas; // Guardamos la lista actual
     private final JFrame framePrincipal; // Necesario para la modalidad del JDialog
 
+    private Usuario usuarioLogueado; // Guardar el usuario logueado
     private static boolean esPrimeraVez = true;
 
     private final ServicioOMDb servicioOMDb;
@@ -36,6 +38,7 @@ public class ControladorHome implements ActionListener {
         this.vista = vista;
         this.servicioPelicula = servicioPelicula;
         this.framePrincipal = framePrincipal;
+        this.usuarioLogueado = usuarioLogueado; // Guardar el usuario
         this.servicioOMDb = new ServicioOMDb();
 
         // Escuchamos los botones
@@ -112,9 +115,13 @@ public class ControladorHome implements ActionListener {
     private void abrirVistaResenia(Pelicula pelicula) {
         // Creamos la vista de reseña, pasándole el frame principal para que sea modal a él
         VistaResenia vistaResenia = new VistaResenia(framePrincipal);
+        ServicioResenia servicioResenia = new ServicioResenia();
 
         // Cargamos los datos de la película en la nueva vista
         vistaResenia.cargarDatosPelicula(pelicula);
+
+        // Creamos y conectamos el ControladorResenia
+        new ControladorResenia(vistaResenia, servicioResenia, usuarioLogueado, pelicula);
 
         // Hacemos visible la ventana. La ejecución se bloqueará aquí hasta que se cierre.
         vistaResenia.setVisible(true);
@@ -156,13 +163,7 @@ public class ControladorHome implements ActionListener {
         String busqueda = vista.getTextoBusqueda();
         if (busqueda.isEmpty()) return;
 
-        // Reciclamos VistaCarga en un Dialog sin bordes
-        JDialog dialogoCarga = new JDialog(framePrincipal, false);
-        dialogoCarga.setUndecorated(true);
-        dialogoCarga.add(new VistaCarga()); // Reutilizamos el panel con el GIF
-        dialogoCarga.pack();
-        dialogoCarga.setLocationRelativeTo(framePrincipal);
-        dialogoCarga.setVisible(true);
+        Aplicacion.mostrarVista("CARGA");
 
         // "WORKER" para buscar en segundo plano.
         SwingWorker<List<Pelicula>, Void> busquedaWorker = new SwingWorker<>() {
@@ -174,7 +175,7 @@ public class ControladorHome implements ActionListener {
 
             @Override
             protected void done() {
-                dialogoCarga.dispose(); // Cerrar carga
+                Aplicacion.mostrarVista("HOME");
 
                 try {
                     List<Pelicula> resultados = get(); // Obtener resultado del hilo
@@ -208,7 +209,7 @@ public class ControladorHome implements ActionListener {
 
                         // Vista y Controlador de Detalle
                         VistaDetalleOMDb vistaDetalle = new VistaDetalleOMDb(framePrincipal, detalleFull);
-                        new ControladorDetalleOMDb(vistaDetalle); // Conecta botón cerrar
+                        new ControladorDetalleOMDb(vistaDetalle, new ServicioDetalleOMDb(), usuarioLogueado, detalleFull, framePrincipal); // Conecta botón cerrar
 
                         vistaDetalle.setVisible(true);
                     }

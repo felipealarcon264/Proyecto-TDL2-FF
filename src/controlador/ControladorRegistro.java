@@ -11,8 +11,8 @@ import excepciones.DniYaRegistradosException;
 import excepciones.EmailYaRegistradoException;
 
 public class ControladorRegistro implements ActionListener {
-    private final VistaRegistro vistaRegistro;
-    private final ServicioUsuario servicioUsuario;
+    private VistaRegistro vistaRegistro;
+    private ServicioUsuario servicioUsuario;
 
     public ControladorRegistro(VistaRegistro vistaRegistro, ServicioUsuario servicioUsuario) {
         this.vistaRegistro = vistaRegistro;

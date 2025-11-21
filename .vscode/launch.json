@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "VistaDetalleOMDb",
+            "request": "launch",
+            "mainClass": "vista.VistaDetalleOMDb",
+            "projectName": "Proyecto-TDL2-FF_44c2c3f9"
+        },
+        {
+            "type": "java",
             "name": "VistaResenia",
             "request": "launch",
             "mainClass": "vista.VistaResenia",

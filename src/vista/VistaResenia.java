@@ -202,9 +202,16 @@ public class VistaResenia extends JDialog {
         worker.execute();
     }
 
-    /**
-     * Método main para probar y visualizar esta vista de forma independiente.
-     * 
-     * @param args Argumentos de la línea de comandos (no se usan).
-     */
+    public JButton getBotonGuardar() {
+        return btnGuardar;
+    }
+
+    public JButton[] getBotonesPuntuacion() {
+        return botonesPuntuacion;
+    }
+
+    public String getTxtComentario() {
+        return txtComentario.getText();
+    }
+
 }

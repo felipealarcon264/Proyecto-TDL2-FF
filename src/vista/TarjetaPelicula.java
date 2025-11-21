@@ -5,7 +5,6 @@ import modelo.catalogo.Pelicula;
 import javax.swing.border.Border;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.net.URI;
 

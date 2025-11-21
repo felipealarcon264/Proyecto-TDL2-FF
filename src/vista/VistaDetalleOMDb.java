@@ -4,10 +4,12 @@ import javax.swing.border.EmptyBorder;
 
 import modelo.catalogo.Pelicula;
 
+
 import java.awt.*;
 
 public class VistaDetalleOMDb extends JDialog {
     private JButton botonCerrar;
+    private JButton botonMiResenia;
 
     public VistaDetalleOMDb(Frame propietario, Pelicula pelicula) {
         super(propietario, "Detalle de la Película", true);
@@ -15,6 +17,11 @@ public class VistaDetalleOMDb extends JDialog {
         setLocationRelativeTo(propietario);
         setLayout(new BorderLayout());
         getContentPane().setBackground(new Color(30, 30, 30));
+
+        //---Seccion poster con boton Mi reseña---
+        JPanel panelIzq = new JPanel();
+        panelIzq.setBackground(new Color(30, 30, 30));
+        panelIzq.setLayout(new BorderLayout());
 
         // implementacion del posterr
         JLabel labelPoster = new JLabel();
@@ -31,7 +38,11 @@ public class VistaDetalleOMDb extends JDialog {
             labelPoster.setText("Sin Imagen");
             labelPoster.setForeground(Color.WHITE);
         }
-        add(labelPoster, BorderLayout.WEST);
+        panelIzq.add(labelPoster, BorderLayout.CENTER); // Póster en el centro del panel izquierdo
+        botonMiResenia = new JButton("Mi reseña");
+        panelIzq.add(botonMiResenia, BorderLayout.SOUTH); // Botón abajo del póster
+
+        add(panelIzq, BorderLayout.WEST);
 
         // se muestra la info de la Pelicula
         JPanel panelInformacion = new JPanel();
@@ -82,4 +93,10 @@ public class VistaDetalleOMDb extends JDialog {
     public JButton getBotonCerrar() {
         return botonCerrar;
     }
+
+    public JButton getBotonMiResenia() {
+        return botonMiResenia;
+    }
+
+    
 }
