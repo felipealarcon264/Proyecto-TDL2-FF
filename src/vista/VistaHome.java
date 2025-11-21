@@ -14,6 +14,7 @@ public class VistaHome extends JPanel {
     private JComboBox<String> comboOrdenar; // Nuevo componente para ordenar
     private JLabel labelUsuario;
     private JPanel panelPeliculas; // Acá agregaremos las "tarjetas" de películas dinámicamente
+    private JButton botonPerfil;
 
     public VistaHome() {
         // Norte para barra, Centro para contenido.
@@ -36,7 +37,7 @@ public class VistaHome extends JPanel {
         // Panel para Ordenar y Refrescar (vertical)
         JPanel panelOpciones = new JPanel(new GridLayout(2, 1, 0, 5));
         panelOpciones.setOpaque(false);
-        comboOrdenar = new JComboBox<>(new String[]{"Ordenar por...", "Título (A-Z)", "Género (A-Z)"});
+        comboOrdenar = new JComboBox<>(new String[] { "Ordenar por...", "Título (A-Z)", "Género (A-Z)" });
         botonMostrarOtras = new JButton("Ver otras 10");
         panelOpciones.add(comboOrdenar);
         panelOpciones.add(botonMostrarOtras);
@@ -51,14 +52,22 @@ public class VistaHome extends JPanel {
         panelCentral.add(panelOpciones);
         panelCentral.add(panelCampoBusqueda);
         // -Usuario y Salir-
-        JPanel panelUsuario = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        // Usamos GridLayout de 3 filas para: Hola, Perfil, Salir
+        JPanel panelUsuario = new JPanel(new GridLayout(3, 1, 0, 5));
         panelUsuario.setOpaque(false);
-        labelUsuario = new JLabel("Hola, Usuario"); // Inicializamos el campo
+
+        labelUsuario = new JLabel("Hola, Usuario");
         labelUsuario.setForeground(Color.WHITE);
         labelUsuario.setFont(new Font("Arial", Font.BOLD, 14));
+        labelUsuario.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        botonPerfil = new JButton("Mi Perfil"); // Creamos el botón
         botonCerrarSesion = new JButton("Salir");
+
         panelUsuario.add(labelUsuario);
-        panelUsuario.add(botonCerrarSesion);
+        panelUsuario.add(botonPerfil); // Agregamos Perfil
+        panelUsuario.add(botonCerrarSesion); // Agregamos Salir
+
         // Agregamos al panelSuperior
         panelSuperior.add(labelLogo, BorderLayout.WEST);
         panelSuperior.add(panelCentral, BorderLayout.CENTER);
@@ -72,7 +81,7 @@ public class VistaHome extends JPanel {
         panelPeliculas = new JPanel(new GridLayout(0, 4, 15, 15));
         panelPeliculas.setBackground(Color.DARK_GRAY);
         panelPeliculas.setBorder(new EmptyBorder(20, 20, 20, 20));
-        JScrollPane scrollPane = new JScrollPane(panelPeliculas);//Envolvemos el panel en un Scroll.
+        JScrollPane scrollPane = new JScrollPane(panelPeliculas);// Envolvemos el panel en un Scroll.
         scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Velocidad de scroll
         scrollPane.setBorder(null); // Quitar borde del scroll
 
@@ -128,4 +137,7 @@ public class VistaHome extends JPanel {
     public void setNombreUsuario(String nombre) {
         labelUsuario.setText("Hola, " + nombre);
     }
+    public JButton getBotonPerfil() {
+    return botonPerfil;
+}
 }

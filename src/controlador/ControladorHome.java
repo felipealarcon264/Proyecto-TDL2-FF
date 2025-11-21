@@ -21,7 +21,6 @@ import servicio.ServicioDetalleOMDb;
 import servicio.ServicioOMDb;
 import excepciones.ErrorApiOMDbException;
 
-
 public class ControladorHome implements ActionListener {
 
     private VistaHome vista;
@@ -34,7 +33,8 @@ public class ControladorHome implements ActionListener {
 
     private final ServicioOMDb servicioOMDb;
 
-    public ControladorHome(VistaHome vista, ServicioPelicula servicioPelicula, Usuario usuarioLogueado, JFrame framePrincipal) {
+    public ControladorHome(VistaHome vista, ServicioPelicula servicioPelicula, Usuario usuarioLogueado,
+            JFrame framePrincipal) {
         this.vista = vista;
         this.servicioPelicula = servicioPelicula;
         this.framePrincipal = framePrincipal;
@@ -42,6 +42,7 @@ public class ControladorHome implements ActionListener {
         this.servicioOMDb = new ServicioOMDb();
 
         // Escuchamos los botones
+        this.vista.getBotonPerfil().addActionListener(this);
         this.vista.getBotonCerrarSesion().addActionListener(this);
         this.vista.getBotonBuscar().addActionListener(this);
         this.vista.getBotonMostrarOtras().addActionListener(this);
@@ -60,10 +61,10 @@ public class ControladorHome implements ActionListener {
         } catch (excepciones.ErrorDeInicializacionException e) {
             // Si falla la carga del CSV, mostramos un error y cerramos.
             javax.swing.JOptionPane.showMessageDialog(
-                null,
-                e.getMessage() + "\nLa aplicación se cerrará.",
-                "Error Crítico",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+                    null,
+                    e.getMessage() + "\nLa aplicación se cerrará.",
+                    "Error Crítico",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
             System.exit(1); // Cierra la aplicación con un código de error.
         }
     }
@@ -113,7 +114,8 @@ public class ControladorHome implements ActionListener {
      * @param pelicula La película sobre la que se hará la reseña.
      */
     private void abrirVistaResenia(Pelicula pelicula) {
-        // Creamos la vista de reseña, pasándole el frame principal para que sea modal a él
+        // Creamos la vista de reseña, pasándole el frame principal para que sea modal a
+        // él
         VistaResenia vistaResenia = new VistaResenia(framePrincipal);
         ServicioResenia servicioResenia = new ServicioResenia();
 
@@ -123,7 +125,8 @@ public class ControladorHome implements ActionListener {
         // Creamos y conectamos el ControladorResenia
         new ControladorResenia(vistaResenia, servicioResenia, usuarioLogueado, pelicula);
 
-        // Hacemos visible la ventana. La ejecución se bloqueará aquí hasta que se cierre.
+        // Hacemos visible la ventana. La ejecución se bloqueará aquí hasta que se
+        // cierre.
         vistaResenia.setVisible(true);
     }
 
@@ -133,6 +136,24 @@ public class ControladorHome implements ActionListener {
 
         if (fuente == vista.getBotonCerrarSesion()) {
             Aplicacion.mostrarVista("LOGIN");
+
+        } else if (fuente == vista.getBotonPerfil()) { // <--- PEGA ESTE BLOQUE
+            // 1. Buscamos la vista Perfil en el mazo de cartas
+            vista.VistaPerfil vistaPerfil = null;
+            for (java.awt.Component c : control.Aplicacion.panelContenedor.getComponents()) {
+                if (c instanceof vista.VistaPerfil) {
+                    vistaPerfil = (vista.VistaPerfil) c;
+                    break;
+                }
+            }
+            // 2. Si la encontramos, le cargamos los datos frescos
+            if (vistaPerfil != null) {
+                servicio.ServicioResenia servicioResenia = new servicio.ServicioResenia();
+                new ControladorPerfil(vistaPerfil, servicioResenia, usuarioLogueado);
+
+                // 3. Mostramos la pantalla
+                control.Aplicacion.mostrarVista("PERFIL");
+            }
 
         } else if (fuente == vista.getBotonBuscar()) {
             realizarBusquedaOMDb();
@@ -159,9 +180,11 @@ public class ControladorHome implements ActionListener {
             repintarPeliculas(); // Volvemos a pintar la vista con la lista ya ordenada
         }
     }
+
     private void realizarBusquedaOMDb() {
         String busqueda = vista.getTextoBusqueda();
-        if (busqueda.isEmpty()) return;
+        if (busqueda.isEmpty())
+            return;
 
         Aplicacion.mostrarVista("CARGA");
 
@@ -193,7 +216,8 @@ public class ControladorHome implements ActionListener {
                         vista.VistaSeleccionOMDb vistaSeleccion = new vista.VistaSeleccionOMDb(framePrincipal);
 
                         // pasamos la vista Y la lista de resultados
-                        controlador.ControladorSeleccionOMDb ctrlSeleccion = new controlador.ControladorSeleccionOMDb(vistaSeleccion, resultados);
+                        controlador.ControladorSeleccionOMDb ctrlSeleccion = new controlador.ControladorSeleccionOMDb(
+                                vistaSeleccion, resultados);
 
                         vistaSeleccion.setVisible(true); // Modal
 
@@ -209,7 +233,8 @@ public class ControladorHome implements ActionListener {
 
                         // Vista y Controlador de Detalle
                         VistaDetalleOMDb vistaDetalle = new VistaDetalleOMDb(framePrincipal, detalleFull);
-                        new ControladorDetalleOMDb(vistaDetalle, new ServicioDetalleOMDb(), usuarioLogueado, detalleFull, framePrincipal); // Conecta botón cerrar
+                        new ControladorDetalleOMDb(vistaDetalle, new ServicioDetalleOMDb(), usuarioLogueado,
+                                detalleFull, framePrincipal); // Conecta botón cerrar
 
                         vistaDetalle.setVisible(true);
                     }
@@ -217,10 +242,12 @@ public class ControladorHome implements ActionListener {
                 } catch (Exception ex) {
                     // Manejo de nuestra excepción personalizada
                     if (ex.getCause() instanceof ErrorApiOMDbException) {
-                        JOptionPane.showMessageDialog(framePrincipal, ex.getCause().getMessage(), "Error De Busqueda 🚨", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(framePrincipal, ex.getCause().getMessage(),
+                                "Error De Busqueda 🚨", JOptionPane.ERROR_MESSAGE);
                     } else {
                         ex.printStackTrace();
-                        JOptionPane.showMessageDialog(framePrincipal, "Ocurrió un error inesperado: " + ex.getMessage());
+                        JOptionPane.showMessageDialog(framePrincipal,
+                                "Ocurrió un error inesperado: " + ex.getMessage());
                     }
                 }
             }

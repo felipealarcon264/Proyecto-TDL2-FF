@@ -90,7 +90,6 @@ public class Aplicacion {
         ventana.setSize(800, 600);
         ventana.setLocationRelativeTo(null);
 
-
         // Crea el gestor de cartas (Ventanas) con CardLayout.
         cardLayout = new CardLayout();
         panelContenedor = new JPanel(cardLayout);
@@ -111,12 +110,16 @@ public class Aplicacion {
 
         // --- CARTA 3: HOME ---
         vistaHome = new VistaHome();
-        // El ControladorHome se instanciará desde el ControladorLogin al iniciar sesión.
+        // El ControladorHome se instanciará desde el ControladorLogin al iniciar
+        // sesión.
         panelContenedor.add(vistaHome, "HOME");
 
         // --- CARTA 4: PANTALLA DE CARGA ---
         VistaCarga vistaCarga = new VistaCarga();
         panelContenedor.add(vistaCarga, "CARGA");
+        // --- CARTA 5: PERFIL ---
+        vista.VistaPerfil vistaPerfil = new vista.VistaPerfil();
+        panelContenedor.add(vistaPerfil, "PERFIL");
 
         // Agrega el "mazo" a la ventana.
         ventana.add(panelContenedor);
