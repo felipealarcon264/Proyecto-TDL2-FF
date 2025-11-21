@@ -105,6 +105,8 @@ public class PeliculaDAOImpl implements PeliculaDAO {
      * Busca una pelicula por su titulo.
      * Supone que el Genero es valido como enum pues se tomo la precuacion al
      * cargarlo y guardarlo.
+     * En el entregable 3 se modifico Genero enum -> String.
+     * Ignora mayusculas y minusculas.
      *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
@@ -114,23 +116,33 @@ public class PeliculaDAOImpl implements PeliculaDAO {
      */
     @Override
     public Pelicula buscarPorTitulo(String titulo) {
-        String sql = "SELECT ID, TITULO, DIRECTOR, DURACION, RESUMEN, GENERO, RATING_PROMEDIO, ANIO, POSTER FROM PELICULA WHERE TITULO = ?";
+        // CAMBIO CLAVE: Usamos "LOWER(TITULO) = LOWER(?)" para ignorar
+        // mayúsculas/minúsculas
+        // y hacemos .trim() al título para borrar espacios extra.
+        String sql = "SELECT ID, TITULO, DIRECTOR, DURACION, RESUMEN, GENERO, RATING_PROMEDIO, ANIO, POSTER " +
+                "FROM PELICULA WHERE LOWER(TITULO) = LOWER(?)";
+
         try (Connection conn = ConexionDB.conectar();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, titulo);
+
+            // IMPORTANTE: .trim() elimina espacios vacíos al inicio o final.
+            pstmt.setString(1, titulo.trim());
+
             var rs = pstmt.executeQuery();
             if (rs.next()) {
                 String generoSTR = rs.getString("GENERO");
                 String generoEnum = String.valueOf(generoSTR.toUpperCase());
-                System.out.println("ℹ️ Película [" + titulo + "] encontrada.");
+                System.out.println(
+                        "ℹ️ Película encontrada en BD: [" + rs.getString("TITULO") + "] ID: " + rs.getInt("ID"));
                 return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"),
                         rs.getInt("DURACION"),
                         rs.getString("RESUMEN"), generoEnum,
                         rs.getDouble("RATING_PROMEDIO"), rs.getInt("ANIO"),
                         rs.getString("POSTER"));
-            } else
-                System.out.println("❌ Película [" + titulo + "] no encontrada en la base de datos.");
-            return null;
+            } else {
+                System.out.println("❌ Película [" + titulo + "] no encontrada");
+                return null;
+            }
         } catch (SQLException e) {
             System.out.println("❌ Error al buscar la película: " + e.getMessage());
             return null;
@@ -155,7 +167,8 @@ public class PeliculaDAOImpl implements PeliculaDAO {
             try (java.sql.ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     String generoEnum = String.valueOf(rs.getString("GENERO").toUpperCase());
-                    return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"), rs.getInt("DURACION"),
+                    return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"),
+                            rs.getInt("DURACION"),
                             rs.getString("RESUMEN"), generoEnum,
                             rs.getDouble("RATING_PROMEDIO"), rs.getInt("ANIO"),
                             rs.getString("POSTER"));
@@ -180,7 +193,7 @@ public class PeliculaDAOImpl implements PeliculaDAO {
     @Override
     public List<Pelicula> devolverListaPelicula() {
         List<Pelicula> lista = new ArrayList<>();
-        String sql = """ 
+        String sql = """
                     SELECT ID, GENERO, TITULO, RESUMEN, DIRECTOR, DURACION, RATING_PROMEDIO, ANIO, POSTER
                      FROM PELICULA
                 """;

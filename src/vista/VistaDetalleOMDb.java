@@ -31,7 +31,7 @@ public class VistaDetalleOMDb extends JDialog {
 
         // se reutiliza la lógica de TarjetaPelicula
         try {
-            ImageIcon iconoImagen = new ImageIcon(new java.net.URL(pelicula.getPoster()));
+            ImageIcon iconoImagen = new ImageIcon(new java.net.URI(pelicula.getPoster()).toURL());
             Image img = iconoImagen.getImage().getScaledInstance(230, 340, Image.SCALE_SMOOTH);
             labelPoster.setIcon(new ImageIcon(img));
         } catch (Exception ex) {

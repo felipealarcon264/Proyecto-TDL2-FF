@@ -15,13 +15,21 @@ public class ServicioDetalleOMDb {
      * @return
      */ 
     public Pelicula VerificarSiLaPeliculaExiste(Pelicula pelicula){
-        if(peliDao.buscarPorTitulo(pelicula.getTitulo()) != null){
+       //Si el objeto ya tiene un ID válido (>0).
+        // No hace falta buscar ni guardar.
+        if (pelicula.getIdDB() > 0) {
+            return pelicula;
+        }
+        //Busqueda en la DB.
+        Pelicula aux = peliDao.buscarPorTitulo(pelicula.getTitulo());
+
+        if(aux!= null){
             //La pelicula existe en la base de datos.
-            return peliDao.buscarPorTitulo(pelicula.getTitulo());
+            return aux;//La devuelve con su id.
         }
         else{
             //La pelicula no existe en la base de datos.
-            peliDao.guardar(pelicula);
+            peliDao.guardar(pelicula);//Se agrega
             return peliDao.buscarPorTitulo(pelicula.getTitulo());//Devuelve la pelicula con el ID.
         }
     }
