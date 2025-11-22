@@ -10,8 +10,8 @@ public class VistaHome extends JPanel {
     private JTextField campoBusqueda;
     private JButton botonBuscar;
     private JButton botonCerrarSesion;
-    private JButton botonMostrarOtras;
-    private JComboBox<String> comboOrdenar; // Nuevo componente para ordenar
+    private JComboBox<String> comboMostrarOtras;
+    private JComboBox<String> comboOrdenar; 
     private JLabel labelUsuario;
     private JPanel panelPeliculas; // Acá agregaremos las "tarjetas" de películas dinámicamente
     private JButton botonPerfil;
@@ -38,9 +38,9 @@ public class VistaHome extends JPanel {
         JPanel panelOpciones = new JPanel(new GridLayout(2, 1, 0, 5));
         panelOpciones.setOpaque(false);
         comboOrdenar = new JComboBox<>(new String[] { "Ordenar por...", "Título (A-Z)", "Género (A-Z)" });
-        botonMostrarOtras = new JButton("Ver otras 10");
+        comboMostrarOtras = new JComboBox<>(new String[] { "Mostrar...","10 Random","Top 10" });
         panelOpciones.add(comboOrdenar);
-        panelOpciones.add(botonMostrarOtras);
+        panelOpciones.add(comboMostrarOtras);
         // Panel para el campo de búsqueda y botón
         JPanel panelCampoBusqueda = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         panelCampoBusqueda.setOpaque(false);
@@ -107,8 +107,8 @@ public class VistaHome extends JPanel {
         return comboOrdenar;
     }
 
-    public JButton getBotonMostrarOtras() {
-        return botonMostrarOtras;
+    public JComboBox<String> getComboMostrarOtras() {
+        return comboMostrarOtras;
     }
 
     // Metodo para limpiar la vista.

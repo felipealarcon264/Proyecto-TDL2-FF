@@ -32,7 +32,7 @@ public class ControladorHome implements ActionListener {
 
     private final ServicioOMDb servicioOMDb;
 
-   public ControladorHome(VistaHome vista, ServicioPelicula servicioPelicula, Usuario usuarioLogueado,
+    public ControladorHome(VistaHome vista, ServicioPelicula servicioPelicula, Usuario usuarioLogueado,
             JFrame framePrincipal) {
         this.vista = vista;
         this.servicioPelicula = servicioPelicula;
@@ -42,17 +42,13 @@ public class ControladorHome implements ActionListener {
 
         // --- LIMPIEZA DE LISTENERS VIEJOS (CRUCIAL) ---
         // Esto evita que el usuario anterior siga "escuchando" los clics
-        limpiarListeners(this.vista.getBotonPerfil());
-        limpiarListeners(this.vista.getBotonCerrarSesion());
-        limpiarListeners(this.vista.getBotonBuscar());
-        limpiarListeners(this.vista.getBotonMostrarOtras());
-        limpiarListeners(this.vista.getComboOrdenar());
+        voidLimpiarTodosLosListeners();
 
         // --- AHORA SÍ, AGREGAMOS LOS NUEVOS ---
         this.vista.getBotonPerfil().addActionListener(this);
         this.vista.getBotonCerrarSesion().addActionListener(this);
         this.vista.getBotonBuscar().addActionListener(this);
-        this.vista.getBotonMostrarOtras().addActionListener(this);
+        this.vista.getComboMostrarOtras().addActionListener(this);
         this.vista.getComboOrdenar().addActionListener(this);
 
         // Actualizamos el nombre de usuario en la vista.
@@ -67,19 +63,29 @@ public class ControladorHome implements ActionListener {
         }
     }
 
+    // Limpia todos los listeners de los botones y combos.
+    private void voidLimpiarTodosLosListeners() {
+        limpiarListeners(this.vista.getBotonPerfil());
+        limpiarListeners(this.vista.getBotonCerrarSesion());
+        limpiarListeners(this.vista.getBotonBuscar());
+        limpiarListeners(this.vista.getComboMostrarOtras());
+        limpiarListeners(this.vista.getComboOrdenar());
+    }
+
     // Método auxiliar para limpiar botones
     private void limpiarListeners(AbstractButton boton) {
         for (java.awt.event.ActionListener al : boton.getActionListeners()) {
             boton.removeActionListener(al);
         }
     }
-    
+
     // Método auxiliar para limpiar combos
     private void limpiarListeners(JComboBox<?> combo) {
         for (java.awt.event.ActionListener al : combo.getActionListeners()) {
             combo.removeActionListener(al);
         }
     }
+
     private void cargarContenido() {
         // Verificamos si es usuario nuevo (1 = Nuevo)
         if (usuarioLogueado.getEsNuevo() == 1) {
@@ -175,14 +181,15 @@ public class ControladorHome implements ActionListener {
 
         } else if (fuente == vista.getBotonPerfil()) {
             // --- CORRECCIÓN: SIEMPRE CREAR UNA VISTA NUEVA ---
-            
+
             // 1. Instanciamos una vista totalmente nueva (vacía y limpia)
             vista.VistaPerfil nuevaVistaPerfil = new vista.VistaPerfil();
 
             // 2. Instanciamos el servicio necesario
             servicio.ServicioResenia servicioResenia = new servicio.ServicioResenia();
 
-            // 3. Conectamos el controlador. Al crearse, este llenará la vista con los datos del usuarioLogueado ACTUAL.
+            // 3. Conectamos el controlador. Al crearse, este llenará la vista con los datos
+            // del usuarioLogueado ACTUAL.
             new ControladorPerfil(nuevaVistaPerfil, servicioResenia, usuarioLogueado);
 
             // 4. Agregamos la nueva vista al panel contenedor con la etiqueta "PERFIL"
@@ -192,11 +199,24 @@ public class ControladorHome implements ActionListener {
             // 5. Navegamos a la nueva vista
             control.Aplicacion.mostrarVista("PERFIL");
 
-        }else if (fuente == vista.getBotonBuscar()) {
+        } else if (fuente == vista.getBotonBuscar()) {
             realizarBusquedaOMDb();
-        } else if (fuente == vista.getBotonMostrarOtras()) {
-            System.out.println("Mostrando 10 películas aleatorias nuevas...");
-            peliculasMostradas = servicioPelicula.obtener10Aleatorias();
+        } else if (fuente == vista.getComboMostrarOtras()) {
+            String opcion = (String) vista.getComboMostrarOtras().getSelectedItem();
+            if (opcion == null || opcion.equals("Mostrar...")) {
+                return; // No hacer nada si es la opción por defecto
+            }
+            switch (opcion) {
+                case "10 Random":
+                    peliculasMostradas = servicioPelicula.obtener10Aleatorias();
+                    break;
+                case "Top 10":
+                    peliculasMostradas = servicioPelicula.obtenerTop10();
+                    break;
+                default:
+                    System.out.println("Opción no reconocida: " + opcion);
+                    return; // No hacer nada si la opción no es reconocida
+            }
             repintarPeliculas();
 
         } else if (fuente == vista.getComboOrdenar()) {
@@ -213,6 +233,9 @@ public class ControladorHome implements ActionListener {
                 case "Género (A-Z)":
                     peliculasMostradas.sort(new ComparadorPeliculaPorGenero());
                     break;
+                default:
+                    System.out.println("Opción no reconocida: " + opcion);
+                    return; // No hacer nada si la opción no es reconocida
             }
             repintarPeliculas(); // Volvemos a pintar la vista con la lista ya ordenada
         }
