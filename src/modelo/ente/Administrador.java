@@ -26,10 +26,11 @@ public class Administrador extends Usuario {
      * @param contrasena      La clave de acceso del administrador.
      * @param datosPersonales Los datos personales asociados al administrador.
      * @param rol             Determina si es administrador o cuenta.
+     * @param esNuevo         Indica si el usuario es nuevo o no.
      */
     public Administrador(int idDB, String nombreUsuario, String email, String contrasena,
-            Datos_Personales datosPersonales, String rol) {
-        super(idDB, nombreUsuario, email, contrasena, datosPersonales, rol);
+            Datos_Personales datosPersonales, String rol, int esNuevo) {
+        super(idDB, nombreUsuario, email, contrasena, datosPersonales, rol, esNuevo);
     }
 
     @Override

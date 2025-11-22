@@ -29,53 +29,79 @@ public class ControladorHome implements ActionListener {
     private final JFrame framePrincipal; // Necesario para la modalidad del JDialog
 
     private Usuario usuarioLogueado; // Guardar el usuario logueado
-    private static boolean esPrimeraVez = true;
 
     private final ServicioOMDb servicioOMDb;
 
-    public ControladorHome(VistaHome vista, ServicioPelicula servicioPelicula, Usuario usuarioLogueado,
+   public ControladorHome(VistaHome vista, ServicioPelicula servicioPelicula, Usuario usuarioLogueado,
             JFrame framePrincipal) {
         this.vista = vista;
         this.servicioPelicula = servicioPelicula;
         this.framePrincipal = framePrincipal;
-        this.usuarioLogueado = usuarioLogueado; // Guardar el usuario
+        this.usuarioLogueado = usuarioLogueado;
         this.servicioOMDb = new ServicioOMDb();
 
-        // Escuchamos los botones
+        // --- LIMPIEZA DE LISTENERS VIEJOS (CRUCIAL) ---
+        // Esto evita que el usuario anterior siga "escuchando" los clics
+        limpiarListeners(this.vista.getBotonPerfil());
+        limpiarListeners(this.vista.getBotonCerrarSesion());
+        limpiarListeners(this.vista.getBotonBuscar());
+        limpiarListeners(this.vista.getBotonMostrarOtras());
+        limpiarListeners(this.vista.getComboOrdenar());
+
+        // --- AHORA SÍ, AGREGAMOS LOS NUEVOS ---
         this.vista.getBotonPerfil().addActionListener(this);
         this.vista.getBotonCerrarSesion().addActionListener(this);
         this.vista.getBotonBuscar().addActionListener(this);
         this.vista.getBotonMostrarOtras().addActionListener(this);
-        this.vista.getComboOrdenar().addActionListener(this); // Escuchamos el nuevo ComboBox
+        this.vista.getComboOrdenar().addActionListener(this);
 
         // Actualizamos el nombre de usuario en la vista.
         this.vista.setNombreUsuario(usuarioLogueado.getNombreUsuario());
 
         try {
-            // Importar datos(Si hace falta)
             this.servicioPelicula.inicializarCatalogo();
-
-            // 2. CARGAR LA VISTA
             cargarContenido();
-
         } catch (excepciones.ErrorDeInicializacionException e) {
-            // Si falla la carga del CSV, mostramos un error y cerramos.
-            javax.swing.JOptionPane.showMessageDialog(
-                    null,
-                    e.getMessage() + "\nLa aplicación se cerrará.",
-                    "Error Crítico",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
-            System.exit(1); // Cierra la aplicación con un código de error.
+            javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "Error Crítico", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
         }
     }
 
+    // Método auxiliar para limpiar botones
+    private void limpiarListeners(AbstractButton boton) {
+        for (java.awt.event.ActionListener al : boton.getActionListeners()) {
+            boton.removeActionListener(al);
+        }
+    }
+    
+    // Método auxiliar para limpiar combos
+    private void limpiarListeners(JComboBox<?> combo) {
+        for (java.awt.event.ActionListener al : combo.getActionListeners()) {
+            combo.removeActionListener(al);
+        }
+    }
     private void cargarContenido() {
-        if (esPrimeraVez) {
-            System.out.println("Primera visita: Mostrando Top 10...");
+        // Verificamos si es usuario nuevo (1 = Nuevo)
+        if (usuarioLogueado.getEsNuevo() == 1) {
+            System.out.println("Usuario Nuevo detectado. Mostrando Top 10...");
+
+            // 1. Obtener Top 10
             peliculasMostradas = servicioPelicula.obtenerTop10();
-            esPrimeraVez = false; // Ya no es la primera vez
+
+            // 2. Mostrar Mensaje de Bienvenida
+            JOptionPane.showMessageDialog(framePrincipal,
+                    "¡Bienvenido a TDL2! 🎬\n\nComo eres nuevo, hemos seleccionado\nlas 10 películas mejor valoradas para ti.\n¡Disfrútalas y califícalas!",
+                    "Bienvenida Especial",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            // 3. Actualizar usuario en DB para que la próxima vez sea random
+            usuarioLogueado.setEsNuevo(0); // En memoria
+            // Instanciamos el servicio para guardar el cambio en la DB
+            new servicio.ServicioUsuario().actualizarEstadoUsuario(usuarioLogueado);
+
         } else {
-            System.out.println("Visita recurrente: Mostrando Aleatorias...");
+            // Si no es nuevo (0), comportamiento normal
+            System.out.println("Usuario Recurrente. Mostrando Aleatorias...");
             peliculasMostradas = servicioPelicula.obtener10Aleatorias();
         }
 
@@ -116,8 +142,18 @@ public class ControladorHome implements ActionListener {
     private void abrirVistaResenia(Pelicula pelicula) {
         // Creamos la vista de reseña, pasándole el frame principal para que sea modal a
         // él
-        VistaResenia vistaResenia = new VistaResenia(framePrincipal);
         ServicioResenia servicioResenia = new ServicioResenia();
+        // --- VALIDACIÓN DE DUPLICADOS ---
+        // Verificamos si ya existe la reseña antes de abrir la ventana
+        if (servicioResenia.existeResenia(usuarioLogueado.getIdDB(), pelicula.getIdDB())) {
+            JOptionPane.showMessageDialog(framePrincipal,
+                    "¡Ya has calificado esta película!\nSolo se permite una reseña por título.",
+                    "Acción no permitida",
+                    JOptionPane.WARNING_MESSAGE);
+            return; // <-- IMPORTANTE: Detiene la ejecución aquí.
+        }
+        // -----------------------------------------------
+        VistaResenia vistaResenia = new VistaResenia(framePrincipal);
 
         // Cargamos los datos de la película en la nueva vista
         vistaResenia.cargarDatosPelicula(pelicula);
@@ -137,25 +173,26 @@ public class ControladorHome implements ActionListener {
         if (fuente == vista.getBotonCerrarSesion()) {
             Aplicacion.mostrarVista("LOGIN");
 
-        } else if (fuente == vista.getBotonPerfil()) { // <--- PEGA ESTE BLOQUE
-            // 1. Buscamos la vista Perfil en el mazo de cartas
-            vista.VistaPerfil vistaPerfil = null;
-            for (java.awt.Component c : control.Aplicacion.panelContenedor.getComponents()) {
-                if (c instanceof vista.VistaPerfil) {
-                    vistaPerfil = (vista.VistaPerfil) c;
-                    break;
-                }
-            }
-            // 2. Si la encontramos, le cargamos los datos frescos
-            if (vistaPerfil != null) {
-                servicio.ServicioResenia servicioResenia = new servicio.ServicioResenia();
-                new ControladorPerfil(vistaPerfil, servicioResenia, usuarioLogueado);
+        } else if (fuente == vista.getBotonPerfil()) {
+            // --- CORRECCIÓN: SIEMPRE CREAR UNA VISTA NUEVA ---
+            
+            // 1. Instanciamos una vista totalmente nueva (vacía y limpia)
+            vista.VistaPerfil nuevaVistaPerfil = new vista.VistaPerfil();
 
-                // 3. Mostramos la pantalla
-                control.Aplicacion.mostrarVista("PERFIL");
-            }
+            // 2. Instanciamos el servicio necesario
+            servicio.ServicioResenia servicioResenia = new servicio.ServicioResenia();
 
-        } else if (fuente == vista.getBotonBuscar()) {
+            // 3. Conectamos el controlador. Al crearse, este llenará la vista con los datos del usuarioLogueado ACTUAL.
+            new ControladorPerfil(nuevaVistaPerfil, servicioResenia, usuarioLogueado);
+
+            // 4. Agregamos la nueva vista al panel contenedor con la etiqueta "PERFIL"
+            // Esto "machaca" la referencia anterior en el CardLayout
+            control.Aplicacion.panelContenedor.add(nuevaVistaPerfil, "PERFIL");
+
+            // 5. Navegamos a la nueva vista
+            control.Aplicacion.mostrarVista("PERFIL");
+
+        }else if (fuente == vista.getBotonBuscar()) {
             realizarBusquedaOMDb();
         } else if (fuente == vista.getBotonMostrarOtras()) {
             System.out.println("Mostrando 10 películas aleatorias nuevas...");

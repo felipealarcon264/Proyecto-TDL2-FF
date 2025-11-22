@@ -12,7 +12,6 @@ import servicio.ServicioResenia;
 import vista.VistaDetalleOMDb;
 import vista.VistaResenia;
 
-
 public class ControladorDetalleOMDb implements ActionListener {
 
     private VistaDetalleOMDb vista;
@@ -20,7 +19,6 @@ public class ControladorDetalleOMDb implements ActionListener {
     private Pelicula PeliculaActual;
     private Usuario usrActual;
     private JFrame framePrincipal;
-
 
     public ControladorDetalleOMDb(VistaDetalleOMDb vista, ServicioDetalleOMDb servicioDetalleOMDb, Usuario usrActual,
             Pelicula PeliculaActual, JFrame framePrincipal) {
@@ -40,21 +38,30 @@ public class ControladorDetalleOMDb implements ActionListener {
             vista.dispose();
         }
         if (e.getSource() == vista.getBotonMiResenia()) {
-            // La lógica es crear una vistaResenia con logica validando que la pelicula este
-            // guardada en la base de datos
+            // 1. Verificar/guardar la película en la BD
+            Pelicula peliculaConId = servicioDetalleOMDb
+                    .VerificarSiLaPeliculaExiste((modelo.catalogo.Pelicula) PeliculaActual);
 
-            // 1. Verificar/guardar la película en la BD y obtener el objeto con el ID correcto.
-            Pelicula peliculaConId = servicioDetalleOMDb.VerificarSiLaPeliculaExiste((modelo.catalogo.Pelicula) PeliculaActual);
-
-            // 2. Crear la vista y el controlador de la reseña con la película ya persistida.
-            VistaResenia vistaResenia = new VistaResenia(framePrincipal);
+            // Instanciamos el servicio
             ServicioResenia servicioResenia = new ServicioResenia();
 
-            // 3. ¡PASO FALTANTE! Cargar los datos de la película en la vista de reseña.
+            // --- VALIDACIÓN DE DUPLICADOS ---
+            if (servicioResenia.existeResenia(usrActual.getIdDB(), peliculaConId.getIdDB())) {
+                javax.swing.JOptionPane.showMessageDialog(vista,
+                        "¡Ya has calificado esta película!\nSolo se permite una reseña por título.",
+                        "Acción no permitida",
+                        javax.swing.JOptionPane.WARNING_MESSAGE);
+                return; // <-- Detiene la ejecución
+            }
+            // -----------------------------------------------
+
+            // 2. Crear la vista... (resto del código igual)
+            VistaResenia vistaResenia = new VistaResenia(framePrincipal);
+
             vistaResenia.cargarDatosPelicula(peliculaConId);
 
             new ControladorResenia(vistaResenia, servicioResenia, usrActual, peliculaConId);
-            vistaResenia.setVisible(true); // 4. Mostrar la ventana al final
+            vistaResenia.setVisible(true);
         }
 
     }

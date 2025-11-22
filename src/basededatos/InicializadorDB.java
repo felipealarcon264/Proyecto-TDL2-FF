@@ -65,6 +65,7 @@ public class InicializadorDB {
                             CONTRASENA TEXT NOT NULL,
                             ID_DATOS_PERSONALES INTEGER NOT NULL,
                             ROL TEXT NOT NULL,
+                            ES_NUEVO INTEGER DEFAULT 1,
                             CONSTRAINT USUARIO_DATOS_PERSONALES_FK FOREIGN KEY (ID_DATOS_PERSONALES)
                                 REFERENCES DATOS_PERSONALES(ID)
                         );

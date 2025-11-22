@@ -72,6 +72,27 @@ public class ServicioResenia {
         return reseniasDelUsuario;
     }
 
+    /**
+     * Verifica si ya existe una reseña de un usuario para una película específica.
+     * 
+     * @return true si ya existe, false si no.
+     */
+    public boolean existeResenia(int idUsuario, int idPelicula) {
+        List<Resenia> todas = reseniaDAO.devolverListaResenia();
+        // Si la lista es nula (error en DB), asumimos false para no bloquear, o true
+        // por seguridad.
+        if (todas == null)
+            return false;
+
+        for (Resenia r : todas) {
+            // Comparamos IDs
+            if (r.getUsuario().getIdDB() == idUsuario && r.getContenido().getIdDB() == idPelicula) {
+                return true; // ¡Encontrada!
+            }
+        }
+        return false;
+    }
+
     public ReseniaDAO getReseniaDAOImpl() {
         return reseniaDAO;
     }

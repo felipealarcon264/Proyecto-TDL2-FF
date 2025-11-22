@@ -82,9 +82,8 @@ public class ServicioUsuario {
             throw new DatosInvalidosException("El nombre de usuario " + nomUsr + " ya está registrado.");
         if (nomUsr.length() < 4)
             throw new DatosInvalidosException("El nombre de usuario debe tener al menos 4 caracteres.");
-        if(nomUsr.length() > 20)
+        if (nomUsr.length() > 20)
             throw new DatosInvalidosException("El nombre de usuario debe tener máximo 20 caracteres.");
-
 
         // Validacion formato E-Mail y unicidad.
         if (!esFormatoEmailSimpleValido(email))
@@ -92,11 +91,10 @@ public class ServicioUsuario {
         else if (usuarioDAO.buscarPorEmail(email) != null)
             throw new EmailYaRegistradoException("El email " + email + " ya está registrado.");
 
-
         // Si todo esta correcto se guarda
         Datos_Personales dp = new Datos_Personales(-1, nombre, apellido, dni);
-        Cuenta cta = new Cuenta(-1, nomUsr, email.toLowerCase(), password, dp, "CUENTA");
-        //El E-Mail se guarda en minusculas.
+        Cuenta cta = new Cuenta(-1, nomUsr, email.toLowerCase(), password, dp, "CUENTA", 1);
+        // El E-Mail se guarda en minusculas.
 
         boolean exito = usuarioDAO.guardar(cta);
 
@@ -198,6 +196,10 @@ public class ServicioUsuario {
         }
         // Si no encontro.
         return false;
+    }
+
+    public void actualizarEstadoUsuario(Usuario usuario) {
+        usuarioDAO.actualizar(usuario);
     }
 
     public UsuarioDAO getUsuarioDao() {

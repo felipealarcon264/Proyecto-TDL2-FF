@@ -144,10 +144,12 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                     Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
                     if (rol.equals("ADMINISTRADOR")) {
                         System.out.println("Administrador encontrado [" + nombreUsuario + "]");
-                        return new modelo.ente.Administrador(idDB, nombreUsuario, email, contrasena, dp, rol);
+                        return new modelo.ente.Administrador(idDB, nombreUsuario, email, contrasena, dp, rol,
+                                rs.getInt("ES_NUEVO"));
                     } else if (rol.equals("CUENTA")) {
                         System.out.println("Cuenta encontrada [" + nombreUsuario + "]");
-                        return new modelo.ente.Cuenta(idDB, nombreUsuario, email, contrasena, dp, rol);
+                        return new modelo.ente.Cuenta(idDB, nombreUsuario, email, contrasena, dp, rol,
+                                rs.getInt("ES_NUEVO"));
                     } else
                         return null;
                 }
@@ -185,10 +187,12 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                     Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
                     if (rol.equals("ADMINISTRADOR")) {
                         System.out.println("â„¹ï¸ Administrador encontrado [" + nombreUsuario + "]");
-                        return new modelo.ente.Administrador(idDB, nombreUsuario, email, contrasena, dp, rol);
+                        return new modelo.ente.Administrador(idDB, nombreUsuario, email, contrasena, dp, rol,
+                                rs.getInt("ES_NUEVO"));
                     } else if (rol.equals("CUENTA")) {
                         System.out.println("â„¹ï¸ Cuenta encontrada [" + nombreUsuario + "]");
-                        return new modelo.ente.Cuenta(idDB, nombreUsuario, email, contrasena, dp, rol);
+                        return new modelo.ente.Cuenta(idDB, nombreUsuario, email, contrasena, dp, rol,
+                                rs.getInt("ES_NUEVO"));
                     } else
                         return null;
                 }
@@ -242,10 +246,11 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 i++;
                 // Se crean solo para mostrar
                 if (rol.equals("ADMINISTRADOR")) {
-                    Administrador auxAdm = new Administrador(id, nombreUsuario, email, contrasena, dp, rol);
+                    Administrador auxAdm = new Administrador(id, nombreUsuario, email, contrasena, dp, rol,
+                            rs.getInt("ES_NUEVO"));
                     System.out.println(i + ". \n" + auxAdm);
                 } else {
-                    Cuenta auxCta = new Cuenta(id, nombreUsuario, email, contrasena, dp, rol);
+                    Cuenta auxCta = new Cuenta(id, nombreUsuario, email, contrasena, dp, rol, rs.getInt("ES_NUEVO"));
                     System.out.println(i + ". \n" + auxCta);
                 }
             }
@@ -280,9 +285,9 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                     Datos_Personales dp = dpImpl.buscarPorID(rs.getInt("ID_DATOS_PERSONALES"));
 
                     if ("ADMINISTRADOR".equals(rol)) {
-                        return new Administrador(id, nombreUsuario, email, contrasena, dp, rol);
+                        return new Administrador(id, nombreUsuario, email, contrasena, dp, rol, rs.getInt("ES_NUEVO"));
                     } else if ("CUENTA".equals(rol)) {
-                        return new Cuenta(id, nombreUsuario, email, contrasena, dp, rol);
+                        return new Cuenta(id, nombreUsuario, email, contrasena, dp, rol, rs.getInt("ES_NUEVO"));
                     }
                 }
             }
@@ -295,7 +300,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     /**
      * Actualiza un usuario existente en la base de datos.
-     * NO IMPLEMENTADO - NO LO NECESITAMOS EN EL ENTREGABLE 2.
+     * Modifica su condicion de "Nuevo usuario".
      * 
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
@@ -305,8 +310,19 @@ public class UsuarioDAOImpl implements UsuarioDAO {
      */
     @Override
     public boolean actualizar(Usuario usr) {
-        // Implementacion no necesaria para el entregable Nro 2.
-        System.out.println("FUNCIONALIDAD NO IMPLEMENTADA");
+        String sql = "UPDATE USUARIO SET ES_NUEVO = ? WHERE ID = ?";
+        try (java.sql.Connection conn = ConexionDB.conectar();
+                java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, usr.getEsNuevo());
+            pstmt.setInt(2, usr.getIdDB());
+
+            if (pstmt.executeUpdate() > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Error al actualizar usuario: " + e.getMessage());
+        }
         return false;
     }
 
@@ -321,8 +337,9 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     @Override
     public List<Usuario> devolverListaUsuarios() {
         List<Usuario> lista = new ArrayList<>();
+        // CORRECCIÓN: Agregamos u.ES_NUEVO aquí abajo 👇
         String sql = """
-                    SELECT u.ID AS usuario_id, u.NOMBRE_USUARIO, u.EMAIL, u.CONTRASENA, u.ROL,
+                    SELECT u.ID AS usuario_id, u.NOMBRE_USUARIO, u.EMAIL, u.CONTRASENA, u.ROL, u.ES_NUEVO,
                            dp.ID AS dp_id, dp.NOMBRE, dp.APELLIDO, dp.DNI
                     FROM USUARIO u
                     JOIN DATOS_PERSONALES dp ON u.ID_DATOS_PERSONALES = dp.ID
@@ -331,34 +348,29 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 java.sql.Statement stmt = conn.createStatement();
                 java.sql.ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                // Datos del Usuario
                 int id = rs.getInt("usuario_id");
                 String nombreUsuario = rs.getString("NOMBRE_USUARIO");
                 String email = rs.getString("EMAIL");
                 String contrasena = rs.getString("CONTRASENA");
                 String rol = rs.getString("ROL");
+                int esNuevo = rs.getInt("ES_NUEVO"); // Ahora sí existe en la consulta
 
-                // Se crea el objeto Datos_Personales usando su constructor.
                 int idDP = rs.getInt("dp_id");
                 String dpNombre = rs.getString("NOMBRE");
                 String dpApellido = rs.getString("APELLIDO");
                 int dpDni = rs.getInt("DNI");
                 Datos_Personales dp = new Datos_Personales(idDP, dpNombre, dpApellido, dpDni);
 
-                // Se carga en la lista el tipo de usuario correcto.
                 if ("ADMINISTRADOR".equals(rol)) {
-                    lista.add(new Administrador(id, nombreUsuario, email, contrasena, dp, rol));
+                    lista.add(new Administrador(id, nombreUsuario, email, contrasena, dp, rol, esNuevo));
                 } else if ("CUENTA".equals(rol)) {
-                    lista.add(new Cuenta(id, nombreUsuario, email, contrasena, dp, rol));
+                    lista.add(new Cuenta(id, nombreUsuario, email, contrasena, dp, rol, esNuevo));
                 }
-
             }
         } catch (Exception e) {
             System.out.println("❌ Error al listar los usuarios: " + e.getMessage());
-            return null;
+            e.printStackTrace(); // Agregamos esto para ver el error real si ocurre
         }
         return lista;
-
     }
-
 }

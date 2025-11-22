@@ -27,10 +27,11 @@ public class Cuenta extends Usuario {
      * @param contrasena      La clave de acceso de la cuenta.
      * @param datosPersonales Los datos personales asociados a la cuenta.
      * @param rol             Determina si es administrador o cuenta.
+     * @param esNuevo         Indica si el usuario es nuevo o no.
      */
     public Cuenta(int idDB, String nombreUsuario, String email, String contrasena, Datos_Personales datosPersonales,
-            String rol) {
-        super(idDB, nombreUsuario, email, contrasena, datosPersonales, rol);
+            String rol, int esNuevo) {
+        super(idDB, nombreUsuario, email, contrasena, datosPersonales, rol, esNuevo);
     }
 
     /**

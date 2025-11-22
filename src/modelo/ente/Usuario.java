@@ -15,6 +15,7 @@ public abstract class Usuario {
     private String contrasena;
     private Datos_Personales datosPersonales;
     private String rol;
+    private int esNuevo;
 
     /**
      * Constructor vacío.
@@ -31,15 +32,16 @@ public abstract class Usuario {
      * @param contrasena      La clave de acceso del usuario.
      * @param datosPersonales Los datos personales asociados al usuario.
      * @param rol             Determina si un usuario es 'ADMINSITRADOR' o 'CUENTA'.
+     * @param esNuevo         Indica si el usuario es nuevo o no.
      */
-    public Usuario(int idDB, String nombreUsuario, String email, String contrasena, Datos_Personales datosPersonales,
-            String rol) {
+    public Usuario(int idDB, String nombreUsuario, String email, String contrasena, Datos_Personales datosPersonales, String rol, int esNuevo) {
         this.idDB = idDB;
         this.nombreUsuario = nombreUsuario;
         this.email = email;
         this.contrasena = contrasena;
         this.datosPersonales = datosPersonales;
         this.rol = rol;
+        this.esNuevo = esNuevo;
     }
 
     /**
@@ -172,6 +174,14 @@ public abstract class Usuario {
      */
     public void setDatosPersonales(Datos_Personales datosPersonales) {
         this.datosPersonales = datosPersonales;
+    }
+
+    public int getEsNuevo() {
+        return esNuevo;
+    }
+
+    public void setEsNuevo(int esNuevo) {
+        this.esNuevo = esNuevo;
     }
 
     /**

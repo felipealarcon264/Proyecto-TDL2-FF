@@ -156,53 +156,51 @@ public class ReseniaDAOImpl implements ReseniaDAO {
     @Override
     public List<Resenia> devolverListaResenia() {
         List<Resenia> lista = new ArrayList<>();
-        // Consulta optimizada con JOIN para evitar el problema N+1
-        String sql = """
-                SELECT
-                    r.ID AS resenia_id, r.CALIFICACION, r.COMENTARIO, r.APROBADO,
-                    u.ID AS usuario_id, u.NOMBRE_USUARIO, u.EMAIL, u.CONTRASENA, u.ROL,
-                    dp.ID AS dp_id, dp.NOMBRE, dp.APELLIDO, dp.DNI,
-                    p.ID AS pelicula_id, p.TITULO, p.DIRECTOR, p.DURACION, p.RESUMEN, p.GENERO,
-                    p.RATING_PROMEDIO, p.ANIO, p.POSTER
-                    FROM RESENIA r
-                    JOIN USUARIO u ON r.ID_USUARIO = u.ID
-                    JOIN DATOS_PERSONALES dp ON u.ID_DATOS_PERSONALES = dp.ID
-                    JOIN PELICULA p ON r.ID_PELICULA = p.ID;
-                """;
+        String sql = "SELECT " +
+                "r.ID AS resenia_id, r.CALIFICACION, r.COMENTARIO, r.APROBADO, " +
+                "u.ID AS usuario_id, u.NOMBRE_USUARIO, u.EMAIL, u.CONTRASENA, u.ROL, u.ES_NUEVO, " +
+                "dp.ID AS dp_id, dp.NOMBRE, dp.APELLIDO, dp.DNI, " +
+                "p.ID AS pelicula_id, p.TITULO, p.DIRECTOR, p.DURACION, p.RESUMEN, p.GENERO, " +
+                "p.RATING_PROMEDIO, p.ANIO, p.POSTER " +
+                "FROM RESENIA r " +
+                "JOIN USUARIO u ON r.ID_USUARIO = u.ID " +
+                "JOIN DATOS_PERSONALES dp ON u.ID_DATOS_PERSONALES = dp.ID " +
+                "JOIN PELICULA p ON r.ID_PELICULA = p.ID";
 
         try (Connection conn = ConexionDB.conectar();
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                // Reconstruir Datos_Personales
+                // Datos Personales
                 Datos_Personales dp = new Datos_Personales(rs.getInt("dp_id"), rs.getString("NOMBRE"),
                         rs.getString("APELLIDO"), rs.getInt("DNI"));
 
-                // Reconstruir Usuario (Cuenta o Administrador)
-                Usuario usuario = null;
+                // Usuario
+                Usuario usuario;
+                int esNuevo = rs.getInt("ES_NUEVO");
                 if ("CUENTA".equals(rs.getString("ROL"))) {
                     usuario = new modelo.ente.Cuenta(rs.getInt("usuario_id"), rs.getString("NOMBRE_USUARIO"),
-                            rs.getString("EMAIL"), rs.getString("CONTRASENA"), dp, rs.getString("ROL"));
-                } else { // Asumimos que si no es CUENTA, es ADMINISTRADOR
+                            rs.getString("EMAIL"), rs.getString("CONTRASENA"), dp, rs.getString("ROL"), esNuevo);
+                } else {
                     usuario = new modelo.ente.Administrador(rs.getInt("usuario_id"), rs.getString("NOMBRE_USUARIO"),
-                            rs.getString("EMAIL"), rs.getString("CONTRASENA"), dp, rs.getString("ROL"));
+                            rs.getString("EMAIL"), rs.getString("CONTRASENA"), dp, rs.getString("ROL"), esNuevo);
                 }
 
-                // Reconstruir Pelicula
+                // Pelicula
                 Pelicula pelicula = new Pelicula(rs.getInt("pelicula_id"), rs.getString("TITULO"),
                         rs.getString("DIRECTOR"), rs.getInt("DURACION"), rs.getString("RESUMEN"),
                         rs.getString("GENERO"),
                         rs.getDouble("RATING_PROMEDIO"), rs.getInt("ANIO"),
                         rs.getString("POSTER"));
 
-                // Reconstruir Resenia y añadirla a la lista
+                // Resenia
                 lista.add(new Resenia(rs.getInt("resenia_id"), rs.getInt("CALIFICACION"), rs.getString("COMENTARIO"),
                         rs.getInt("APROBADO"), usuario, pelicula));
             }
         } catch (SQLException e) {
-            System.out.println("❌ Error al listar las reseñas: " + e.getMessage());
-            return null;
+            System.out.println("❌ Error CRÍTICO al listar las reseñas: " + e.getMessage());
+            e.printStackTrace(); // Verás el error exacto en la consola
         }
         return lista;
     }
