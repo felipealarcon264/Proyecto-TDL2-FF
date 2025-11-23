@@ -15,33 +15,27 @@ public class ControladorSeleccionOMDb implements ActionListener {
     private VistaSeleccionOMDb vista;
     private Pelicula peliculaElegida; // El resultado final tras elección.
 
-    public ControladorSeleccionOMDb(VistaSeleccionOMDb vista, List<Pelicula> resultados) {
+    // Solo recibe la vista
+    public ControladorSeleccionOMDb(VistaSeleccionOMDb vista) {
         this.vista = vista;
-
-        // Se carga la vista con tarjetas
-        cargarTarjetas(resultados);
 
         // Escuchar los botones principales
         this.vista.getBtnSeleccionar().addActionListener(this);
         this.vista.getBtnCancelar().addActionListener(this);
     }
-
-    private void cargarTarjetas(List<Pelicula> resultados) {
+    // metodo para cargar los resultados (grilla de las pelis)
+    public void mostrarResultados(List<Pelicula> resultados) {
         for (Pelicula peli : resultados) {
-            // Reutilizamos tu componente TarjetaPelicula
             TarjetaPelicula tarjetaPelicula = new TarjetaPelicula(peli);
-
-            // Le añadimos un "escucha" a CADA tarjeta para saber cuándo la clickean
             tarjetaPelicula.addMouseListener(new MouseAdapter() {
                 @Override
-                public void mouseClicked(MouseEvent e) {
+                public void mouseClicked(MouseEvent evento) {
                     seleccionarTarjeta(tarjetaPelicula);
                 }
             });
-
-            // La añadimos a la vista
             vista.agregarTarjeta(tarjetaPelicula);
         }
+        vista.mostrarResultados();
     }
 
     //Lógica cuando el usuario hace clic en una tarjeta.

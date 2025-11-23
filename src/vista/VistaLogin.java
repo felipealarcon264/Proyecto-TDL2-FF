@@ -3,6 +3,7 @@ package vista;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 /**
  * La VISTA (V) del Login.
@@ -18,87 +19,135 @@ public class VistaLogin extends JPanel {
     private JButton botonIngresar;
     private JButton botonRegistrarse;
 
+    private final Color COLOR_FONDO_FORM = Color.BLACK;
+    private final Color COLOR_INPUT = new Color(40, 40, 40);
+    private final Color COLOR_TEXTO = Color.WHITE;
+    private final Color COLOR_ACENTO = new Color(255, 140, 0);
+
     public VistaLogin() {
         // 1 fila con 2 columnas para la imagen y los datos.
         this.setLayout(new GridLayout(1, 2));
-        this.setBackground(Color.DARK_GRAY);
+        this.setBackground(Color.BLACK);
 
         // Panel izquierdo -> Imagen.
-        JPanel panelImagen = new JPanel(new BorderLayout());
-        panelImagen.setBackground(Color.WHITE); // Fondo oscuro
+        // --- PANEL IZQUIERDO (IMAGEN - ESTIRADA AL 100%) ---
+        // Creamos un panel anónimo que sabe pintarse a sí mismo
+        JPanel panelImagen = new JPanel() {
+            // Cargamos la imagen UNA sola vez en memoria
+            private Image imagenFondo;
+            {
+                try {
+                    imagenFondo = new ImageIcon(getClass().getResource("/imagenes/TDL2.png")).getImage();
+                } catch (Exception e) {
+                    imagenFondo = null; // Por si falla
+                }
+                setBackground(Color.BLACK);
+            }
 
-        // Se carga la imagen.
-        JLabel imagen;
-        try {
-            ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/imagenes/TDL2.png"));
-            imagen = new JLabel(iconoOriginal);
-            panelImagen.add(imagen, BorderLayout.CENTER);
-        } catch (Exception e) {
-            imagen = new JLabel("Error al cargar la imagen");
-            imagen.setHorizontalAlignment(SwingConstants.CENTER);
-            panelImagen.add(imagen, BorderLayout.CENTER);
-        }
+            // Sobreescribimos el método de pintado del panel
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // Si la imagen cargó bien, la dibujamos estirada
+                if (imagenFondo != null) {
+                    // g.drawImage(imagen, x, y, ancho_destino, alto_destino, observador)
+                    // Usamos getWidth() y getHeight() para ocupar todo el panel actual
+                    g.drawImage(imagenFondo, 0, 0, getWidth(), getHeight(), this);
+                }
+            }
+        };
+        // Ya no hace falta agregar JLabels ni layouts a este panel. Se pinta solo.
 
         // Lado derecho -> Formulario del login.
         JPanel panelFormulario = new JPanel(new GridLayout(3, 1));
         panelFormulario.setBorder(new EmptyBorder(50, 50, 25, 25)); // Espaciado interno
-        panelFormulario.setBackground(Color.WHITE); // Color fondo
+        panelFormulario.setBackground(COLOR_FONDO_FORM); // Color fondo
 
         // Titulo Iniciar Sesion.
         JLabel etiquetaTitulo = new JLabel("Iniciar Sesión");
-        etiquetaTitulo.setFont(new Font("Arial", Font.BOLD, 50));
+        etiquetaTitulo.setFont(new Font("Segoe UI", Font.BOLD, 40));
+        etiquetaTitulo.setForeground(COLOR_ACENTO);
         etiquetaTitulo.setHorizontalAlignment(SwingConstants.CENTER); // Centramos el texto
 
         // Campo Email y titulo
-        JPanel panelCampos = new JPanel(new GridLayout(2, 1, 1, 1)); // 2 filas, 1 columna
-        panelCampos.setBackground(Color.WHITE);
-        // Parte E-Mail
-        JPanel panelFilaEmail = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0)); // Alineado a la izq.
-        panelFilaEmail.setBackground(Color.WHITE);
+        JPanel panelCampos = new JPanel(new GridLayout(4, 1, 0, 10));
+        panelCampos.setBackground(COLOR_FONDO_FORM);
+        panelCampos.setBorder(new EmptyBorder(20, 0, 20, 0));
+
         JLabel etiquetaEmail = new JLabel("Correo Electrónico:");
-        etiquetaEmail.setFont(new Font("Arial", Font.BOLD, 16));
+        etiquetaEmail.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        etiquetaEmail.setForeground(Color.LIGHT_GRAY);
+
         campoEmail = new JTextField();
-        Dimension tamFijoCampos = new Dimension(250, 30); // Un ancho fijo
-        campoEmail.setPreferredSize(tamFijoCampos);// Tamaño fijo.
-        campoEmail.setMinimumSize(tamFijoCampos);// Tamaño fijo.
-        campoEmail.setMaximumSize(tamFijoCampos);// Tamaño fijo.
-        panelFilaEmail.add(etiquetaEmail);
-        panelFilaEmail.add(campoEmail);
-        // Parte contraseña.
-        JPanel panelFilaPass = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
-        panelFilaPass.setBackground(Color.WHITE);
+        estilizarInput(campoEmail);
+
         JLabel etiquetaPass = new JLabel("Contraseña:");
-        etiquetaPass.setFont(new Font("Arial", Font.BOLD, 16));
+        etiquetaPass.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        etiquetaPass.setForeground(Color.LIGHT_GRAY);
+
         campoPass = new JPasswordField();
-        campoPass.setPreferredSize(tamFijoCampos);// Tamaño fijo.
-        campoPass.setMinimumSize(tamFijoCampos);// Tamaño fijo.
-        campoPass.setMaximumSize(tamFijoCampos);// Tamaño fijo.
-        panelFilaPass.add(etiquetaPass);
-        panelFilaPass.add(campoPass);
-        // Se añaden los campos.
-        panelCampos.add(panelFilaEmail);
-        panelCampos.add(panelFilaPass);
+        estilizarInput(campoPass);
+
+        panelCampos.add(etiquetaEmail);
+        panelCampos.add(campoEmail);
+        panelCampos.add(etiquetaPass);
+        panelCampos.add(campoPass);
 
         // Botones y registros.
         JPanel panelBotones = new JPanel(new GridLayout(3, 1, 10, 1));
-        panelBotones.setBackground(Color.WHITE);
+        panelBotones.setBackground(COLOR_FONDO_FORM);
+
         botonIngresar = new JButton("Ingresar");
+        botonIngresar.setBackground(COLOR_ACENTO);
+        botonIngresar.setForeground(Color.BLACK);
+        botonIngresar.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        botonIngresar.setFocusPainted(false);
+        botonIngresar.setOpaque(true);
+        botonIngresar.setBorderPainted(false);
+        botonIngresar.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+
         JLabel etiquetaRegistro = new JLabel("¿No tienes una cuenta?");
         etiquetaRegistro.setHorizontalAlignment(SwingConstants.CENTER);
+        etiquetaRegistro.setForeground(Color.GRAY);
+
         botonRegistrarse = new JButton("Registrarse ahora");
+        botonRegistrarse.setBackground(COLOR_FONDO_FORM); // Fondo negro
+        botonRegistrarse.setForeground(COLOR_ACENTO); // Texto naranja
+        botonRegistrarse.setOpaque(true);
+        botonRegistrarse.setBorderPainted(false);
+        botonRegistrarse.setBorder(null);
+        botonRegistrarse.setFocusPainted(false);
+        botonRegistrarse.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
         panelBotones.add(botonIngresar);
         panelBotones.add(etiquetaRegistro);
         panelBotones.add(botonRegistrarse);
 
         // Armamos el panel de formulario.
-        panelFormulario.add(etiquetaTitulo, BorderLayout.NORTH);
-        panelFormulario.add(panelCampos, BorderLayout.CENTER);
-        panelFormulario.add(panelBotones, BorderLayout.SOUTH);
+        panelFormulario.add(etiquetaTitulo);
+        panelFormulario.add(panelCampos);
+        panelFormulario.add(panelBotones);
 
         // Se añaden ambas partes del panel.
         this.add(panelImagen);
         this.add(panelFormulario);
 
+    }
+
+    private void estilizarInput(JComponent input) {
+        input.setBackground(COLOR_INPUT);
+        input.setForeground(COLOR_TEXTO);
+        input.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        input.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(new Color(60, 60, 60)),
+                new EmptyBorder(5, 10, 5, 10)
+        ));
+        if (input instanceof JTextField) {
+            JTextField campo = (JTextField) input;
+            // Cursor BLANCO para que se vea en el fondo oscuro
+            campo.setCaretColor(Color.WHITE);
+            campo.getCaret().setBlinkRate(0);
+        }
     }
 
     // Getters and Setters para el uso del controlador.
@@ -136,10 +185,10 @@ public class VistaLogin extends JPanel {
         java.awt.Window window = SwingUtilities.getWindowAncestor(this);
         if (window != null) {
             // Establecemos el tamaño mínimo y máximo para esa ventana
-            Dimension dimensionUnica = new Dimension(1100,659);
+            Dimension dimensionUnica = new Dimension(1100,660);
             window.setMinimumSize(dimensionUnica);
             window.setPreferredSize(dimensionUnica);
-            window.setMaximumSize(dimensionUnica);
+            window.setBackground(Color.BLACK);
         }
     }
 

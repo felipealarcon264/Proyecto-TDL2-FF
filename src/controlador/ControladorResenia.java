@@ -7,7 +7,10 @@ import servicio.ServicioResenia;
 import vista.VistaResenia;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
+import javax.swing.*;
+
+import java.awt.Color;
+import javax.swing.border.Border;
 
 import modelo.catalogo.Contenido;
 import modelo.ente.Usuario;
@@ -50,14 +53,22 @@ public class ControladorResenia {
     }
 
     class BotonesPuntuacion implements ActionListener{
+        // Creo un borde "vacío" o por defecto para cuando no están seleccionados
+        private final Border bordeNormal = UIManager.getBorder("Button.border");
+        private final Border bordeSeleccionado = BorderFactory.createLineBorder(Color.ORANGE, 3);
+
         public void actionPerformed(ActionEvent e) {
-            JButton boton = (JButton) e.getSource();
-            puntuacionActual = Integer.parseInt(boton.getText());
+            JButton botonPresionado = (JButton) e.getSource();
+            puntuacionActual = Integer.parseInt(botonPresionado.getText());
             // Resaltar el botón seleccionado
             for (JButton b : vista.getBotonesPuntuacion()) {
+                b.setBorder(bordeNormal);
                 b.setBackground(null); // Resetear color de todos
+                b.setOpaque(false);
             }
-            boton.setBackground(java.awt.Color.YELLOW); // Resaltar el seleccionado
+            // para enmarcar solo el presionado.
+            botonPresionado.setBorder(bordeSeleccionado);
+            botonPresionado.setOpaque(true);
         }
     }
 

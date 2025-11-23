@@ -28,8 +28,9 @@ public class ServicioDatos_Personales {
      * @param scanner El objeto {@link Scanner} para leer la entrada del usuario.
      * @return Un objeto {@link Datos_Personales} con los datos ingresados, o null
      *         si se cancela la carga.
+     * No se usa para el entregable 3
      */
-    public Datos_Personales cargaDatosPersonales(Scanner scanner) {
+    /*public Datos_Personales cargaDatosPersonales(Scanner scanner) {
         System.out.println("Carga de datos personales: ");
         boolean datosValidos = false;
         String nombre = "";
@@ -86,7 +87,7 @@ public class ServicioDatos_Personales {
         }
         System.out.println("Datos confirmados...");
         return new Datos_Personales(-1, nombre, apellido, dni); // Retorna un id no valido eso se asegura de brindárselo a la base de datos
-    }
+    }*/
 
     /**
      * Solicita al usuario la confirmación de los datos ingresados.

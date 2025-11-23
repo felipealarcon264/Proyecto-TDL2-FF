@@ -80,37 +80,47 @@ public class ControladorLogin implements ActionListener {
                 Aplicacion.mostrarVista("CARGA");
 
                 // 2. Creamos un SwingWorker para hacer el trabajo pesado en otro hilo.
-                SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                SwingWorker<ControladorHome, Void> worker = new SwingWorker<ControladorHome, Void>() {
                     @Override
-                    protected Void doInBackground() throws Exception {
+                    protected ControladorHome doInBackground() throws Exception {
                         // --- INICIO SECCIÓN DE CAMBIO: LÓGICA DE ESPERA ---
 
                         long tiempoInicio = System.currentTimeMillis(); // Tomamos la hora de inicio
 
-                        // A. Tarea Pesada: Cargar el controlador y la DB
-                        new ControladorHome(Aplicacion.vistaHome, servicioPelicula, usuarioLogueado,
+                        // Tarea Pesada: Cargar el controlador y la DB
+                        ControladorHome controladorHome = new ControladorHome(Aplicacion.vistaHome, servicioPelicula, usuarioLogueado,
                                 Aplicacion.ventana);
 
                         long tiempoFin = System.currentTimeMillis();
                         long duracion = tiempoFin - tiempoInicio;
 
-                        // B. Lógica de Espera: Si fue muy rápido, esperamos lo que falta para completar
+                        // Lógica de Espera: Si fue muy rápido, esperamos lo que falta para completar
                         // mínimoTiempo
                         final int mínimoTiempo = 2000; // 2seg
                         if (duracion < mínimoTiempo) {
                             Thread.sleep(mínimoTiempo - duracion);
                         }
-
-                        // --- FIN SECCIÓN DE CAMBIO ---
-                        return null;
+                        return controladorHome;
                     }
 
                     @Override
                     protected void done() {
-                        // ESTO SE EJECUTA DE VUELTA EN EL HILO DE LA INTERFAZ CUANDO doInBackground
-                        // TERMINA
-                        // Ahora que todo está cargado y pasó el tiempo mínimo, mostramos la vista Home.
-                        Aplicacion.mostrarVista("HOME");
+                        try {
+                            // Recuperamos el controlador creado en el hilo de fondo
+                            ControladorHome controladorHome = get();
+
+                            // Cambiamos la vista a HOME
+                            Aplicacion.mostrarVista("HOME");
+
+                            // Pequeño truco: SwingUtilities.invokeLater asegura que el cartel
+                            // salte DESPUÉS de que la interfaz termine de pintarse por completo.
+                            javax.swing.SwingUtilities.invokeLater(() -> {
+                                controladorHome.mostrarBienvenidaSiCorresponde();
+                            });
+
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
                     }
                 };
 

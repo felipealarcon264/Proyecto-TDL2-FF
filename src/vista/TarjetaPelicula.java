@@ -27,7 +27,7 @@ public class TarjetaPelicula extends JPanel {
         this.pelicula = pelicula;
 
         // Configuración del Layout y Borde
-        setLayout(new BorderLayout(5, 5));
+        setLayout(new BorderLayout(0, 0));
         setBorder(bordeNormal); // Borde inicial
         setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambia el cursor a una mano
         setPreferredSize(new Dimension(180, 320)); // Tamaño fijo para la tarjeta
@@ -56,6 +56,8 @@ public class TarjetaPelicula extends JPanel {
 
         JLabel etiquetaTitulo = new JLabel(textoTitulo);
         etiquetaTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+        etiquetaTitulo.setOpaque(true);
+        etiquetaTitulo.setBackground(new Color(40, 40, 40));
         add(etiquetaTitulo, BorderLayout.SOUTH);
 
         // Etiqueta para el Póster (inicialmente con texto de carga)
@@ -114,15 +116,18 @@ public class TarjetaPelicula extends JPanel {
                     // Forma moderna y segura de crear una URL desde un String
                     URL url = new URI(urlPoster).toURL();
                     ImageIcon originalIcon = new ImageIcon(url);
+
+                    if (originalIcon.getIconWidth() <= 0) {
+                        return null; // Esto forzará a cargar la imagen por defecto
+                    }
+
                     // Redimensionamos la imagen para que quepa en la tarjeta
                     Image imagenOriginal = originalIcon.getImage();
-                    // Calculamos el alto manteniendo la proporción (ancho 170px)
-                    int nuevoAncho = 170;
-                    int nuevoAlto = (int) ((double) nuevoAncho / imagenOriginal.getWidth(null)
-                            * imagenOriginal.getHeight(null));
-                    // Evita la altura 0 si la imagen falla
-                    if (nuevoAlto <= 0) nuevoAlto = 250;
-                    Image imagenRedimensionada = imagenOriginal.getScaledInstance(nuevoAncho, nuevoAlto, Image.SCALE_SMOOTH);
+                    // redimensionamos para llenar la tarjeta
+                    int anchoTarjeta = 180;
+                    int altoTarjeta = 250;
+
+                    Image imagenRedimensionada = imagenOriginal.getScaledInstance(anchoTarjeta, altoTarjeta, Image.SCALE_SMOOTH);
                     return new ImageIcon(imagenRedimensionada);
                 } catch (Exception ex) {
                     System.err.println("No se pudo cargar la imagen: " + urlPoster);
@@ -141,17 +146,45 @@ public class TarjetaPelicula extends JPanel {
                         etiquetaPoster.setText(""); // Quitamos el texto "Cargando..."
                     } else {
                         // Si hubo un error, mostramos un mensaje en la tarjeta
-                        etiquetaPoster.setText("<html><center>Error al<br>cargar</center></html>");
-                        etiquetaPoster.setIcon(null);
+                        cargarImagenPorDefecto();
                     }
                 } catch (Exception e) {
-                    etiquetaPoster.setText("<html><center>Error al<br>cargar</center></html>");
-                    etiquetaPoster.setIcon(null);
+                    cargarImagenPorDefecto();
                     e.printStackTrace();
                 }
             }
         };
         // ¡Iniciamos el trabajador!
         worker.execute();
+    }
+    private void cargarImagenPorDefecto() {
+        try {
+            // Buscamos tu imagen de fallback
+            URL urlImg = getClass().getResource("/imagenes/PosterNoEncontrado.png");
+
+            ImageIcon icon;
+            if (urlImg != null) {
+                icon = new ImageIcon(urlImg);
+            } else {
+                // Fallback de seguridad si no encuentra tu archivo PNG
+                etiquetaPoster.setText("Sin Imagen");
+                etiquetaPoster.setForeground(Color.LIGHT_GRAY);
+                return;
+            }
+
+            // --- CORRECCIÓN DE TAMAÑO ---
+            // Antes era 100x100. Ahora lo aumentamos para llenar mejor la tarjeta.
+            // 150 ancho x 200 alto queda mucho mejor centrado sin deformar tanto.
+            Image img = icon.getImage().getScaledInstance(150, 200, Image.SCALE_SMOOTH);
+
+            etiquetaPoster.setIcon(new ImageIcon(img));
+            etiquetaPoster.setText(""); // Borrar texto "Cargando..."
+
+            // Aseguramos que el fondo coincida con la tarjeta para que no se vea el cuadro gris
+            etiquetaPoster.setBackground(Color.DARK_GRAY);
+
+        } catch (Exception e) {
+            etiquetaPoster.setText("Error");
+        }
     }
 }

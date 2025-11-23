@@ -1,12 +1,14 @@
 package servicio;
 
+import dao.FactoryDAO;
 import dao.implementaciones.PeliculaDAOImpl;
+import dao.interfaces.PeliculaDAO;
 import modelo.catalogo.Pelicula;
 
 public class ServicioDetalleOMDb {
-    private PeliculaDAOImpl peliDao;
+    private PeliculaDAO peliDao;
     public ServicioDetalleOMDb() {
-        peliDao = new PeliculaDAOImpl();
+        this.peliDao = FactoryDAO.getPeliculaDAO();
     }
 
     /**
@@ -37,7 +39,7 @@ public class ServicioDetalleOMDb {
 
 
 
-    public PeliculaDAOImpl getPeliDao() {
+    public PeliculaDAO getPeliDao() {
         return peliDao;
     }
 

@@ -1,5 +1,6 @@
 package controlador;
 
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
@@ -87,18 +88,6 @@ public class ControladorHome implements ActionListener {
 
             // 1. Obtener Top 10
             peliculasMostradas = servicioPelicula.obtenerTop10();
-
-            // 2. Mostrar Mensaje de Bienvenida
-            JOptionPane.showMessageDialog(framePrincipal,
-                    "¡Bienvenido a TDL2! 🎬\n\nComo eres nuevo, hemos seleccionado\nlas 10 películas mejor valoradas para ti.\n¡Disfrútalas y califícalas!",
-                    "Bienvenida Especial",
-                    JOptionPane.INFORMATION_MESSAGE);
-
-            // 3. Actualizar usuario en DB para que la próxima vez sea random
-            usuarioLogueado.setEsNuevo(0); // En memoria
-            // Instanciamos el servicio para guardar el cambio en la DB
-            new servicio.ServicioUsuario().actualizarEstadoUsuario(usuarioLogueado);
-
         } else {
             // Si no es nuevo (0), comportamiento normal
             System.out.println("Usuario Recurrente. Mostrando Aleatorias...");
@@ -108,7 +97,19 @@ public class ControladorHome implements ActionListener {
         // Repintamos la vista con la lista obtenida
         repintarPeliculas();
     }
+    public void mostrarBienvenidaSiCorresponde() {
+        if (usuarioLogueado.getEsNuevo() == 1) {
+            // Mostrar Mensaje de Bienvenida
+            JOptionPane.showMessageDialog(framePrincipal,
+                    "¡Bienvenido a TDL2! 🎬\n\nComo eres nuevo, hemos seleccionado\nlas 10 películas mejor valoradas para ti.\n¡Disfrútalas y califícalas!",
+                    "Bienvenida Especial",
+                    JOptionPane.INFORMATION_MESSAGE);
 
+            //Actualizar usuario en BD para que la próxima vez sea random
+            usuarioLogueado.setEsNuevo(0); // En memoria
+            new servicio.ServicioUsuario().actualizarEstadoUsuario(usuarioLogueado); // En BD
+        }
+    }
     /**
      * Limpia la vista y la vuelve a poblar con la lista de películas actual.
      * Se usa para la carga inicial y para cuando se ordena la lista.
@@ -220,10 +221,11 @@ public class ControladorHome implements ActionListener {
 
     private void realizarBusquedaOMDb() {
         String busqueda = vista.getTextoBusqueda();
-        if (busqueda.isEmpty())
-            return;
+        if (busqueda.isEmpty()) return;
 
-        Aplicacion.mostrarVista("CARGA");
+        VistaSeleccionOMDb vistaSeleccionOMDb = new VistaSeleccionOMDb(framePrincipal);
+        ControladorSeleccionOMDb controladorSeleccionOMDb = new ControladorSeleccionOMDb(vistaSeleccionOMDb);
+        vistaSeleccionOMDb.mostrarCarga();
 
         // "WORKER" para buscar en segundo plano.
         SwingWorker<List<Pelicula>, Void> busquedaWorker = new SwingWorker<>() {
@@ -235,49 +237,26 @@ public class ControladorHome implements ActionListener {
 
             @Override
             protected void done() {
-                Aplicacion.mostrarVista("HOME");
-
                 try {
                     List<Pelicula> resultados = get(); // Obtener resultado del hilo
 
                     if (resultados == null || resultados.isEmpty()) {
+                        vistaSeleccionOMDb.dispose();
                         JOptionPane.showMessageDialog(framePrincipal, "No se encontraron películas con ese nombre.");
                         return;
                     }
 
-                    Pelicula peliculaElegida = null;
-
                     // Sí hay muchas en coincidencias
                     if (resultados.size() > 1) {
-                        // Creamos la Vista
-                        vista.VistaSeleccionOMDb vistaSeleccion = new vista.VistaSeleccionOMDb(framePrincipal);
-
-                        // pasamos la vista Y la lista de resultados
-                        controlador.ControladorSeleccionOMDb ctrlSeleccion = new controlador.ControladorSeleccionOMDb(
-                                vistaSeleccion, resultados);
-
-                        vistaSeleccion.setVisible(true); // Modal
-
-                        peliculaElegida = ctrlSeleccion.getResultado();
+                        controladorSeleccionOMDb.mostrarResultados(resultados);
+                    } else {
+                        // si solo hay una coincidencia, cerramos seleccion y vamos a la pantalla de los detalles.
+                        vistaSeleccionOMDb.dispose();
+                        mostrarDetalle(resultados.get(0));
                     }
-
-                    if (peliculaElegida != null) {
-                        // El objeto actual es "ligero", buscamos el detalle completo por ID
-                        String imdbID = peliculaElegida.getResumen(); // Usamos 'resumen' donde guardamos el ID
-
-                        // Llamada directa a API
-                        Pelicula detalleFull = servicioOMDb.obtenerDetallePelicula(imdbID);
-
-                        // Vista y Controlador de Detalle
-                        VistaDetalleOMDb vistaDetalle = new VistaDetalleOMDb(framePrincipal, detalleFull);
-                        new ControladorDetalleOMDb(vistaDetalle, new ServicioDetalleOMDb(), usuarioLogueado,
-                                detalleFull, framePrincipal); // Conecta botón cerrar
-
-                        vistaDetalle.setVisible(true);
-                    }
-
                 } catch (Exception ex) {
                     // Manejo de nuestra excepción personalizada
+                    vistaSeleccionOMDb.dispose();
                     if (ex.getCause() instanceof ErrorApiOMDbException) {
                         JOptionPane.showMessageDialog(framePrincipal, ex.getCause().getMessage(),
                                 "Error De Busqueda 🚨", JOptionPane.ERROR_MESSAGE);
@@ -289,7 +268,22 @@ public class ControladorHome implements ActionListener {
                 }
             }
         };
-
         busquedaWorker.execute(); // ¡Arrancar!
+        // cuando termine de actualizar la ventana el worker
+        vistaSeleccionOMDb.setVisible(true);
+        Pelicula peliulaElegida = controladorSeleccionOMDb.getResultado();
+        if (peliulaElegida != null) mostrarDetalle(peliulaElegida);
+    }
+
+    private void mostrarDetalle(Pelicula peliculaAuxiliar) {
+        try {
+            String imdbID = peliculaAuxiliar.getResumen();
+            Pelicula detalleFull = servicioOMDb.obtenerDetallePelicula(imdbID);
+            VistaDetalleOMDb vistaDetalle = new VistaDetalleOMDb(framePrincipal, detalleFull);
+            new ControladorDetalleOMDb(vistaDetalle, new ServicioDetalleOMDb(), usuarioLogueado, detalleFull, framePrincipal);
+            vistaDetalle.setVisible(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(framePrincipal, "Error al cargar detalle: " + e.getMessage());
+        }
     }
 }
