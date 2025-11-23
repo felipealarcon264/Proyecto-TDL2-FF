@@ -66,6 +66,7 @@ public class VistaHome extends JPanel {
         estilizarBoton(botonBuscar);
         botonBuscar.setBackground(COLOR_ACENTO); // Botón de búsqueda naranja
         botonBuscar.setForeground(Color.BLACK);
+        botonBuscar.setPreferredSize(new Dimension(100, 30));
 
         panelCampoBusqueda.add(campoBusqueda);
         panelCampoBusqueda.add(botonBuscar);
@@ -143,6 +144,7 @@ public class VistaHome extends JPanel {
     public JComboBox<String> getComboOrdenar() { return comboOrdenar; }
     public JButton getBotonMostrarOtras() { return botonMostrarOtras; }
     public JButton getBotonPerfil() { return botonPerfil; }
+
 
     public void limpiarVista() {
         campoBusqueda.setText("");

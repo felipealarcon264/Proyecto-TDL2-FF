@@ -49,7 +49,7 @@ public class ControladorHome implements ActionListener {
         this.vista.getBotonPerfil().addActionListener(this);
         this.vista.getBotonCerrarSesion().addActionListener(this);
         this.vista.getBotonBuscar().addActionListener(this);
-        this.vista.getComboMostrarOtras().addActionListener(this);
+        this.vista.getBotonMostrarOtras().addActionListener(this);
         this.vista.getComboOrdenar().addActionListener(this);
 
         // Actualizamos el nombre de usuario en la vista.
@@ -69,7 +69,7 @@ public class ControladorHome implements ActionListener {
         limpiarListeners(this.vista.getBotonPerfil());
         limpiarListeners(this.vista.getBotonCerrarSesion());
         limpiarListeners(this.vista.getBotonBuscar());
-        limpiarListeners(this.vista.getComboMostrarOtras());
+        limpiarListeners(this.vista.getBotonMostrarOtras());
         limpiarListeners(this.vista.getComboOrdenar());
     }
 
@@ -202,22 +202,9 @@ public class ControladorHome implements ActionListener {
 
         } else if (fuente == vista.getBotonBuscar()) {
             realizarBusquedaOMDb();
-        } else if (fuente == vista.getComboMostrarOtras()) {
-            String opcion = (String) vista.getComboMostrarOtras().getSelectedItem();
-            if (opcion == null || opcion.equals("Mostrar...")) {
-                return; // No hacer nada si es la opción por defecto
-            }
-            switch (opcion) {
-                case "10 Random":
-                    peliculasMostradas = servicioPelicula.obtener10Aleatorias();
-                    break;
-                case "Top 10":
-                    peliculasMostradas = servicioPelicula.obtenerTop10();
-                    break;
-                default:
-                    System.out.println("Opción no reconocida: " + opcion);
-                    return; // No hacer nada si la opción no es reconocida
-            }
+        } else if (fuente == vista.getBotonMostrarOtras()) {
+            System.out.println("Refrescando películas...");
+            peliculasMostradas = servicioPelicula.obtener10Aleatorias();
             repintarPeliculas();
 
         } else if (fuente == vista.getComboOrdenar()) {
