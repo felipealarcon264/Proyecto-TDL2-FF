@@ -73,12 +73,18 @@ public class TarjetaResenia extends JPanel {
         txtComentario.setWrapStyleWord(true);
         txtComentario.setLineWrap(true);
         txtComentario.setEditable(false);
-        txtComentario.setOpaque(false);
-        txtComentario.setForeground(Color.LIGHT_GRAY);
-        txtComentario.setFont(new Font("Segoe UI", Font.ITALIC, 12));
+        txtComentario.setBackground(new Color(40, 40, 40));
+        txtComentario.setForeground(Color.WHITE);
+        txtComentario.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         txtComentario.setBorder(null);
-        
-        this.add(txtComentario, BorderLayout.CENTER);
+
+        // Usamos ScrollPane para asegurar el renderizado
+        JScrollPane scrollComentario = new JScrollPane(txtComentario);
+        scrollComentario.setBorder(null); // Sin bordes
+        scrollComentario.setOpaque(false);
+        scrollComentario.getViewport().setOpaque(false); // Transparente para ver el fondo gris
+
+        panelInfo.add(scrollComentario, BorderLayout.CENTER);
 
         // --- Estado y Botón Eliminar ---
         JPanel panelSur = new JPanel(new BorderLayout());
