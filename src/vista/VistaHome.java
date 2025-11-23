@@ -7,16 +7,16 @@ import javax.swing.border.LineBorder;
 
 public class VistaHome extends JPanel {
 
-    // Componentes que el Controlador necesitará escuchar o leer
     private JTextField campoBusqueda;
     private JButton botonBuscar;
     private JButton botonCerrarSesion;
     private JButton botonMostrarOtras;
-    private JComboBox<String> comboOrdenar; // Nuevo componente para ordenar
+    private JComboBox<String> comboOrdenar;
     private JLabel labelUsuario;
-    private JPanel panelPeliculas; // Acá agregaremos las "tarjetas" de películas dinámicamente
+    private JPanel panelPeliculas;
     private JButton botonPerfil;
 
+    // --- PALETA DE COLORES ---
     private final Color COLOR_FONDO = Color.BLACK;
     private final Color COLOR_BARRA = new Color(15, 15, 15); // Casi negro
     private final Color COLOR_BOTON = new Color(45, 45, 45);
@@ -24,37 +24,38 @@ public class VistaHome extends JPanel {
     private final Color COLOR_ACENTO = new Color(255, 140, 0); // Naranja
 
     public VistaHome() {
-        // Norte para barra, Centro para contenido.
         this.setLayout(new BorderLayout());
-        this.setBackground(COLOR_FONDO);
+        this.setBackground(COLOR_FONDO); // Fondo negro general
 
         // --- PANEL SUPERIOR ---
-        // Logo (West) - Centro (Center) - Usuario y Salir (East)
         JPanel panelSuperior = new JPanel(new BorderLayout(20, 0));
-        panelSuperior.setBackground(COLOR_BARRA); // Gris oscuro
-        panelSuperior.setBorder(new EmptyBorder(10, 20, 10, 20)); // Padding
-        panelSuperior.setPreferredSize(new Dimension(0, 85)); // Alto fijo
-        // -Logo-
+        panelSuperior.setBackground(COLOR_BARRA);
+        panelSuperior.setBorder(new EmptyBorder(10, 20, 10, 20));
+        panelSuperior.setPreferredSize(new Dimension(0, 85));
+
+        // - Logo -
         JLabel labelLogo = new JLabel("TDL2");
         labelLogo.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        labelLogo.setForeground(COLOR_ACENTO); // Estilo tipo Netflix
-        // -Centro-
-        JPanel panelCentral = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
-        panelCentral.setOpaque(false); // Para que se vea el fondo del panel superior
+        labelLogo.setForeground(COLOR_ACENTO); // Naranja
 
-        // Panel para Ordenar y Refrescar (vertical)
+        // - Centro (Búsqueda y Filtros) -
+        JPanel panelCentral = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        panelCentral.setOpaque(false);
+
+        // Panel Opciones (Ordenar / Ver otras)
         JPanel panelOpciones = new JPanel(new GridLayout(2, 1, 0, 5));
         panelOpciones.setOpaque(false);
 
         comboOrdenar = new JComboBox<>(new String[] { "Ordenar por...", "Título (A-Z)", "Género (A-Z)" });
         estilizarCombo(comboOrdenar);
+
         botonMostrarOtras = new JButton("Ver otras 10");
         estilizarBoton(botonMostrarOtras);
 
-        panelOpciones.add(botonMostrarOtras);
         panelOpciones.add(comboOrdenar);
+        panelOpciones.add(botonMostrarOtras);
 
-        // Panel para el campo de búsqueda y botón
+        // Panel Búsqueda
         JPanel panelCampoBusqueda = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         panelCampoBusqueda.setOpaque(false);
 
@@ -63,19 +64,16 @@ public class VistaHome extends JPanel {
 
         botonBuscar = new JButton("Buscar");
         estilizarBoton(botonBuscar);
-        botonBuscar.setBackground(COLOR_ACENTO);
+        botonBuscar.setBackground(COLOR_ACENTO); // Botón de búsqueda naranja
         botonBuscar.setForeground(Color.BLACK);
-        botonBuscar.setPreferredSize(new Dimension(100, 30));
 
         panelCampoBusqueda.add(campoBusqueda);
         panelCampoBusqueda.add(botonBuscar);
 
-        // Agregamos los sub-paneles
         panelCentral.add(panelOpciones);
         panelCentral.add(panelCampoBusqueda);
 
-        // -Usuario y Salir-
-        // Usamos GridLayout de 3 filas para: Hola, Perfil, Salir
+        // - Usuario y Salir -
         JPanel panelUsuario = new JPanel(new GridLayout(3, 1, 0, 5));
         panelUsuario.setOpaque(false);
 
@@ -84,41 +82,38 @@ public class VistaHome extends JPanel {
         labelUsuario.setFont(new Font("Segoe UI", Font.BOLD, 14));
         labelUsuario.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        botonPerfil = new JButton("Mi Perfil"); // Creamos el botón
+        botonPerfil = new JButton("Mi Perfil");
         estilizarBoton(botonPerfil);
 
         botonCerrarSesion = new JButton("Salir");
         estilizarBoton(botonCerrarSesion);
-        botonCerrarSesion.setBackground(new Color(180, 50, 50));
+        botonCerrarSesion.setBackground(new Color(180, 50, 50)); // Rojo oscuro para salir
         botonCerrarSesion.setBorder(new LineBorder(new Color(100, 0, 0)));
 
         panelUsuario.add(labelUsuario);
-        panelUsuario.add(botonPerfil); // Agregamos Perfil
-        panelUsuario.add(botonCerrarSesion); // Agregamos Salir
+        panelUsuario.add(botonPerfil);
+        panelUsuario.add(botonCerrarSesion);
 
-        // Agregamos al panelSuperior
         panelSuperior.add(labelLogo, BorderLayout.WEST);
         panelSuperior.add(panelCentral, BorderLayout.CENTER);
         panelSuperior.add(panelUsuario, BorderLayout.EAST);
 
-        // Agregamos el panelSuperior al Norte de la vista principal
         this.add(panelSuperior, BorderLayout.NORTH);
 
-        // --- PANEL CENTRAL (Peliculas) ---
-        // Creamos el panel que tendrá la grilla
+        // --- PANEL CENTRAL (Grilla Peliculas) ---
         panelPeliculas = new JPanel(new GridLayout(0, 4, 15, 15));
-        panelPeliculas.setBackground(COLOR_FONDO);
+        panelPeliculas.setBackground(COLOR_FONDO); // Fondo negro
         panelPeliculas.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        JScrollPane scrollPane = new JScrollPane(panelPeliculas);// Envolvemos el panel en un Scroll.
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Velocidad de scroll
-        scrollPane.setBorder(null); // Quitar borde del scroll
-        scrollPane.getViewport().setBackground(COLOR_FONDO);
+        JScrollPane scrollPane = new JScrollPane(panelPeliculas);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.setBorder(null);
+        scrollPane.getViewport().setBackground(COLOR_FONDO); // Fondo negro también en el scroll
 
-        // Agregamos el Scroll al Centro
         this.add(scrollPane, BorderLayout.CENTER);
     }
 
+    // --- MÉTODOS DE ESTILO ---
     private void estilizarBoton(JButton btn) {
         btn.setBackground(COLOR_BOTON);
         btn.setForeground(COLOR_TEXTO);
@@ -135,61 +130,33 @@ public class VistaHome extends JPanel {
         txt.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     }
 
-    private void estilizarCombo(JComboBox<String> comboBox) {
-        comboBox.setBackground(Color.WHITE);
-        comboBox.setForeground(Color.BLACK);
-        comboBox.setFocusable(false);
-        comboBox.setBorder(BorderFactory.createLineBorder(new Color(80, 80, 80)));
+    private void estilizarCombo(JComboBox<String> cmb) {
+        cmb.setBackground(COLOR_BOTON);
+        cmb.setForeground(COLOR_TEXTO);
+        cmb.setFocusable(false);
     }
 
-    // --- MÉTODOS PARA EL CONTROLADOR ---
+    // --- GETTERS Y MÉTODOS PÚBLICOS ---
+    public JButton getBotonCerrarSesion() { return botonCerrarSesion; }
+    public JButton getBotonBuscar() { return botonBuscar; }
+    public String getTextoBusqueda() { return campoBusqueda.getText(); }
+    public JComboBox<String> getComboOrdenar() { return comboOrdenar; }
+    public JButton getBotonMostrarOtras() { return botonMostrarOtras; }
+    public JButton getBotonPerfil() { return botonPerfil; }
 
-    public JButton getBotonCerrarSesion() {
-        return botonCerrarSesion;
-    }
-
-    public JButton getBotonBuscar() {
-        return botonBuscar;
-    }
-
-    public String getTextoBusqueda() {
-        return campoBusqueda.getText();
-    }
-
-    public JComboBox<String> getComboOrdenar() {
-        return comboOrdenar;
-    }
-
-    public JButton getBotonMostrarOtras() {
-        return botonMostrarOtras;
-    }
-
-    public JButton getBotonPerfil() {
-    return botonPerfil;
-}
-    // Metodo para limpiar la vista.
     public void limpiarVista() {
         campoBusqueda.setText("");
-        panelPeliculas.removeAll(); // Borra todas las películas viejas
-        panelPeliculas.revalidate(); // Refresca el panel
+        panelPeliculas.removeAll();
+        panelPeliculas.revalidate();
         panelPeliculas.repaint();
     }
 
-    /**
-     * Crea una tarjeta para mostrar la pelicula y la agrega a la grilla.
-     * El controlador crea la tarjeta y la pasa a este método para ser añadida.
-     */
     public void agregarTarjetaPelicula(TarjetaPelicula tarjeta) {
         panelPeliculas.add(tarjeta);
-        panelPeliculas.revalidate(); // Avisamos al layout manager que hay un nuevo componente
-        panelPeliculas.repaint(); // Repintamos el panel
+        panelPeliculas.revalidate();
+        panelPeliculas.repaint();
     }
 
-    /**
-     * Actualiza el nombre de usuario que se muestra en la barra superior.
-     *
-     * @param nombre El nombre de usuario a mostrar.
-     */
     public void setNombreUsuario(String nombre) {
         labelUsuario.setText("Hola, " + nombre);
     }
