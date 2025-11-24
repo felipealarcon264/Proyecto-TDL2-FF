@@ -1,7 +1,6 @@
 package servicio;
 
 import dao.FactoryDAO;
-import modelo.ente.Datos_Personales;
 import dao.interfaces.Datos_PersonalesDAO;
 import java.util.Scanner;
 

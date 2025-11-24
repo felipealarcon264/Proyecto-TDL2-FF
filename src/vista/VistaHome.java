@@ -132,8 +132,7 @@ public class VistaHome extends JPanel {
     }
 
     private void estilizarCombo(JComboBox<String> cmb) {
-        cmb.setBackground(COLOR_BOTON);
-        cmb.setForeground(COLOR_TEXTO);
+        cmb.setBackground(Color.WHITE);
         cmb.setFocusable(false);
     }
 

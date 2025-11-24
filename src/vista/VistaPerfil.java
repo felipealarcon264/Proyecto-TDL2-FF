@@ -16,7 +16,6 @@ public class VistaPerfil extends JPanel {
     private final Color COLOR_FONDO = Color.BLACK;
     private final Color COLOR_HEADER = new Color(20, 20, 20); // Gris casi negro
     private final Color COLOR_TEXTO = Color.WHITE;
-    private final Color COLOR_ACENTO = new Color(255, 140, 0); // Naranja
 
     public VistaPerfil() {
         setLayout(new BorderLayout());
@@ -39,7 +38,7 @@ public class VistaPerfil extends JPanel {
         JLabel lblIcono = new JLabel();
         // Intenta cargar tu icono de usuario si tienes uno, o usa uno por defecto
         // lblIcono.setIcon(new ImageIcon(...)); 
-        lblIcono.setText("👤"); // Emoji simple si no hay icono
+        
         lblIcono.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 65));
         lblIcono.setForeground(Color.WHITE);
         

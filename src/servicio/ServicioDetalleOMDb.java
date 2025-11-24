@@ -1,7 +1,6 @@
 package servicio;
 
 import dao.FactoryDAO;
-import dao.implementaciones.PeliculaDAOImpl;
 import dao.interfaces.PeliculaDAO;
 import modelo.catalogo.Pelicula;
 
