@@ -1,15 +1,16 @@
 package vista;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import modelo.catalogo.Pelicula;
-
 
 import java.awt.*;
 
 public class VistaDetalleOMDb extends JDialog {
     private JButton botonCerrar;
     private JButton botonMiResenia;
+    private final Color COLOR_ACENTO = new Color(206, 80, 84);//Distintivo de la app.
 
     public VistaDetalleOMDb(Frame propietario, Pelicula pelicula) {
         super(propietario, "Detalle de la Película", true);
@@ -18,7 +19,7 @@ public class VistaDetalleOMDb extends JDialog {
         setLayout(new BorderLayout());
         getContentPane().setBackground(new Color(30, 30, 30));
 
-        //---Seccion poster con boton Mi reseña---
+        // ---Seccion poster con boton Mi reseña---
         JPanel panelIzq = new JPanel();
         panelIzq.setBackground(new Color(30, 30, 30));
         panelIzq.setLayout(new BorderLayout());
@@ -51,7 +52,7 @@ public class VistaDetalleOMDb extends JDialog {
         panelInformacion.setBorder(new EmptyBorder(20, 10, 20, 20));
 
         JLabel labelTitulo = new JLabel("<html><h1>" + pelicula.getTitulo() + "</h1></html>");
-        labelTitulo.setForeground(Color.ORANGE);
+        labelTitulo.setForeground(COLOR_ACENTO);
 
         JLabel labelDatos = new JLabel("<html><p><b>Año:</b> " + pelicula.getAnio() +
                 "<br><b>Duración:</b> " + pelicula.getDuracion() + " min" +
@@ -75,7 +76,11 @@ public class VistaDetalleOMDb extends JDialog {
         panelInformacion.add(Box.createRigidArea(new Dimension(0, 10)));
         panelInformacion.add(labelDatos);
         panelInformacion.add(Box.createRigidArea(new Dimension(0, 15)));
-        panelInformacion.add(new JLabel("Sinopsis:") {{ setForeground(Color.ORANGE); }});
+        panelInformacion.add(new JLabel("Sinopsis:") {
+            {
+                setForeground(Color.ORANGE);
+            }
+        });
         panelInformacion.add(new JScrollPane(txtResumen));
 
         add(panelInformacion, BorderLayout.CENTER);
@@ -98,5 +103,4 @@ public class VistaDetalleOMDb extends JDialog {
         return botonMiResenia;
     }
 
-    
 }

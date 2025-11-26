@@ -15,7 +15,7 @@ public class VistaRegistro extends JPanel {
     private final Color COLOR_BG = Color.BLACK;
     private final Color COLOR_INPUT = new Color(40, 40, 40);
     private final Color COLOR_TEXTO = Color.WHITE;
-    private final Color COLOR_ACENTO = new Color(255, 140, 0);
+    private final Color COLOR_ACENTO = new Color(206, 80, 84);//Distintivo de app.
 
     public VistaRegistro() {
         // 1. Layout Principal: 2 Columnas

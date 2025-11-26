@@ -21,7 +21,7 @@ public class VistaHome extends JPanel {
     private final Color COLOR_BARRA = new Color(15, 15, 15); // Casi negro
     private final Color COLOR_BOTON = new Color(45, 45, 45);
     private final Color COLOR_TEXTO = Color.WHITE;
-    private final Color COLOR_ACENTO = new Color(255, 140, 0); // Naranja
+    private final Color COLOR_ACENTO = new Color(206, 80, 84);//Distintivo de la app.
 
     public VistaHome() {
         this.setLayout(new BorderLayout());

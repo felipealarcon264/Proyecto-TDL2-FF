@@ -22,7 +22,7 @@ public class VistaLogin extends JPanel {
     private final Color COLOR_FONDO_FORM = Color.BLACK;
     private final Color COLOR_INPUT = new Color(40, 40, 40);
     private final Color COLOR_TEXTO = Color.WHITE;
-    private final Color COLOR_ACENTO = new Color(255, 140, 0);
+    private final Color COLOR_ACENTO = new Color(206, 80, 84);//Distintivo de app.
 
     public VistaLogin() {
         // 1 fila con 2 columnas para la imagen y los datos.

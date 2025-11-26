@@ -15,20 +15,21 @@ public class TarjetaResenia extends JPanel {
     private Resenia resenia;
     private JButton botonEliminar;
     private JLabel labelPoster;
+    private final Color COLOR_TITULO = new Color(206, 80, 84);//Distintivo de la app.
+    private final Color COLOR_FONDO = new Color(40, 40, 40);
 
     public TarjetaResenia(Resenia resenia) {
         this.resenia = resenia;
 
         // Configuración visual de la tarjeta
         this.setLayout(new BorderLayout(15, 15));
-        this.setBackground(new Color(40, 40, 40)); // Gris un poco más claro que el fondo
+        this.setBackground(COLOR_FONDO); // Gris un poco más claro que el fondo
         this.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(new Color(60, 60, 60),1),
-                new EmptyBorder(10, 10, 10, 10)
-        ));
+                new LineBorder(new Color(60, 60, 60), 1),
+                new EmptyBorder(10, 10, 10, 10)));
         // Altura fija para que la imagen se vea bien, aprox 140px
 
-        this.setPreferredSize(new Dimension(0,140));
+        this.setPreferredSize(new Dimension(0, 140));
         this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 140));
 
         // diseño para el poster
@@ -40,7 +41,7 @@ public class TarjetaResenia extends JPanel {
         labelPoster.setOpaque(true);
         labelPoster.setBackground(new Color(30, 30, 30));
 
-        //Cargamos la imagen
+        // Cargamos la imagen
         if (resenia.getContenido() instanceof Pelicula) {
             Pelicula peli = (Pelicula) resenia.getContenido();
             cargarImagenMiniatura(peli.getPoster());
@@ -57,7 +58,7 @@ public class TarjetaResenia extends JPanel {
 
         JLabel lblPelicula = new JLabel(resenia.getContenido().getTitulo());
         lblPelicula.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        lblPelicula.setForeground(new Color(255, 140, 0)); // Naranja TDL2
+        lblPelicula.setForeground(COLOR_TITULO);
 
         JLabel lblRatingUsuario = new JLabel("Tu nota: " + resenia.getCalificacion() + "/10 ⭐");
         lblRatingUsuario.setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -93,7 +94,7 @@ public class TarjetaResenia extends JPanel {
         // Estado (Aprobado/Pendiente)
         String estadoTexto = (resenia.getAprobado() == 1) ? "✅ Publicada" : "⏳ Pendiente de revisión";
         Color estadoColor = (resenia.getAprobado() == 1) ? new Color(100, 200, 100) : Color.GRAY;
-        
+
         JLabel lblEstado = new JLabel(estadoTexto);
         lblEstado.setForeground(estadoColor);
         lblEstado.setFont(new Font("Segoe UI", Font.PLAIN, 11));
@@ -105,8 +106,8 @@ public class TarjetaResenia extends JPanel {
         botonEliminar.setFocusPainted(false);
         botonEliminar.setFont(new Font("Segoe UI", Font.BOLD, 11));
         botonEliminar.setPreferredSize(new Dimension(100, 25));
-        botonEliminar.setBorder(BorderFactory.createLineBorder(new Color(100, 30 ,30)));
-        
+        botonEliminar.setBorder(BorderFactory.createLineBorder(new Color(100, 30, 30)));
+
         // Guardamos el ID de la reseña en el botón para el controlador
         botonEliminar.putClientProperty("ID_RESENIA", resenia.getIdDB());
 
@@ -116,20 +117,24 @@ public class TarjetaResenia extends JPanel {
         this.add(panelSur, BorderLayout.SOUTH);
         this.add(panelInfo, BorderLayout.CENTER);
     }
+
     // logica para la imagen en miniatura por Gemini.
     private void cargarImagenMiniatura(String urlPoster) {
         SwingWorker<ImageIcon, Void> worker = new SwingWorker<>() {
             @Override
             protected ImageIcon doInBackground() throws Exception {
                 try {
-                    if (urlPoster == null || urlPoster.isEmpty() || urlPoster.equals("N/A")) return null;
+                    if (urlPoster == null || urlPoster.isEmpty() || urlPoster.equals("N/A"))
+                        return null;
                     URL url = new URI(urlPoster).toURL();
                     ImageIcon originalIcon = new ImageIcon(url);
                     Image imagenOriginal = originalIcon.getImage();
 
                     // Escalamos a 80x120 (Proporción póster pequeño)
                     return new ImageIcon(imagenOriginal.getScaledInstance(80, 120, Image.SCALE_SMOOTH));
-                } catch (Exception e) { return null; }
+                } catch (Exception e) {
+                    return null;
+                }
             }
 
             @Override
@@ -141,7 +146,9 @@ public class TarjetaResenia extends JPanel {
                     } else {
                         cargarImagenPorDefecto();
                     }
-                } catch (Exception e) { cargarImagenPorDefecto(); }
+                } catch (Exception e) {
+                    cargarImagenPorDefecto();
+                }
             }
         };
         worker.execute();
@@ -153,7 +160,8 @@ public class TarjetaResenia extends JPanel {
             URL urlDefault = getClass().getResource("/imagenes/PosterNoEncontrado.png");
             if (urlDefault != null) {
                 ImageIcon icono = new ImageIcon(urlDefault);
-                Image imagen = icono.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH); // Un poco más chico si es icono
+                Image imagen = icono.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH); // Un poco más chico si
+                                                                                               // es icono
                 labelPoster.setIcon(new ImageIcon(imagen));
             } else {
                 labelPoster.setText("Sin imagen");
@@ -163,6 +171,7 @@ public class TarjetaResenia extends JPanel {
             labelPoster.setText("Error");
         }
     }
+
     public JButton getBotonEliminar() {
         return botonEliminar;
     }

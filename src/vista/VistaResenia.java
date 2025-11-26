@@ -33,9 +33,11 @@ public class VistaResenia extends JDialog {
     private final Color COLOR_PANEL_TEXTO = new Color(20, 20, 20); // Gris muy oscuro
     private final Color COLOR_BOTON = new Color(45, 45, 45);
     private final Color COLOR_TEXTO = Color.WHITE;
-    private final Color COLOR_ACENTO = new Color(255, 140, 0); // Naranja oscuro
+    private final Color COLOR_ACENTO = new Color(206, 80, 84);//Distintivo de la app.
+
     /**
      * Constructor que inicializa la vista de la reseña.
+     * 
      * @param owner El Frame padre sobre el cual este diálogo será modal.
      */
     public VistaResenia(Frame owner) {
@@ -129,8 +131,9 @@ public class VistaResenia extends JDialog {
         txtComentario.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         JScrollPane scrollComentario = new JScrollPane(txtComentario);
-        scrollComentario.setBorder(new LineBorder(new Color(60,60,60))); // Borde sutil
-        // Truco para que la barra de scroll sea oscura (depende del LookAndFeel, pero ayuda)
+        scrollComentario.setBorder(new LineBorder(new Color(60, 60, 60))); // Borde sutil
+        // Truco para que la barra de scroll sea oscura (depende del LookAndFeel, pero
+        // ayuda)
         scrollComentario.getViewport().setBackground(COLOR_PANEL_TEXTO);
         panelPrincipal.add(scrollComentario);
 
@@ -140,7 +143,7 @@ public class VistaResenia extends JDialog {
         btnGuardar = new JButton("PUBLICAR RESEÑA");
         estilizarBoton(btnGuardar);
         btnGuardar.setBackground(COLOR_ACENTO); // Botón Naranja
-        btnGuardar.setForeground(Color.BLACK);  // Texto Negro
+        btnGuardar.setForeground(Color.BLACK); // Texto Negro
         btnGuardar.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnGuardar.setPreferredSize(new Dimension(200, 40));
         btnGuardar.setMaximumSize(new Dimension(200, 40));
@@ -160,16 +163,19 @@ public class VistaResenia extends JDialog {
         boton.setBackground(COLOR_BOTON);
         boton.setForeground(COLOR_TEXTO);
         boton.setFocusPainted(false); // Quita el recuadro de foco al hacer clic
-        boton.setBorder(BorderFactory.createLineBorder(new Color(80,80,80))); // Borde plano
+        boton.setBorder(BorderFactory.createLineBorder(new Color(80, 80, 80))); // Borde plano
         boton.setContentAreaFilled(true);
         boton.setOpaque(true);
     }
+
     /**
      * Carga los datos de una película en la vista.
+     * 
      * @param pelicula La película a mostrar.
      */
     public void cargarDatosPelicula(Pelicula pelicula) {
-        if (pelicula == null) return;
+        if (pelicula == null)
+            return;
 
         lblTitulo.setText(pelicula.getTitulo());
         lblRatingPromedio.setText(String.format("Rating Promedio: %.1f/10", pelicula.getRatingPromedio()));
@@ -187,6 +193,7 @@ public class VistaResenia extends JDialog {
 
     /**
      * Carga una imagen desde una URL en segundo plano y la establece en lblPoster.
+     * 
      * @param urlPoster La URL de la imagen a cargar.
      */
     private void cargarImagen(String urlPoster) {
@@ -199,8 +206,11 @@ public class VistaResenia extends JDialog {
                     Image imagenOriginal = originalIcon.getImage();
                     // Redimensionar a 180x270
                     return new ImageIcon(imagenOriginal.getScaledInstance(180, 270, Image.SCALE_SMOOTH));
-                } catch (Exception e) { return null; }
+                } catch (Exception e) {
+                    return null;
+                }
             }
+
             @Override
             protected void done() {
                 try {
@@ -209,7 +219,8 @@ public class VistaResenia extends JDialog {
                         lblPoster.setIcon(imagen);
                         lblPoster.setText("");
                     }
-                } catch (Exception e) { }
+                } catch (Exception e) {
+                }
             }
         };
         worker.execute();
