@@ -115,7 +115,7 @@ public class ControladorLogin implements ActionListener {
                             // Pequeño truco: SwingUtilities.invokeLater asegura que el cartel
                             // salte DESPUÉS de que la interfaz termine de pintarse por completo.
                             javax.swing.SwingUtilities.invokeLater(() -> {
-                                controladorHome.mostrarBienvenidaSiCorresponde();
+                                controladorHome.mostrarBienvenidaUsuarioNuevo();
                             });
 
                         } catch (Exception ex) {

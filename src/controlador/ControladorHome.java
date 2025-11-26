@@ -48,7 +48,7 @@ public class ControladorHome implements ActionListener {
         this.vista.getBotonPerfil().addActionListener(this);
         this.vista.getBotonCerrarSesion().addActionListener(this);
         this.vista.getBotonBuscar().addActionListener(this);
-        this.vista.getBotonMostrarOtras().addActionListener(this);
+        this.vista.getComboMostrarOtras().addActionListener(this);
         this.vista.getComboOrdenar().addActionListener(this);
 
         // Actualizamos el nombre de usuario en la vista.
@@ -68,7 +68,7 @@ public class ControladorHome implements ActionListener {
         limpiarListeners(this.vista.getBotonPerfil());
         limpiarListeners(this.vista.getBotonCerrarSesion());
         limpiarListeners(this.vista.getBotonBuscar());
-        limpiarListeners(this.vista.getBotonMostrarOtras());
+        limpiarListeners(this.vista.getComboMostrarOtras());
         limpiarListeners(this.vista.getComboOrdenar());
     }
 
@@ -102,7 +102,8 @@ public class ControladorHome implements ActionListener {
         // Repintamos la vista con la lista obtenida
         repintarPeliculas();
     }
-    public void mostrarBienvenidaSiCorresponde() {
+
+    public void mostrarBienvenidaUsuarioNuevo() {
         if (usuarioLogueado.getEsNuevo() == 1) {
             // Mostrar Mensaje de Bienvenida
             JOptionPane.showMessageDialog(framePrincipal,
@@ -110,17 +111,18 @@ public class ControladorHome implements ActionListener {
                     "Bienvenida Especial",
                     JOptionPane.INFORMATION_MESSAGE);
 
-            //Actualizar usuario en BD para que la próxima vez sea random
+            // Actualizar usuario en BD para que la próxima vez sea random
             usuarioLogueado.setEsNuevo(0); // En memoria
             new servicio.ServicioUsuario().actualizarEstadoUsuario(usuarioLogueado); // En BD
         }
     }
+
     /**
      * Limpia la vista y la vuelve a poblar con la lista de películas actual.
      * Se usa para la carga inicial y para cuando se ordena la lista.
      */
     private void repintarPeliculas() {
-        vista.limpiarVista(); // Borra las tarjetas anteriores
+        vista.limpiarVistaHome(); // Borra las tarjetas anteriores
 
         // Mandamos las películas a la vista
         for (Pelicula pelicula : peliculasMostradas) {
@@ -201,11 +203,25 @@ public class ControladorHome implements ActionListener {
 
         } else if (fuente == vista.getBotonBuscar()) {
             realizarBusquedaOMDb();
-        } else if (fuente == vista.getBotonMostrarOtras()) {
-            System.out.println("Refrescando películas...");
-            peliculasMostradas = servicioPelicula.obtener10Aleatorias();
-            repintarPeliculas();
-
+        } else if (fuente == vista.getComboMostrarOtras()) {
+            String opcion = (String) vista.getComboMostrarOtras().getSelectedItem();
+            if (opcion == null || opcion.equals("Mostrar otras...")) {
+                System.out.println("Otrasss");
+                return; // No hacer nada si es la opción por defecto
+            }
+            switch (opcion) {
+                case "Top 10":
+                    peliculasMostradas = servicioPelicula.obtenerTop10();
+                    repintarPeliculas();
+                    break;
+                case "10 random":
+                    peliculasMostradas = servicioPelicula.obtener10Aleatorias();
+                    repintarPeliculas();
+                    break;
+                default:
+                    System.out.println("Opción no reconocida: " + opcion);
+                    return; // No hacer nada si la opción no es reconocida
+            }
         } else if (fuente == vista.getComboOrdenar()) {
             // Lógica para ordenar la lista
             String opcion = (String) vista.getComboOrdenar().getSelectedItem();
@@ -216,21 +232,23 @@ public class ControladorHome implements ActionListener {
             switch (opcion) {
                 case "Título (A-Z)":
                     peliculasMostradas.sort(new ComparadorPeliculaPorTitulo());
+                    repintarPeliculas();
                     break;
                 case "Género (A-Z)":
                     peliculasMostradas.sort(new ComparadorPeliculaPorGenero());
+                    repintarPeliculas();
                     break;
                 default:
                     System.out.println("Opción no reconocida: " + opcion);
                     return; // No hacer nada si la opción no es reconocida
             }
-            repintarPeliculas(); // Volvemos a pintar la vista con la lista ya ordenada
         }
     }
 
     private void realizarBusquedaOMDb() {
         String busqueda = vista.getTextoBusqueda();
-        if (busqueda.isEmpty()) return;
+        if (busqueda.isEmpty())
+            return;
 
         VistaSeleccionOMDb vistaSeleccionOMDb = new VistaSeleccionOMDb(framePrincipal);
         ControladorSeleccionOMDb controladorSeleccionOMDb = new ControladorSeleccionOMDb(vistaSeleccionOMDb);
@@ -259,7 +277,8 @@ public class ControladorHome implements ActionListener {
                     if (resultados.size() > 1) {
                         controladorSeleccionOMDb.mostrarResultados(resultados);
                     } else {
-                        // si solo hay una coincidencia, cerramos seleccion y vamos a la pantalla de los detalles.
+                        // si solo hay una coincidencia, cerramos seleccion y vamos a la pantalla de los
+                        // detalles.
                         vistaSeleccionOMDb.dispose();
                         mostrarDetalle(resultados.get(0));
                     }
@@ -281,7 +300,8 @@ public class ControladorHome implements ActionListener {
         // cuando termine de actualizar la ventana el worker
         vistaSeleccionOMDb.setVisible(true);
         Pelicula peliulaElegida = controladorSeleccionOMDb.getResultado();
-        if (peliulaElegida != null) mostrarDetalle(peliulaElegida);
+        if (peliulaElegida != null)
+            mostrarDetalle(peliulaElegida);
     }
 
     private void mostrarDetalle(Pelicula peliculaAuxiliar) {
@@ -289,7 +309,8 @@ public class ControladorHome implements ActionListener {
             String imdbID = peliculaAuxiliar.getResumen();
             Pelicula detalleFull = servicioOMDb.obtenerDetallePelicula(imdbID);
             VistaDetalleOMDb vistaDetalle = new VistaDetalleOMDb(framePrincipal, detalleFull);
-            new ControladorDetalleOMDb(vistaDetalle, new ServicioDetalleOMDb(), usuarioLogueado, detalleFull, framePrincipal);
+            new ControladorDetalleOMDb(vistaDetalle, new ServicioDetalleOMDb(), usuarioLogueado, detalleFull,
+                    framePrincipal);
             vistaDetalle.setVisible(true);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(framePrincipal, "Error al cargar detalle: " + e.getMessage());

@@ -10,7 +10,7 @@ public class VistaHome extends JPanel {
     private JTextField campoBusqueda;
     private JButton botonBuscar;
     private JButton botonCerrarSesion;
-    private JButton botonMostrarOtras;
+    private JComboBox<String> comboMostrarOtras;
     private JComboBox<String> comboOrdenar;
     private JLabel labelUsuario;
     private JPanel panelPeliculas;
@@ -49,11 +49,11 @@ public class VistaHome extends JPanel {
         comboOrdenar = new JComboBox<>(new String[] { "Ordenar por...", "Título (A-Z)", "Género (A-Z)" });
         estilizarCombo(comboOrdenar);
 
-        botonMostrarOtras = new JButton("Ver otras 10");
-        estilizarBoton(botonMostrarOtras);
+        comboMostrarOtras = new JComboBox<>(new String[] { "Mostrar otras...", "Top 10", "10 random" });
+        estilizarCombo(comboMostrarOtras);
 
         panelOpciones.add(comboOrdenar);
-        panelOpciones.add(botonMostrarOtras);
+        panelOpciones.add(comboMostrarOtras);
 
         // Panel Búsqueda
         JPanel panelCampoBusqueda = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
@@ -137,15 +137,31 @@ public class VistaHome extends JPanel {
     }
 
     // --- GETTERS Y MÉTODOS PÚBLICOS ---
-    public JButton getBotonCerrarSesion() { return botonCerrarSesion; }
-    public JButton getBotonBuscar() { return botonBuscar; }
-    public String getTextoBusqueda() { return campoBusqueda.getText(); }
-    public JComboBox<String> getComboOrdenar() { return comboOrdenar; }
-    public JButton getBotonMostrarOtras() { return botonMostrarOtras; }
-    public JButton getBotonPerfil() { return botonPerfil; }
+    public JButton getBotonCerrarSesion() {
+        return botonCerrarSesion;
+    }
 
+    public JButton getBotonBuscar() {
+        return botonBuscar;
+    }
 
-    public void limpiarVista() {
+    public String getTextoBusqueda() {
+        return campoBusqueda.getText();
+    }
+
+    public JComboBox<String> getComboOrdenar() {
+        return comboOrdenar;
+    }
+
+    public JComboBox<String> getComboMostrarOtras() {
+        return comboMostrarOtras;
+    }
+
+    public JButton getBotonPerfil() {
+        return botonPerfil;
+    }
+
+    public void limpiarVistaHome() {
         campoBusqueda.setText("");
         panelPeliculas.removeAll();
         panelPeliculas.revalidate();
