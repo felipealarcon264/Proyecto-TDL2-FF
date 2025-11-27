@@ -55,11 +55,12 @@ public class ControladorHome implements ActionListener {
         this.vista.setNombreUsuario(usuarioLogueado.getNombreUsuario());
 
         try {
-            this.servicioPelicula.inicializarCatalogo();
+            this.servicioPelicula.importarPeliculaCSV();
             cargarContenido();
         } catch (excepciones.ErrorDeInicializacionException e) {
             javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "Error Crítico", JOptionPane.ERROR_MESSAGE);
-            System.exit(1);
+            javax.swing.JOptionPane.showMessageDialog(null, "Recomendamos reiniciar la aplicacion.");
+          //  System.exit(1); Decidimos que no se cierre la app.
         }
     }
 

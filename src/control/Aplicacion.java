@@ -126,8 +126,11 @@ public class Aplicacion {
 
         // Muestra el login por defecto.
         cardLayout.show(panelContenedor, "LOGIN");
+        
 
         ventana.setVisible(true);
+
+        
     }
 
     // Método estático para navegar entre pantallas desde los Controladores

@@ -34,6 +34,14 @@ public interface PeliculaDAO {
  */
     public Pelicula buscarPorTitulo(String titulo);
 
+    /**Busca por titulo y duracion.
+     * 
+     * @param titulo Titulo de la pelicula.
+     * @param resumen Resumen de la pelicula.
+     * @return El dato encontrado o no.
+     */
+    public Pelicula buscarPorTituloyResumen(String titulo,String resumen);
+
     /**
      * Busca pelicula por ID.
      * @param id Id del dato a buscar.

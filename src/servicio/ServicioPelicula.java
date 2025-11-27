@@ -17,112 +17,101 @@ public class ServicioPelicula {
     PeliculaDAO peliculaDAO;
     final int MINIMO_PELICULAS = 10;
 
-
     public ServicioPelicula() {
         this.peliculaDAO = FactoryDAO.getPeliculaDAO();
     }
 
     /**
      * Importa las películas del CSV a la base de datos.
-     * Solo se ejecuta si la base de datos está vacía.
-     * 
-     * @throws ErrorDeInicializacionException si el archivo CSV no se encuentra o no
-     *                                        se puede leer.
+     * Verifica si la película ya existe por título para evitar duplicados.
+     * * @throws ErrorDeInicializacionException si el archivo CSV no se encuentra o no
+     * se puede leer.
      */
-    public void inicializarCatalogo() {// Rescatar error desde donde se invoca
-        // 1. Si ya hay películas, no perdemos tiempo importando
-        if (!peliculaDAO.devolverListaPelicula().isEmpty()) {
-            return;
-        }
-
-        System.out.println("Iniciando importación de películas...");
+    public void importarPeliculaCSV() {
+        System.out.println("Verificando catálogo de películas...");
 
         final String nombreArchivo = "/movies_database.csv";
-        // Obtenemos el stream del recurso
         InputStream is = getClass().getResourceAsStream(nombreArchivo);
 
-        // Verificamos si el archivo existe. Si no, lanzamos nuestra excepción.
         if (is == null) {
-            System.out.println("Error");
             throw new ErrorDeInicializacionException(
-                    "Error crítico: El archivo '" + nombreArchivo + "' no se encontró en los recursos del proyecto.",
-                    null);
+                    "Error crítico: El archivo '" + nombreArchivo + "' no se encontró en los recursos.", null);
         }
 
-        // 2. Leemos el archivo desde 'src/movies_database.csv'
+        int nuevasPeliculas = 0;
+        
         try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-
-            String linea = br.readLine(); // Saltamos la cabecera
+            String linea = br.readLine(); 
 
             while ((linea = br.readLine()) != null) {
+                // Regex para separar CSV respetando comillas
                 String[] datos = linea.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-
-                // Verificamos tener las columnas necesarias (el archivo tiene 9 columnas)
                 if (datos.length >= 9) {
                     try {
-                        // Col 0: Release_Date (2021-12-15) -> Sacamos el año
+                        // Datos clave para la búsqueda
+                        String titulo = datos[1].replace("\"", "").trim();
+                        String resumen = datos[2].replace("\"", "").trim(); // Quitamos comillas y espacios
+
+                        // --- VALIDACIÓN ---
+                        if (peliculaDAO.buscarPorTituloyResumen(titulo, resumen) != null) {
+                            // Ya existe.
+                            continue; 
+                        }
+                        
+                        // Pelicula nueva.
+
+                        // Col 0: Año
                         int anio = 0;
                         if (datos[0].contains("-")) {
-                            anio = Integer.parseInt(datos[0].split("-")[0]);
+                            try { anio = Integer.parseInt(datos[0].split("-")[0]); } catch (Exception e) {}
                         }
 
-                        // Col 1: Título
-                        String titulo = datos[1].replace("\"", ""); // Quitamos comillas si las tiene
+                        // Col 5: Rating
+                        double rating = 0.0;
+                        try { rating = Double.parseDouble(datos[5]); } catch (Exception e) {}
 
-                        // Col 2: Resumen (Overview)
-                        String resumen = datos[2].replace("\"", "");
+                        // Col 7: Genero
+                        String genero = datos[7].replace("\"", "").split(",")[0].trim();
 
-                        // Col 5: Vote_Average (8.3)
-                        double rating = Double.parseDouble(datos[5]);
-
-                        // Col 7: Genre ("Action, Adventure") -> Tomamos solo el primero
-                        String generoStr = datos[7].replace("\"", "");
-                        if (generoStr.contains(",")) {
-                            generoStr = generoStr.split(",")[0].trim();
-                        }
-
-                        // CAMBIO: Ahora usamos el String directamente
-                        String genero = generoStr;
-
-                        // Col 8: Poster_Url
+                        // Col 8: Poster
                         String poster = datos[8];
 
-                        // 3. Creamos el objeto Película
+                        // 3. Crear y Guardar
                         Pelicula p = new Pelicula(-1, titulo, "Director", 0, resumen, genero, rating, anio, poster);
-
-                        // 4. Guardamos en la BD
-                        peliculaDAO.guardar(p);
+                        
+                        if (peliculaDAO.guardar(p)) {
+                            nuevasPeliculas++;
+                            // Opcional: Imprimir cada 100 para no saturar la consola
+                            if (nuevasPeliculas % 100 == 0) System.out.println("Cargando... " + nuevasPeliculas);
+                        }
 
                     } catch (Exception e) {
-                        System.err.println("Error al procesar línea: " + datos[1] + " -> " + e.getMessage());
+                        // Si una línea falla, la mostramos pero seguimos con la siguiente
+                        System.err.println("Error línea CSV: " + e.getMessage());
                     }
                 }
             }
-            System.out.println("¡Importación finalizada con éxito!");
+            
+            if (nuevasPeliculas > 0) {
+                System.out.println("✅ Actualización completa. Se agregaron " + nuevasPeliculas + " películas faltantes.");
+            } else {
+                System.out.println("✅ El catálogo ya estaba sincronizado (Total coincidió).");
+            }
 
         } catch (IOException e) {
-            throw new ErrorDeInicializacionException("Error de lectura/escritura al procesar el archivo CSV.", e);
+            throw new ErrorDeInicializacionException("Error de lectura del CSV.", e);
         }
     }
-
     // --- LÓGICA DEL TOP 10 vs RANDOM ---
 
     public List<Pelicula> obtenerTop10() {
         List<Pelicula> todas = peliculaDAO.devolverListaPelicula();
-        // Ordenamos por rating de mayor a menor
         todas.sort(new ComparadorPeliculaPorRating());
-        // Devolvemos las primeras 10 (o menos si no hay tantas)
         return todas.subList(0, Math.min(MINIMO_PELICULAS, todas.size()));
     }
 
-    /**
-     * Retorna una lista de 10 o menos peliculas ordenadas al azar.
-     * 
-     * @return lista con 10 o menos peliculas mezcladas.
-     */
     public List<Pelicula> obtener10Aleatorias() {
         List<Pelicula> todas = peliculaDAO.devolverListaPelicula();
-        // Mezclamos la lista
         Collections.shuffle(todas);
         return todas.subList(0, Math.min(MINIMO_PELICULAS, todas.size()));
     }
@@ -134,5 +123,4 @@ public class ServicioPelicula {
     public void setPeliculaDao(PeliculaDAO peliculaDao) {
         this.peliculaDAO = peliculaDao;
     }
-
 }

@@ -116,8 +116,7 @@ public class PeliculaDAOImpl implements PeliculaDAO {
      */
     @Override
     public Pelicula buscarPorTitulo(String titulo) {
-        // CAMBIO CLAVE: Usamos "LOWER(TITULO) = LOWER(?)" para ignorar
-        // mayúsculas/minúsculas
+        // mayúsculas/minúsculas ignoramos.
         // y hacemos .trim() al título para borrar espacios extra.
         String sql = "SELECT ID, TITULO, DIRECTOR, DURACION, RESUMEN, GENERO, RATING_PROMEDIO, ANIO, POSTER " +
                 "FROM PELICULA WHERE LOWER(TITULO) = LOWER(?)";
@@ -149,6 +148,53 @@ public class PeliculaDAOImpl implements PeliculaDAO {
         }
     }
 
+    /**
+     * Busca una pelicula por su titulo y duracion por si hay dos con el mismo titulo.
+     * Supone que el Genero es valido como enum pues se tomo la precuacion al
+     * cargarlo y guardarlo.
+     * En el entregable 3 se modifico Genero enum -> String.
+     * Ignora mayusculas y minusculas.
+     *
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.1
+     *
+     * @param titulo El título de la película a buscar.
+     * @return La pelicula en caso de encontrarla o null en caso contrario.
+     */
+    @Override
+    public Pelicula buscarPorTituloyResumen(String titulo, String resumen) {
+        // CORRECCIÓN: Agregamos "AND RESUMEN = ?" al final de la consulta
+        String sql = "SELECT ID, TITULO, DIRECTOR, DURACION, RESUMEN, GENERO, RATING_PROMEDIO, ANIO, POSTER " +
+                "FROM PELICULA WHERE LOWER(TITULO) = LOWER(?) AND RESUMEN = ?";
+
+        try (java.sql.Connection conn = ConexionDB.conectar();
+                java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, titulo.trim());
+            // Importante: Usamos el resumen tal cual viene (sin comillas si ya las quitaste antes)
+            pstmt.setString(2, resumen.trim());
+
+            try (java.sql.ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    // Si entra aquí, es que encontró una película con MISMO título y MISMO resumen
+                    String generoSTR = rs.getString("GENERO");
+                    String generoEnum = String.valueOf(generoSTR.toUpperCase());
+                    
+                    return new Pelicula(rs.getInt("ID"), rs.getString("TITULO"), rs.getString("DIRECTOR"),
+                            rs.getInt("DURACION"),
+                            rs.getString("RESUMEN"), generoEnum,
+                            rs.getDouble("RATING_PROMEDIO"), rs.getInt("ANIO"),
+                            rs.getString("POSTER"));
+                }
+            }
+            return null; // No encontró coincidencia exacta -> Es nueva
+        } catch (java.sql.SQLException e) {
+            System.out.println("❌ Error al buscar la película por Título y Resumen: " + e.getMessage());
+            return null;
+        }
+    }
+    
+    
     /**
      * Busca una pelicula por su ID.
      *
