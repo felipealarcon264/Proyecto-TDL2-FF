@@ -1,5 +1,4 @@
 //Verificacion JavaDoc -> Realizada.
-
 package control;
 import basededatos.InicializadorDB;
 

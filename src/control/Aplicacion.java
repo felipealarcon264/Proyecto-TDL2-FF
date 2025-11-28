@@ -1,5 +1,6 @@
 //Verificacion JavaDoc -> Realizada.
 package control;
+
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import javax.swing.*;
@@ -30,6 +31,12 @@ public class Aplicacion {
     public static ServicioUsuario servicioUsuario;
     public static ServicioPelicula servicioPelicula;
 
+    /**
+     * Metodo para iniciar la app.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     */
     public static void iniciar() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -138,7 +145,7 @@ public class Aplicacion {
 
         // Muestra el login por defecto.
         cardLayout.show(panelContenedor, "LOGIN");
-        
+
         ventana.setVisible(true);
 
     }

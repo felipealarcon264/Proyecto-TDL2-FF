@@ -1,3 +1,4 @@
+//Verificacion JavaDoc -> Realizada.
 package basededatos;
 
 import java.sql.Connection;
@@ -15,6 +16,9 @@ import java.sql.SQLException;
 public class ConexionDB {
     /**
      * Constructor por defecto.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      */
     public ConexionDB() {
     }

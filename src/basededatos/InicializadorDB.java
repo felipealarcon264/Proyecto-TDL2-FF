@@ -1,3 +1,4 @@
+//Verificacion JavaDoc -> Realizada.
 package basededatos;
 
 import java.sql.Connection;
@@ -16,6 +17,9 @@ public class InicializadorDB {
 
     /**
      * Constructor por defecto.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      */
     public InicializadorDB() {
     }
@@ -41,7 +45,8 @@ public class InicializadorDB {
                         );
                     """;
             stmt.executeUpdate(sql);
-            // se agregó las 3 variables faltantes para el entregable 3 {Rating_Promedio, Anio, Poster}
+            // se agregó las 3 variables faltantes para el entregable 3 {Rating_Promedio,
+            // Anio, Poster}
             sql = """
                         CREATE TABLE IF NOT EXISTS PELICULA (
                             ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,

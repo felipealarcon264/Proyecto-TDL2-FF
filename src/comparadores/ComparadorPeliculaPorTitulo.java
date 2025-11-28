@@ -1,3 +1,5 @@
+//Verificacion JavaDoc -> Realizada.
+
 package comparadores;
 
 import java.util.Comparator;
@@ -8,18 +10,24 @@ import modelo.catalogo.Pelicula;
  * Implementación de Comparator para ordenar objetos Pelicula
  * por su título (ascendente, A-Z).
  *
- * @author Gemini
+ * @author Grupo 4 - Proyecto TDL2
  * @version 1.0
  */
 public class ComparadorPeliculaPorTitulo implements Comparator<Pelicula> {
     /**
      * Constructor por defecto.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      */
     public ComparadorPeliculaPorTitulo() {
     }
 
     /**
      * Compara dos objetos Pelicula basándose en su título.
+     *
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      *
      * @param p1 La primera película a comparar.
      * @param p2 La segunda película a comparar.
