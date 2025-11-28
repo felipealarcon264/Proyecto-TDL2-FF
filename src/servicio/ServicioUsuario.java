@@ -1,5 +1,4 @@
 package servicio;
-
 import dao.FactoryDAO;
 import dao.interfaces.Datos_PersonalesDAO;
 import dao.interfaces.UsuarioDAO;
@@ -9,11 +8,25 @@ import modelo.ente.Usuario;
 import excepciones.*;
 import java.util.List;
 
+/**
+ * Servicio para operaciones relacionadas con los usuarios.
+ * Utiliza UsuarioDAO para interactuar con la base de datos.
+ *
+ * @author Grupo 4 - Proyecto TDL2
+ * @version 1.0
+ */
 public class ServicioUsuario {
-    // usa las interfaces;
-    UsuarioDAO usuarioDAO;
-    Datos_PersonalesDAO datosPersonalesDAO;
+    private UsuarioDAO usuarioDAO; //Uso local.
+    private Datos_PersonalesDAO datosPersonalesDAO; //Uso local.
 
+
+    /**
+     * Constructor de ServicioUsuario.
+     * Crea instancias de UsuarioDAO y Datos_PersonalesDAO con el FactoryDAO.
+     *
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     */
     public ServicioUsuario() {
         this.usuarioDAO = FactoryDAO.getUsuarioDAO();
         this.datosPersonalesDAO = FactoryDAO.getDatosPersonalesDAO();
@@ -38,6 +51,9 @@ public class ServicioUsuario {
      * Crea y guarda una nueva Cuenta y sus Datos Personales.
      * Este método es llamado por el ControladorRegistro (GUI).
      * Lanza excepciones personalizadas si la validación falla.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      *
      * @param nombre   Nombre del usuario.
      * @param apellido Apellido del usuario.
@@ -48,17 +64,17 @@ public class ServicioUsuario {
      *                                    un número.
      * @throws DniYaRegistradosException  Si el DNI ya existe.
      * @throws EmailYaRegistradoException Si el email ya existe.
+     * @throws CampoVacio                 Si algún campo está vacío.
+     * 
      */
     public void crearNuevaCuenta(String nombre, String apellido, String dniStr, String nomUsr, String email,
             String password)
             throws DatosInvalidosException, DniYaRegistradosException, EmailYaRegistradoException, CampoVacio {
-
         // Validacion de datos vacios.
         if (nombre.trim().isEmpty() || apellido.trim().isEmpty() || dniStr.trim().isEmpty() || nomUsr.trim().isEmpty()
                 || email.trim().isEmpty() || password.isEmpty()) {
             throw new CampoVacio("Todos los campos son obligatorios.");
         }
-
         // Validacion de nombre y apellido valido.
         if (!(new ServicioDatos_Personales().contieneSoloLetras(nombre))) {
             throw new DatosInvalidosException("Nombre invalido.");
@@ -66,7 +82,6 @@ public class ServicioUsuario {
         if (!(new ServicioDatos_Personales().contieneSoloLetras(apellido))) {
             throw new DatosInvalidosException("Apellido invalido.");
         }
-
         // Validacion formato DNI y unicidad.
         int dni;
         try {
@@ -105,42 +120,10 @@ public class ServicioUsuario {
     }
 
     /**
-     * Verifica si un correo electrónico ya está registrado en la base de datos.
-     * Siempre suponemos que un correo no se puede ingresar dos veces por lo que
-     * a la primera coincidencia retorna true.
-     *
-     * @author Grupo 4 - Proyecto TDL2
-     * @version 4.0
-     *
-     * @param correo     El correo a validar.
-     * @param contrasena La contraseña a validar.
-     * @return true si el correo está registrado, false en caso
-     *         contrario.
-     */
-    public boolean verificarUsuario(String correo, String contrasena) {
-        // Se obtiene la lista directamente de la DB para validar
-        List<Usuario> listaUsuario = usuarioDAO.devolverListaUsuarios();
-        if (listaUsuario == null) {
-            System.out.println("Error: No se pudo obtener la lista de usuarios para validar.");
-            return false;
-        }
-
-        for (Usuario usuario : listaUsuario) {
-            if (usuario.getEmail() != null && usuario.getEmail().equals(correo)
-                    && usuario.getContrasena().equals(contrasena)) {
-                return true;
-            }
-        }
-        // Si no encontro.
-        return false;
-    }
-
-    /**
      * Verifica de forma simple si un correo electrónico tiene un formato básico
      * válido:
      * contiene exactamente un '@' y este no es el último carácter.
      * No valida la estructura completa xxx@yyy.zzz.
-     * HECHO TOTALMENTE CON IA.
      *
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.1
@@ -150,24 +133,20 @@ public class ServicioUsuario {
      *         contrario.
      */
     private boolean esFormatoEmailSimpleValido(String email) {
-        // 1. Verifica si es nulo o vacío
+        // Verifica si es nulo o vacío
         if (email == null || email.trim().isEmpty()) {
             return false;
         }
-
-        // 2. Busca la posición del primer '@'
+        // Busca la posición del primer '@'
         int arrobaIndex = email.indexOf('@');
 
-        // 3. Verifica si no hay '@' o si hay más de uno
-        // (si la primera posición no es igual a la última, hay más de uno)
+        // Verifica si no hay '@' o si hay más de uno
         if (arrobaIndex == -1 || arrobaIndex != email.lastIndexOf('@')) {
             return false;
         }
-
-        // 4. Verifica si el '@' es el último carácter
+        // Verifica si el '@' es el último carácter
         return arrobaIndex != email.length() - 1; // No hay nada después del '@'
-
-        // 5. Si pasó todas las verificaciones, es válido (según estas reglas simples)
+        // Si pasó todas las verificaciones, es válido.
     }
 
     /**
@@ -179,7 +158,7 @@ public class ServicioUsuario {
      *
      * @param nombreUsr    El nombre de usuario a validar.
      * @param listaUSuario Se pide a la base de datos.
-     * @return true si el correo está registrado, false en caso
+     * @return true si el nombre de usuario está registrado, false en caso
      *         contrario.
      */
     private boolean nombreUsrExistente(String nombreUsr, List<Usuario> listaUSuario) {
@@ -198,15 +177,16 @@ public class ServicioUsuario {
         return false;
     }
 
+    /**
+     * Actualiza el estado de un usuario a "no nuevo".
+     *
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     *
+     * @param usuario El usuario a actualizar.
+     */
     public void actualizarEstadoUsuario(Usuario usuario) {
-        usuarioDAO.actualizar(usuario);
+        usuarioDAO.actualizarEsNuevo(usuario);
     }
 
-    public UsuarioDAO getUsuarioDao() {
-        return usuarioDAO;
-    }
-
-    public void setUsuarioDao(UsuarioDAO usuarioDao) {
-        this.usuarioDAO = usuarioDao;
-    }
 }

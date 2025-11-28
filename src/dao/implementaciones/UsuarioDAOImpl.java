@@ -309,7 +309,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
      * @return true si se actualizó correctamente, false en caso contrario.
      */
     @Override
-    public boolean actualizar(Usuario usr) {
+    public boolean actualizarEsNuevo(Usuario usr) {
         String sql = "UPDATE USUARIO SET ES_NUEVO = ? WHERE ID = ?";
         try (java.sql.Connection conn = ConexionDB.conectar();
                 java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {

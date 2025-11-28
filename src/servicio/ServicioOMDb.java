@@ -1,30 +1,56 @@
+//Verificacion JavaDoc -> Realizada.
+
 package servicio;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import excepciones.ErrorApiOMDbException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import modelo.catalogo.Pelicula;
 
-/** Este servicio se va a encargar de comunicarse con el servicio OMDb de las peliculas a buscar.
- * Se crea una llave de acceso para el servicio en la web (API_KEY) */
+/**
+ * Este servicio se va a encargar de comunicarse con el servicio OMDb de las
+ * peliculas a buscar.
+ * Se crea una llave de acceso para el servicio en la web (API_KEY)
+ * 
+ * @author Grupo 4 - Proyecto TDL2
+ * @version 1.0
+ */
 public class ServicioOMDb {
     private static final String API_KEY = "897ebd22";
     private static final String URL_BASE = "https://www.omdbapi.com/";
 
-    // Se implementa una lista de coincidencias al momento de buscar la película donde la API nos da pocos datos(Titulo, año y poster)
+    /**
+     * Constructor de ServicioOMDb.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     */
+    public ServicioOMDb() {
+    }
+    
+
+    /**
+     * Busca películas en el servicio OMDb y devuelve una lista de coincidencias.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
+     * @param tituloBusqueda El título de la película a buscar.
+     * @return Una lista de coincidencias de películas.
+     * @throws ErrorApiOMDbException si ocurre un error de conexión o formato de
+     *                                respuesta inválido.
+     */
     public List<Pelicula> buscarPeliculas(String tituloBusqueda) throws ErrorApiOMDbException {
         try {
             String tituloCodificado = tituloBusqueda.replace(" ", "+");
-            // Es la implementación de la URL de búsqueda de la pelicula escrita por el cliente en el servicio
+            // Es la implementación de la URL de búsqueda de la pelicula escrita por el
+            // cliente en el servicio
             String url = URL_BASE + "?s=" + tituloCodificado + "&apikey=" + API_KEY;
 
             HttpClient cliente = HttpClient.newHttpClient();
@@ -49,7 +75,7 @@ public class ServicioOMDb {
                     try {
                         anio = Integer.parseInt(anioStr.split("-")[0]);
                     } catch (Exception ex) {
-                        /* no pasa nada si ignoramos el error del año*/
+                        //no pasa nada si ignoramos el error del año 
                     }
 
                     String poster = elemento.has("Poster") ? elemento.getString("Poster") : "";
@@ -61,7 +87,8 @@ public class ServicioOMDb {
             return resultados;
 
         } catch (Exception ex) {
-            // envuelve cualquier error (IOException, JSONException) a la excepcion personalizada.
+            // envuelve cualquier error (IOException, JSONException) a la excepcion
+            // personalizada.
             if (ex instanceof ErrorApiOMDbException) {
                 throw (ErrorApiOMDbException) ex;
             }
@@ -69,8 +96,16 @@ public class ServicioOMDb {
         }
     }
 
-    /** Se obtiene el detalle completo de una película usando su IMDb ID */
-    public Pelicula obtenerDetallePelicula (String imdbID) throws Exception {
+    /** 
+     * Se obtiene el detalle completo de una película usando su IMDb ID
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
+     * @param imdbID El IMDb ID de la película a obtener detalles.
+     * @return Los detalles completos de la película.
+     */
+    public Pelicula obtenerDetallePelicula(String imdbID) throws Exception {
         try {
             String url = URL_BASE + "?i=" + imdbID + "&plot=full&apikey=" + API_KEY;
 
@@ -90,19 +125,22 @@ public class ServicioOMDb {
             try {
                 String runtime = json.optString("Runtime", "0 min");
                 duracion = Integer.parseInt(runtime.split(" ")[0]);
-            } catch (Exception e) { }
+            } catch (Exception e) {
+            }
 
             // Parsear Rating
             double rating = 0.0;
             try {
                 rating = Double.parseDouble(json.optString("imdbRating", "0.0"));
-            } catch (Exception e) { }
+            } catch (Exception e) {
+            }
 
             // Parsear Año
             int anio = 0;
             try {
                 anio = Integer.parseInt(json.optString("Year", "0").split("–")[0]);
-            } catch (Exception e) { }
+            } catch (Exception e) {
+            }
 
             String genero = json.optString("Genre", "Drama").split(",")[0].trim();
 

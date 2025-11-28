@@ -1,3 +1,4 @@
+//Verificacion JavaDoc -> Realizada.
 package servicio;
 
 import dao.interfaces.PeliculaDAO;
@@ -8,26 +9,45 @@ import dao.FactoryDAO;
 import dao.interfaces.ReseniaDAO;
 import excepciones.CampoVacio;
 import excepciones.DatosInvalidosException;
-
 import java.util.List;
 
+/**
+ * Servicio para operaciones relacionadas con las reseñas.
+ * Utiliza ReseniaDAO y PeliculaDAO para interactuar con la base de datos.
+ * 
+ * @author Grupo 4 - Proyecto TDL2
+ * @version 1.0
+ */
 public class ServicioResenia {
-    ReseniaDAO reseniaDAO;
-    PeliculaDAO peliculaDAO;
+    private ReseniaDAO reseniaDAO;//Se usa externamente.
+    private PeliculaDAO peliculaDAO;//Se usa externamente.
 
+    /**
+     * Constructor de ServicioResenia.
+     * Crea instancias de ReseniaDAO y PeliculaDAO con el FactoryDAO.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     */
     public ServicioResenia() {
         this.reseniaDAO = FactoryDAO.getReseniaDAO();
         this.peliculaDAO = FactoryDAO.getPeliculaDAO();
     }
 
     /**
-     * Suponemos que el contenido y usuario siempre se pasan <No hay manera que se
-     * envien nulos>
+     * Suponemos que el contenido y usuario siempre se pasan. En cada boton de
+     * creacion de una reseñia se pasan.
      * 
-     * @param usuario
-     * @param contenido
-     * @param calificacion
-     * @param comentario
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
+     * @param usuario      Usuario que hace la reseña
+     * @param contenido    Contenido al que se hace la reseña
+     * @param calificacion Calificacion dada por el usuario
+     * @param comentario   Comentario escrito por el usuario
+     * @throws CampoVacio              Si algun campo esta vacio
+     * @throws DatosInvalidosException Si la calificacion esta fuera de rango o el
+     *                                 comentario tiene mas de 200 caracteres
      */
     public void crearNuevaResenia(Usuario usuario, Contenido contenido, int calificacion, String comentario)
             throws CampoVacio, DatosInvalidosException {
@@ -57,14 +77,14 @@ public class ServicioResenia {
      * @version 1.0
      * 
      * @param idUsuario El ID del usuario cuyas reseñas se quieren obtener.
-     * @return Una lista de objetos {@link Resenia}.
+     * @return Una lista de reseñias del usuario especificado.
      */
     public List<Resenia> obtenerReseniasDeUsuario(int idUsuario) {
         List<Resenia> reseniasDelUsuario = new java.util.ArrayList<>();
         List<Resenia> todasLasResenias = reseniaDAO.devolverListaResenia(); // Se busca en la DB
         if (todasLasResenias == null)
-            return reseniasDelUsuario; // En caso de error en DAO
-        for (Resenia resenia : todasLasResenias) {
+            return reseniasDelUsuario; // No hay reseñias en la DB.
+        for (Resenia resenia : todasLasResenias) {// Filtramos las reseñias del usuario.
             if (resenia.getUsuario() != null && resenia.getUsuario().getIdDB() == idUsuario) {
                 reseniasDelUsuario.add(resenia);
             }
@@ -74,31 +94,50 @@ public class ServicioResenia {
 
     /**
      * Verifica si ya existe una reseña de un usuario para una película específica.
+     * No se permiten mas de una reseñia por usuario y pelicula.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
+     * @param idUsuario  El ID del usuario que hace la reseña.
+     * @param idPelicula El ID de la película a la que se hace la reseña.
      * 
      * @return true si ya existe, false si no.
      */
     public boolean existeResenia(int idUsuario, int idPelicula) {
         List<Resenia> todas = reseniaDAO.devolverListaResenia();
-        // Si la lista es nula (error en DB), asumimos false para no bloquear, o true
-        // por seguridad.
         if (todas == null)
             return false;
-
         for (Resenia r : todas) {
-            // Comparamos IDs
             if (r.getUsuario().getIdDB() == idUsuario && r.getContenido().getIdDB() == idPelicula) {
-                return true; // ¡Encontrada!
+                return true;
             }
         }
         return false;
     }
 
+    /**
+     * Obtiene la reseña con el ID especificado.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
+     * @param idResenia El ID de la reseña a obtener.
+     * @return
+     */
+    public PeliculaDAO getPeliculaDAOImpl() {
+        return peliculaDAO;
+    }
+
+    /**
+     * Obtiene el DAO de Resenia.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
+     * @return El DAO de Resenia.
+     */
     public ReseniaDAO getReseniaDAOImpl() {
         return reseniaDAO;
     }
-
-    public void setReseniaDAOImpl(ReseniaDAO reseniaDAOImpl) {
-        this.reseniaDAO = reseniaDAOImpl;
-    }
-
 }

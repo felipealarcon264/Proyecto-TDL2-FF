@@ -68,7 +68,7 @@ public interface UsuarioDAO {
      * @param usr Dato a actualizar.
      * @return Exito.
      */
-    public boolean actualizar(Usuario usr);
+    public boolean actualizarEsNuevo(Usuario usr);
 
     /**
      * Devuelve la lista con todos los datos de la base de datos.

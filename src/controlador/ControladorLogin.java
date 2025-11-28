@@ -47,7 +47,7 @@ public class ControladorLogin implements ActionListener {
 
         if (botonPresionado == vista.getBotonIngresar()) {
             if (procesarIngresoCuenta())
-                vista.limpiarCampos();//Solo limpia si ingresamos bien los datos.
+                vista.limpiarCampos();// Solo limpia si ingresamos bien los datos.
         } else if (botonPresionado == vista.getBotonRegistrarse()) {
             vista.limpiarCampos();
             Aplicacion.mostrarVista("REGISTRO");
@@ -88,7 +88,8 @@ public class ControladorLogin implements ActionListener {
                         long tiempoInicio = System.currentTimeMillis(); // Tomamos la hora de inicio
 
                         // Tarea Pesada: Cargar el controlador y la DB
-                        ControladorHome controladorHome = new ControladorHome(Aplicacion.vistaHome, servicioPelicula, usuarioLogueado,
+                        ControladorHome controladorHome = new ControladorHome(Aplicacion.vistaHome, servicioPelicula,
+                                usuarioLogueado,
                                 Aplicacion.ventana);
 
                         long tiempoFin = System.currentTimeMillis();
@@ -112,10 +113,10 @@ public class ControladorLogin implements ActionListener {
                             // Cambiamos la vista a HOME
                             Aplicacion.mostrarVista("HOME");
 
-                            // Pequeño truco: SwingUtilities.invokeLater asegura que el cartel
-                            // salte DESPUÉS de que la interfaz termine de pintarse por completo.
+                            // SwingUtilities.invokeLater asegura que el cartel
+                            // salte despues de que la interfaz termine de pintarse por completo.
                             javax.swing.SwingUtilities.invokeLater(() -> {
-                                controladorHome.mostrarBienvenidaUsuarioNuevo();
+                                controladorHome.mostrarBienvenidaSiUsuarioNuevo();
                             });
 
                         } catch (Exception ex) {
@@ -127,10 +128,7 @@ public class ControladorLogin implements ActionListener {
                 // 3. ¡Iniciamos el trabajador!
                 worker.execute();
             } else {
-                /**
-                 * Para el ADMINISTRADOR no se requiere de una interfaz gráfica basándonos en el
-                 * entregable 3
-                 */
+                // No requerido.
                 System.out.println(
                         "¡El ingreso del Administrador(a) " + usuarioLogueado.getNombreUsuario() + " ha sido exitoso!");
             }

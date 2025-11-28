@@ -55,7 +55,7 @@ public class ControladorHome implements ActionListener {
         this.vista.setNombreUsuario(usuarioLogueado.getNombreUsuario());
 
         try {
-            this.servicioPelicula.importarPeliculaCSV();
+            this.servicioPelicula.importarPeliculaConCSV();
             cargarContenido();
         } catch (excepciones.ErrorDeInicializacionException e) {
             javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "Error Crítico", JOptionPane.ERROR_MESSAGE);
@@ -104,7 +104,7 @@ public class ControladorHome implements ActionListener {
         repintarPeliculas();
     }
 
-    public void mostrarBienvenidaUsuarioNuevo() {
+    public void mostrarBienvenidaSiUsuarioNuevo() {
         if (usuarioLogueado.getEsNuevo() == 1) {
             // Mostrar Mensaje de Bienvenida
             JOptionPane.showMessageDialog(framePrincipal,
