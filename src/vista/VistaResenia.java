@@ -1,3 +1,4 @@
+//Verificacion JavaDoc -> Realizada.
 package vista;
 
 import javax.swing.*;
@@ -16,7 +17,7 @@ import java.awt.*;
  * Muestra la información de la película y proporciona campos para calificar y
  * comentar.
  *
- * @author Gemini Code Assist
+ * @author Grupo 4 - Proyecto TDL2
  * @version 1.0
  */
 public class VistaResenia extends JDialog {
@@ -33,11 +34,13 @@ public class VistaResenia extends JDialog {
     private final Color COLOR_PANEL_TEXTO = new Color(20, 20, 20); // Gris muy oscuro
     private final Color COLOR_BOTON = new Color(45, 45, 45);
     private final Color COLOR_TEXTO = Color.WHITE;
-    private final Color COLOR_ACENTO = new Color(206, 80, 84);//Distintivo de la app.
+    private final Color COLOR_ACENTO = new Color(206, 80, 84);// Distintivo de la app.
 
     /**
      * Constructor que inicializa la vista de la reseña.
      * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * @param owner El Frame padre sobre el cual este diálogo será modal.
      */
     public VistaResenia(Frame owner) {
@@ -132,8 +135,6 @@ public class VistaResenia extends JDialog {
 
         JScrollPane scrollComentario = new JScrollPane(txtComentario);
         scrollComentario.setBorder(new LineBorder(new Color(60, 60, 60))); // Borde sutil
-        // Truco para que la barra de scroll sea oscura (depende del LookAndFeel, pero
-        // ayuda)
         scrollComentario.getViewport().setBackground(COLOR_PANEL_TEXTO);
         panelPrincipal.add(scrollComentario);
 
@@ -159,6 +160,13 @@ public class VistaResenia extends JDialog {
         panelPrincipal.add(lblEstado);
     }
 
+    /**
+     * Aplica un estilo visual consistente a un botón.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param boton El JButton al que se le aplicará el estilo.
+     */
     private void estilizarBoton(JButton boton) {
         boton.setBackground(COLOR_BOTON);
         boton.setForeground(COLOR_TEXTO);
@@ -170,7 +178,9 @@ public class VistaResenia extends JDialog {
 
     /**
      * Carga los datos de una película en la vista.
-     * 
+     *
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * @param pelicula La película a mostrar.
      */
     public void cargarDatosPelicula(Pelicula pelicula) {
@@ -180,9 +190,6 @@ public class VistaResenia extends JDialog {
         lblTitulo.setText(pelicula.getTitulo());
         lblRatingPromedio.setText(String.format("Rating Promedio: %.1f/10", pelicula.getRatingPromedio()));
 
-        // Lógica para cargar la imagen del póster (similar a TarjetaPelicula)
-        // Por ahora, solo ponemos la URL como texto para verificar.
-        // En una implementación final, aquí iría un SwingWorker para cargar la imagen.
         if (pelicula.getPoster() != null && !pelicula.getPoster().isEmpty()) {
             cargarImagen(pelicula.getPoster());
         } else {
@@ -193,7 +200,9 @@ public class VistaResenia extends JDialog {
 
     /**
      * Carga una imagen desde una URL en segundo plano y la establece en lblPoster.
-     * 
+     *
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * @param urlPoster La URL de la imagen a cargar.
      */
     private void cargarImagen(String urlPoster) {
@@ -226,14 +235,35 @@ public class VistaResenia extends JDialog {
         worker.execute();
     }
 
+    /**
+     * Obtiene el botón para guardar/publicar la reseña.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @return El JButton para la acción de guardar.
+     */
     public JButton getBotonGuardar() {
         return btnGuardar;
     }
 
+    /**
+     * Obtiene el arreglo de botones de puntuación (del 1 al 10).
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @return Un arreglo de JButton.
+     */
     public JButton[] getBotonesPuntuacion() {
         return botonesPuntuacion;
     }
 
+    /**
+     * Obtiene el texto del comentario ingresado por el usuario.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @return El String con el comentario.
+     */
     public String getTxtComentario() {
         return txtComentario.getText();
     }

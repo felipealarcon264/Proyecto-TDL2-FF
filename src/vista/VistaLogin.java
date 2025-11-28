@@ -1,3 +1,4 @@
+//Verificacion JavaDoc -> Realizada.
 package vista;
 
 import java.awt.*;
@@ -10,6 +11,9 @@ import javax.swing.border.LineBorder;
  * Hereda de JPanel y no contiene lógica de negocio, solo componentes visuales.
  * Proporciona getters para que el Controlador (C) pueda acceder a los botones y
  * campos.
+ * 
+ * @author Grupo 4 - Proyecto TDL2
+ * @version 1.0
  */
 public class VistaLogin extends JPanel {
 
@@ -22,8 +26,16 @@ public class VistaLogin extends JPanel {
     private final Color COLOR_FONDO_FORM = Color.BLACK;
     private final Color COLOR_INPUT = new Color(40, 40, 40);
     private final Color COLOR_TEXTO = Color.WHITE;
-    private final Color COLOR_ACENTO = new Color(206, 80, 84);//Distintivo de app.
+    private final Color COLOR_ACENTO = new Color(206, 80, 84);// Distintivo de app.
 
+    /**
+     * Constructor de VistaLogin.
+     * Inicializa y configura todos los componentes de la interfaz de usuario para
+     * la pantalla de inicio de sesión.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     */
     public VistaLogin() {
         // 1 fila con 2 columnas para la imagen y los datos.
         this.setLayout(new GridLayout(1, 2));
@@ -134,14 +146,21 @@ public class VistaLogin extends JPanel {
 
     }
 
+    /**
+     * Aplica un estilo visual consistente a un componente de entrada de texto
+     * (JTextField, JPasswordField).
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param input El JComponent (campo de texto) al que se le aplicará el estilo.
+     */
     private void estilizarInput(JComponent input) {
         input.setBackground(COLOR_INPUT);
         input.setForeground(COLOR_TEXTO);
         input.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         input.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(new Color(60, 60, 60)),
-                new EmptyBorder(5, 10, 5, 10)
-        ));
+                new EmptyBorder(5, 10, 5, 10)));
         if (input instanceof JTextField) {
             JTextField campo = (JTextField) input;
             // Cursor BLANCO para que se vea en el fondo oscuro
@@ -150,32 +169,68 @@ public class VistaLogin extends JPanel {
         }
     }
 
-    // Getters and Setters para el uso del controlador.
-
+    /**
+     * Obtiene el texto ingresado en el campo de correo electrónico.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @return El String con el correo electrónico.
+     */
     public String getEmail() {
         return campoEmail.getText();
     }
 
+    /**
+     * Obtiene el texto ingresado en el campo de contraseña.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @return El String con la contraseña.
+     */
     public String getPassword() {
         return new String(campoPass.getPassword());
     }
 
+    /**
+     * Obtiene el botón para iniciar sesión.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @return El JButton para la acción de ingresar.
+     */
     public JButton getBotonIngresar() {
         return botonIngresar;
     }
 
+    /**
+     * Obtiene el botón para ir a la vista de registro.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @return El JButton para la acción de registrarse.
+     */
     public JButton getBotonRegistrarse() {
         return botonRegistrarse;
     }
 
+    /**
+     * Muestra un cuadro de diálogo de error.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param mensaje El mensaje de error a mostrar.
+     */
     public void mostrarError(String mensaje) {
         javax.swing.JOptionPane.showMessageDialog(this, mensaje, "Error de Ingreso de Sesión",
                 javax.swing.JOptionPane.ERROR_MESSAGE);
     }
 
     /**
-     * Sobrescribimos addNotify para establecer el tamaño mínimo y máximo
+     * Sobrescribe addNotify para establecer el tamaño mínimo y máximo
      * de la ventana contenedora una vez que este panel es añadido.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      */
     @Override
     public void addNotify() {
@@ -185,7 +240,7 @@ public class VistaLogin extends JPanel {
         java.awt.Window window = SwingUtilities.getWindowAncestor(this);
         if (window != null) {
             // Establecemos el tamaño mínimo y máximo para esa ventana
-            Dimension dimensionUnica = new Dimension(1100,660);
+            Dimension dimensionUnica = new Dimension(1100, 660);
             window.setMinimumSize(dimensionUnica);
             window.setPreferredSize(dimensionUnica);
             window.setBackground(Color.BLACK);
@@ -193,7 +248,10 @@ public class VistaLogin extends JPanel {
     }
 
     /**
-     * Limpia los campos de la vista.
+     * Limpia los campos de texto de la vista (email y contraseña).
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      */
     public void limpiarCampos() {
         campoEmail.setText("");

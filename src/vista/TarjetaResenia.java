@@ -1,3 +1,4 @@
+//Verificacion JavaDoc -> Realizada.
 package vista;
 
 import java.awt.*;
@@ -6,18 +7,37 @@ import java.net.URL;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-
 import modelo.catalogo.Pelicula;
 import modelo.catalogo.Resenia;
 
+/**
+ * Un componente de tarjeta que muestra una reseña de un usuario sobre una
+ * película.
+ * Incluye el póster de la película, el título, la calificación dada por el
+ * usuario,
+ * el comentario, el estado de la reseña (publicada o pendiente) y un botón para
+ * eliminarla.
+ * 
+ * @author Grupo 4 - Proyecto TDL2
+ * @version 1.0
+ */
 public class TarjetaResenia extends JPanel {
 
     private Resenia resenia;
     private JButton botonEliminar;
     private JLabel labelPoster;
-    private final Color COLOR_TITULO = new Color(206, 80, 84);//Distintivo de la app.
+    private final Color COLOR_TITULO = new Color(206, 80, 84);// Distintivo de la app.
     private final Color COLOR_FONDO = new Color(40, 40, 40);
 
+    /**
+     * Constructor de TarjetaResenia.
+     * Configura la apariencia y los componentes de la tarjeta para mostrar la
+     * información de una reseña.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param resenia El objeto Resenia que contiene los datos a mostrar.
+     */
     public TarjetaResenia(Resenia resenia) {
         this.resenia = resenia;
 
@@ -118,7 +138,16 @@ public class TarjetaResenia extends JPanel {
         this.add(panelInfo, BorderLayout.CENTER);
     }
 
-    // logica para la imagen en miniatura por Gemini.
+    /**
+     * Carga la imagen del póster de la película en miniatura desde una URL en un
+     * hilo de fondo
+     * para no bloquear la interfaz de usuario.
+     * Lógica para la imagen en miniatura por Gemini.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param urlPoster La URL de la imagen del póster.
+     */
     private void cargarImagenMiniatura(String urlPoster) {
         SwingWorker<ImageIcon, Void> worker = new SwingWorker<>() {
             @Override
@@ -154,6 +183,13 @@ public class TarjetaResenia extends JPanel {
         worker.execute();
     }
 
+    /**
+     * Carga una imagen por defecto cuando no se puede encontrar o cargar el póster
+     * de la película desde la URL proporcionada.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     */
     private void cargarImagenPorDefecto() {
         try {
             // Usamos tu imagen de fallback
@@ -172,10 +208,24 @@ public class TarjetaResenia extends JPanel {
         }
     }
 
+    /**
+     * Obtiene el botón para eliminar la reseña.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @return El JButton utilizado para la acción de eliminar.
+     */
     public JButton getBotonEliminar() {
         return botonEliminar;
     }
 
+    /**
+     * Obtiene el objeto Resenia asociado a esta tarjeta.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @return El objeto Resenia.
+     */
     public Resenia getResenia() {
         return resenia;
     }

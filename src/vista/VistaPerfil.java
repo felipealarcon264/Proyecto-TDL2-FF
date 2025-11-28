@@ -1,3 +1,4 @@
+//Verificacion JavaDoc -> Realizada.
 package vista;
 
 import java.awt.*;
@@ -5,6 +6,14 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+/**
+ * Vista que muestra el perfil del usuario, incluyendo su nombre, email, rol y
+ * una lista de sus reseñas.
+ * Proporciona un botón para volver a la vista principal (Home).
+ * 
+ * @author Grupo 4 - Proyecto TDL2
+ * @version 1.0
+ */
 public class VistaPerfil extends JPanel {
 
     private JLabel lblNombreUsuario;
@@ -17,6 +26,14 @@ public class VistaPerfil extends JPanel {
     private final Color COLOR_HEADER = new Color(20, 20, 20); // Gris casi negro
     private final Color COLOR_TEXTO = Color.WHITE;
 
+    /**
+     * Constructor de VistaPerfil.
+     * Inicializa y configura todos los componentes de la interfaz de usuario para
+     * la pantalla de perfil.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     */
     public VistaPerfil() {
         setLayout(new BorderLayout());
         setBackground(COLOR_FONDO);
@@ -28,8 +45,7 @@ public class VistaPerfil extends JPanel {
 
         panelHeader.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(50, 50, 50)),
-                new EmptyBorder(25, 30, 25, 30)
-        ));
+                new EmptyBorder(25, 30, 25, 30)));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 10, 5, 10);
@@ -37,19 +53,21 @@ public class VistaPerfil extends JPanel {
         // Icono (Genérico)
         JLabel lblIcono = new JLabel();
         // Intenta cargar tu icono de usuario si tienes uno, o usa uno por defecto
-        // lblIcono.setIcon(new ImageIcon(...)); 
-        
+        // lblIcono.setIcon(new ImageIcon(...));
+
         lblIcono.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 65));
         lblIcono.setForeground(Color.WHITE);
-        
-        gbc.gridx = 0; gbc.gridy = 0; gbc.gridheight = 3;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 3;
         panelHeader.add(lblIcono, gbc);
 
         // Panel para los datos del usuario, para centrarlos juntos
         JPanel panelDatos = new JPanel();
         panelDatos.setLayout(new BoxLayout(panelDatos, BoxLayout.Y_AXIS));
         panelDatos.setOpaque(false);
-        
+
         lblNombreUsuario = new JLabel("Usuario");
         lblNombreUsuario.setFont(new Font("Segoe UI", Font.BOLD, 24));
         lblNombreUsuario.setForeground(COLOR_TEXTO);
@@ -59,7 +77,7 @@ public class VistaPerfil extends JPanel {
         lblEmail.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         lblEmail.setForeground(Color.GRAY);
         lblEmail.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
+
         lblRol = new JLabel("CUENTA");
         lblRol.setForeground(new Color(100, 180, 255)); // Azulito
         lblRol.setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -71,7 +89,10 @@ public class VistaPerfil extends JPanel {
         panelDatos.add(Box.createRigidArea(new Dimension(0, 8)));
         panelDatos.add(lblRol);
 
-        gbc.gridx = 1; gbc.gridy = 0; gbc.gridheight = 3; gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridheight = 3;
+        gbc.anchor = GridBagConstraints.CENTER;
         panelHeader.add(panelDatos, gbc);
 
         this.add(panelHeader, BorderLayout.NORTH);
@@ -81,7 +102,7 @@ public class VistaPerfil extends JPanel {
         lblTituloResenias.setForeground(COLOR_TEXTO);
         lblTituloResenias.setFont(new Font("Segoe UI", Font.BOLD, 18));
         lblTituloResenias.setBorder(new EmptyBorder(20, 30, 10, 30));
-        
+
         // Panel contenedor vertical
         panelResenias = new JPanel();
         panelResenias.setLayout(new BoxLayout(panelResenias, BoxLayout.Y_AXIS));
@@ -105,17 +126,24 @@ public class VistaPerfil extends JPanel {
         JPanel panelSur = new JPanel();
         panelSur.setBackground(COLOR_FONDO);
         panelSur.setBorder(new EmptyBorder(15, 0, 20, 0));
-        
+
         botonVolver = new JButton("Volver al Home"); // Texto más claro
         botonVolver.setPreferredSize(new Dimension(160, 40));
         estilizarBoton(botonVolver);
-        
+
         panelSur.add(botonVolver);
         this.add(panelSur, BorderLayout.SOUTH);
     }
 
     // --- MÉTODOS DE GESTIÓN ---
 
+    /**
+     * Aplica un estilo visual consistente a un botón.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param btn El JButton al que se le aplicará el estilo.
+     */
     private void estilizarBoton(JButton btn) {
         btn.setBackground(new Color(45, 45, 45));
         btn.setForeground(COLOR_TEXTO);
@@ -126,26 +154,55 @@ public class VistaPerfil extends JPanel {
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
+    /**
+     * Establece los datos del usuario que se muestran en la cabecera del perfil.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param nombre El nombre completo o de usuario.
+     * @param email  El correo electrónico del usuario.
+     * @param rol    El rol del usuario (ej. "CUENTA", "ADMIN").
+     */
     public void setDatosUsuario(String nombre, String email, String rol) {
         lblNombreUsuario.setText(nombre);
         lblEmail.setText(email);
         lblRol.setText(rol);
     }
 
+    /**
+     * Agrega una tarjeta de reseña al panel de reseñas.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param tarjeta La TarjetaResenia a agregar.
+     */
     public void agregarTarjetaResenia(TarjetaResenia tarjeta) {
         panelResenias.add(tarjeta);
         // Espacio entre tarjetas
-        panelResenias.add(Box.createRigidArea(new Dimension(0, 10))); 
+        panelResenias.add(Box.createRigidArea(new Dimension(0, 10)));
         panelResenias.revalidate();
         panelResenias.repaint();
     }
 
+    /**
+     * Limpia la vista, eliminando todas las tarjetas de reseña mostradas.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     */
     public void limpiarResenias() {
         panelResenias.removeAll();
         panelResenias.revalidate();
         panelResenias.repaint();
     }
 
+    /**
+     * Obtiene el botón para volver a la vista principal.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @return El JButton para la acción de volver.
+     */
     public JButton getBotonVolver() { // Getter actualizado
         return botonVolver;
     }

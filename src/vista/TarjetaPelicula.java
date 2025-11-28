@@ -1,3 +1,5 @@
+//Verificacion JavaDoc -> Realizada.
+
 package vista;
 
 import javax.swing.*;
@@ -13,6 +15,9 @@ import java.net.URI;
  * película.
  * Se encarga de cargar la imagen del póster desde una URL en un hilo separado
  * para no congelar la interfaz de usuario.
+ * 
+ * @author Grupo 4 - Proyecto TDL2
+ * @version 1.0
  */
 public class TarjetaPelicula extends JPanel {
 
@@ -23,6 +28,15 @@ public class TarjetaPelicula extends JPanel {
     private final Border bordeSeleccionado = BorderFactory.createLineBorder(Color.GREEN, 4);
     private boolean seleccionada = false;
 
+    /**
+     * Constructor de TarjetaPelicula.
+     * Configura la apariencia y los componentes de la tarjeta para mostrar la
+     * información de una película.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param pelicula El objeto Pelicula que contiene los datos a mostrar.
+     */
     public TarjetaPelicula(Pelicula pelicula) {
         this.pelicula = pelicula;
 
@@ -34,10 +48,12 @@ public class TarjetaPelicula extends JPanel {
         setBackground(Color.DARK_GRAY);
 
         // Etiqueta para el Título, Género y Rating
-        String textoTitulo = "<html><body style='width: 120px; text-align: center; color: white;'>" + pelicula.getTitulo();
+        String textoTitulo = "<html><body style='width: 120px; text-align: center; color: white;'>"
+                + pelicula.getTitulo();
 
         // Si tenemos género real (no es null ni "Desconocido"), lo mostramos
-        if (pelicula.getGenero() != null && !pelicula.getGenero().equals("Desconocido") && !pelicula.getGenero().equals("null")) {
+        if (pelicula.getGenero() != null && !pelicula.getGenero().equals("Desconocido")
+                && !pelicula.getGenero().equals("null")) {
             textoTitulo += "<br><i style='color:gray'>" + pelicula.getGenero() + "</i>";
         }
 
@@ -79,18 +95,25 @@ public class TarjetaPelicula extends JPanel {
                     setBorder(bordeResaltado); // Cambia el borde al entrar el ratón
                 }
             }
+
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
-               if (!seleccionada) {
-                   setBorder(bordeNormal); // Vuelve al borde normal al salir
-               }
+                if (!seleccionada) {
+                    setBorder(bordeNormal); // Vuelve al borde normal al salir
+                }
             }
-            // El controlador se encargará del mouseClicked
         });
     }
 
-    // cambia el estado visual de la tarjeta. True = borde grueso y False para que vuelva a la normalidad
-
+    /**
+     * Cambia el estado visual de la tarjeta para indicar si está seleccionada.
+     * Un estado seleccionado se resalta con un borde y fondo distintos.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param seleccionada true para marcar como seleccionada, false para volver al
+     *                     estado normal.
+     */
     public void setSeleccionada(Boolean seleccionada) {
         this.seleccionada = seleccionada;
         if (seleccionada) {
@@ -101,10 +124,26 @@ public class TarjetaPelicula extends JPanel {
             setBackground(Color.DARK_GRAY);
         }
     }
+
+    /**
+     * Obtiene el objeto Pelicula asociado a esta tarjeta.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @return El objeto Pelicula.
+     */
     public Pelicula getPelicula() {
         return pelicula;
     }
 
+    /**
+     * Carga la imagen del póster de la película desde una URL en un hilo de fondo
+     * para no bloquear la interfaz de usuario.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param urlPoster La URL de la imagen del póster.
+     */
     private void cargarImagen(String urlPoster) {
         // SwingWorker es la herramienta de Swing para tareas en segundo plano
         SwingWorker<ImageIcon, Void> worker = new SwingWorker<>() {
@@ -112,7 +151,8 @@ public class TarjetaPelicula extends JPanel {
             protected ImageIcon doInBackground() throws Exception {
                 // Esta parte se ejecuta en un hilo separado (NO en el de la UI)
                 try {
-                    if (urlPoster == null || urlPoster.isEmpty() || urlPoster.equals("N/A")) return null;
+                    if (urlPoster == null || urlPoster.isEmpty() || urlPoster.equals("N/A"))
+                        return null;
                     // Forma moderna y segura de crear una URL desde un String
                     URL url = new URI(urlPoster).toURL();
                     ImageIcon originalIcon = new ImageIcon(url);
@@ -123,11 +163,12 @@ public class TarjetaPelicula extends JPanel {
 
                     // Redimensionamos la imagen para que quepa en la tarjeta
                     Image imagenOriginal = originalIcon.getImage();
-                    // redimensionamos para llenar la tarjeta
+                    // Redimensionamos para llenar la tarjeta
                     int anchoTarjeta = 180;
                     int altoTarjeta = 250;
 
-                    Image imagenRedimensionada = imagenOriginal.getScaledInstance(anchoTarjeta, altoTarjeta, Image.SCALE_SMOOTH);
+                    Image imagenRedimensionada = imagenOriginal.getScaledInstance(anchoTarjeta, altoTarjeta,
+                            Image.SCALE_SMOOTH);
                     return new ImageIcon(imagenRedimensionada);
                 } catch (Exception ex) {
                     System.err.println("No se pudo cargar la imagen: " + urlPoster);
@@ -135,6 +176,7 @@ public class TarjetaPelicula extends JPanel {
                     return null;
                 }
             }
+
             @Override
             protected void done() {
                 // Esta parte se ejecuta de vuelta en el hilo de la UI cuando doInBackground()
@@ -157,30 +199,36 @@ public class TarjetaPelicula extends JPanel {
         // ¡Iniciamos el trabajador!
         worker.execute();
     }
+
+    /**
+     * Carga una imagen por defecto cuando no se puede encontrar o cargar el póster
+     * de la película desde la URL proporcionada.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     */
     private void cargarImagenPorDefecto() {
         try {
-            // Buscamos tu imagen de fallback
+            // Buscamos la imagen.
             URL urlImg = getClass().getResource("/imagenes/PosterNoEncontrado.png");
 
             ImageIcon icon;
             if (urlImg != null) {
                 icon = new ImageIcon(urlImg);
             } else {
-                // Fallback de seguridad si no encuentra tu archivo PNG
+                // Fallback de seguridad si no encuentra el archivo PNG
                 etiquetaPoster.setText("Sin Imagen");
                 etiquetaPoster.setForeground(Color.LIGHT_GRAY);
                 return;
             }
 
-            // --- CORRECCIÓN DE TAMAÑO ---
-            // Antes era 100x100. Ahora lo aumentamos para llenar mejor la tarjeta.
-            // 150 ancho x 200 alto queda mucho mejor centrado sin deformar tanto.
             Image img = icon.getImage().getScaledInstance(150, 200, Image.SCALE_SMOOTH);
 
             etiquetaPoster.setIcon(new ImageIcon(img));
             etiquetaPoster.setText(""); // Borrar texto "Cargando..."
 
-            // Aseguramos que el fondo coincida con la tarjeta para que no se vea el cuadro gris
+            // Aseguramos que el fondo coincida con la tarjeta para que no se vea el cuadro
+            // gris
             etiquetaPoster.setBackground(Color.DARK_GRAY);
 
         } catch (Exception e) {

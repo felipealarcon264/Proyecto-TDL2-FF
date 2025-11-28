@@ -1,13 +1,12 @@
+//Verificacion JavaDoc -> Realizada.
 package controlador;
 
 import modelo.ente.Usuario;
 import servicio.ServicioPelicula;
 import servicio.ServicioUsuario;
 import vista.VistaLogin;
-
 import control.Aplicacion;
 import javax.swing.SwingWorker;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -15,6 +14,9 @@ import java.awt.event.ActionListener;
  * Controlador del Login.
  * Implementa ActionListener para escuchar los botones de la Vista.
  * Conecta la Vista (VistaLogin) con el Modelo (ServicioUsuario).
+ * 
+ * @author Grupo 4 - Proyecto TDL2
+ * @version 1.0
  */
 public class ControladorLogin implements ActionListener {
 
@@ -25,6 +27,15 @@ public class ControladorLogin implements ActionListener {
     /**
      * Constructor que recibe la Vista y el Modelo.
      * Se registra a sí mismo (this) para escuchar los botones de la vista.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param vista            La vista de login (VistaLogin) que este controlador
+     *                         gestiona.
+     * @param servicioUsuario  El servicio para la lógica de negocio relacionada con
+     *                         los usuarios.
+     * @param servicioPelicula El servicio para la lógica de negocio relacionada con
+     *                         las películas.
      */
     public ControladorLogin(VistaLogin vista, ServicioUsuario servicioUsuario, ServicioPelicula servicioPelicula) {
         this.vista = vista;
@@ -38,6 +49,11 @@ public class ControladorLogin implements ActionListener {
 
     /**
      * Este método se llama automáticamente cuando se hace clic en un botón.
+     * Maneja los eventos de acción para los botones de ingresar y registrarse.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param e El evento de acción que se ha producido.
      */
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -56,7 +72,13 @@ public class ControladorLogin implements ActionListener {
 
     /**
      * Lógica para manejar el clic en "Ingresar".
-     * Desde este metodo podemos ingresar a otra vista con mostrarVista!
+     * Valida las credenciales del usuario y, si son correctas, inicia la sesión
+     * y navega a la pantalla principal.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @return true si el proceso de ingreso se inició correctamente, false si las
+     *         credenciales son incorrectas.
      */
     private boolean procesarIngresoCuenta() {
         // Se obtienen los datos de pantalla(Vista).

@@ -11,6 +11,15 @@ package excepciones;
  * @author Gemini
  */
 public class ErrorDeInicializacionException extends RuntimeException {
+    /**
+     * Constructor de la excepción ErrorDeInicializacionException.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
+     * @param message El mensaje de error personalizado.
+     * @param cause   La causa del error, si es necesario.
+     */
     public ErrorDeInicializacionException(String message, Throwable cause) {
         super(message, cause);
     }

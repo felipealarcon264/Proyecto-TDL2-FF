@@ -1,3 +1,4 @@
+//Verificacion JavaDoc -> Realizada.
 package vista;
 
 import javax.swing.*;
@@ -7,11 +8,31 @@ import modelo.catalogo.Pelicula;
 
 import java.awt.*;
 
+/**
+ * Un JDialog que muestra los detalles completos de una película seleccionada.
+ * Incluye el póster, título, año, duración, director, género, rating y
+ * sinopsis.
+ * Proporciona botones para cerrar la vista y para acceder a la funcionalidad de
+ * reseña.
+ * 
+ * @author Grupo 4 - Proyecto TDL2
+ * @version 1.0
+ */
 public class VistaDetalleOMDb extends JDialog {
     private JButton botonCerrar;
     private JButton botonMiResenia;
-    private final Color COLOR_ACENTO = new Color(206, 80, 84);//Distintivo de la app.
+    private final Color COLOR_ACENTO = new Color(206, 80, 84);// Distintivo de la app.
 
+    /**
+     * Constructor de VistaDetalleOMDb.
+     * Configura la ventana de diálogo con toda la información de la película
+     * proporcionada.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @param propietario El Frame padre sobre el cual este diálogo será modal.
+     * @param pelicula    El objeto Pelicula cuyos detalles se mostrarán.
+     */
     public VistaDetalleOMDb(Frame propietario, Pelicula pelicula) {
         super(propietario, "Detalle de la Película", true);
         setSize(600, 450);
@@ -94,11 +115,26 @@ public class VistaDetalleOMDb extends JDialog {
         add(panelSur, BorderLayout.SOUTH);
     }
 
-    // getter para el controlador ControladorDetalleOMDb
+    /**
+     * Obtiene el botón para cerrar la ventana de detalles.
+     * Permite al controlador añadir un ActionListener.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @return El JButton para la acción de cerrar.
+     */
     public JButton getBotonCerrar() {
         return botonCerrar;
     }
 
+    /**
+     * Obtiene el botón para escribir o ver una reseña de la película.
+     * Permite al controlador añadir un ActionListener.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * @return El JButton para la acción de reseña.
+     */
     public JButton getBotonMiResenia() {
         return botonMiResenia;
     }

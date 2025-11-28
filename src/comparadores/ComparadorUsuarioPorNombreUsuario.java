@@ -1,6 +1,5 @@
 //Verificacion JavaDoc -> Realizada.
 package comparadores;
-
 import java.util.Comparator;
 import modelo.ente.Usuario;
 
