@@ -1,12 +1,9 @@
+//Verificacion JavaDoc -> Realizada.
 package control;
-
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-
 import javax.swing.*;
-
 import servicio.ServicioPelicula;
-import basededatos.InicializadorDB;
 import controlador.ControladorLogin;
 import controlador.ControladorRegistro;
 import servicio.ServicioUsuario;
@@ -15,6 +12,12 @@ import vista.VistaLogin;
 import vista.VistaCarga;
 import vista.VistaRegistro;
 
+/**
+ * Tiene un metodo super importante que arranca toda la app.
+ * 
+ * @author Grupo 4 - Proyecto TDL2
+ * @version 1.0
+ */
 public class Aplicacion {
 
     // Componentes globales para navegación
@@ -27,10 +30,7 @@ public class Aplicacion {
     public static ServicioUsuario servicioUsuario;
     public static ServicioPelicula servicioPelicula;
 
-    public static void main(String[] args) {
-        // --- INICIALIZACIÓN DE LA BASE DE DATOS ---
-        new InicializadorDB().crearTablas();
-        // Ejecutamos el Splash
+    public static void iniciar() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -39,6 +39,12 @@ public class Aplicacion {
         });
     }
 
+    /**
+     * Muestra el Splash y luego arranca la aplicación.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     */
     private static void mostrarSplashYArrancar() {
         // 1. Configurar Look and Feel
         try {
@@ -83,6 +89,12 @@ public class Aplicacion {
         }).start();
     }
 
+    /**
+     * Inicia la ventana principal de la aplicación.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     */
     private static void iniciarVentanaPrincipal() {
         // Se crea el marco principal.
         ventana = new JFrame("Plataforma TDL2");
@@ -127,13 +139,18 @@ public class Aplicacion {
         // Muestra el login por defecto.
         cardLayout.show(panelContenedor, "LOGIN");
         
-
         ventana.setVisible(true);
 
-        
     }
 
-    // Método estático para navegar entre pantallas desde los Controladores
+    /**
+     * Método estático para navegar entre pantallas desde los Controladores
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
+     * @param nombreVista Nombre de la vista a mostrar.
+     */
     public static void mostrarVista(String nombreVista) {
         cardLayout.show(panelContenedor, nombreVista);
     }
