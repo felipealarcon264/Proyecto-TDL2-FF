@@ -1,5 +1,5 @@
+//Verificacion JavaDoc -> Realizada.
 package dao.implementaciones;
-
 
 import basededatos.ConexionDB;
 import dao.interfaces.Datos_PersonalesDAO;
@@ -21,6 +21,9 @@ import java.util.List;
 public class Datos_PersonalesDAOImpl implements Datos_PersonalesDAO {
     /**
      * Constructor por defecto.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      */
     public Datos_PersonalesDAOImpl() {
     }

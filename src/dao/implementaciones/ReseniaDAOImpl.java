@@ -1,3 +1,4 @@
+//Verificacion JavaDoc -> Realizada.
 package dao.implementaciones;
 
 import basededatos.ConexionDB;
@@ -9,7 +10,6 @@ import modelo.catalogo.Resenia;
 import modelo.ente.Datos_Personales;
 import modelo.ente.Usuario;
 import modelo.catalogo.Contenido;
-
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,6 +26,9 @@ import java.util.List;
 public class ReseniaDAOImpl implements ReseniaDAO {
     /**
      * Constructor por defecto.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      */
     public ReseniaDAOImpl() {
     }

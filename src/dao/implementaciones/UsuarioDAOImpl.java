@@ -1,11 +1,10 @@
+//Verificacion JavaDoc -> Realizada.
 package dao.implementaciones;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import dao.interfaces.UsuarioDAO;
 import basededatos.ConexionDB;
-
 import modelo.ente.Administrador;
 import modelo.ente.Cuenta;
 import modelo.ente.Datos_Personales;
@@ -22,6 +21,9 @@ import modelo.ente.Usuario;
 public class UsuarioDAOImpl implements UsuarioDAO {
     /**
      * Constructor por defecto.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      */
     public UsuarioDAOImpl() {
     }

@@ -17,6 +17,9 @@ public interface ReseniaDAO {
     /**
      * Guarda una reseña.
      * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
      * @param resenia Dato a guardar.
      * @return Exito.
      */
@@ -24,6 +27,9 @@ public interface ReseniaDAO {
 
     /**
      * Borra una reseña.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * 
      * @param resenia Dato a borrar.
      * @return Exito.
@@ -33,6 +39,9 @@ public interface ReseniaDAO {
     /**
      * Busca una reseña por su id.
      * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
      * @param id Id del dato a buscar.
      * @return Dato encontrado.
      */
@@ -41,6 +50,9 @@ public interface ReseniaDAO {
     /**
      * Actualiza una reseña.
      * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
      * @param resenia Dato a actualizar.
      * @return Exito.
      */
@@ -48,6 +60,9 @@ public interface ReseniaDAO {
 
     /**
      * Devuelve la lista con todos los datos de la base de datos.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * 
      * @return Lista con los datos.
      */

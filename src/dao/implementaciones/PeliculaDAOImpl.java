@@ -1,3 +1,4 @@
+//Verificacion JavaDoc -> Realizada.
 package dao.implementaciones;
 
 import basededatos.ConexionDB;
@@ -21,6 +22,9 @@ import java.util.List;
 public class PeliculaDAOImpl implements PeliculaDAO {
     /**
      * Constructor por defecto.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      */
     public PeliculaDAOImpl() {
     }

@@ -1,7 +1,7 @@
+//Verificacion JavaDoc -> Realizada.
 package dao.interfaces;
 
 import java.util.List;
-
 import modelo.ente.Datos_Personales;
 
 /**
@@ -18,7 +18,10 @@ public interface Datos_PersonalesDAO {
 
     /**
      * Guarda datos personales en la base de datos y devuelve el ID generado.
-     * 
+     *
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     *
      * @param datosPersonales Dato a guardar.
      * @return id generado.
      */
@@ -26,6 +29,9 @@ public interface Datos_PersonalesDAO {
 
     /**
      * Borrar datos personales
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * 
      * @param datosPersonales Dato a borrar.
      * @return exito.
@@ -35,6 +41,9 @@ public interface Datos_PersonalesDAO {
     /**
      * Buscar datos personales por DNI
      * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
      * @param dni DNI a buscar.
      * @return Clase dato personal.
      */
@@ -42,6 +51,9 @@ public interface Datos_PersonalesDAO {
 
     /**
      * Buscar datos personales por ID
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * 
      * @param id ID a buscar.
      * @return Clase dato personal.
@@ -51,6 +63,9 @@ public interface Datos_PersonalesDAO {
     /**
      * Actualizar.
      * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
      * @param datosPersonales Dato a actualizar.
      * @return exito.
      */
@@ -58,6 +73,9 @@ public interface Datos_PersonalesDAO {
 
     /**
      * Devuelve la lista con todos los datos de la base de datos.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
      * 
      * @return Lista con los datos.
      */

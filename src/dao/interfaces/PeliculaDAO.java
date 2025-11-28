@@ -16,6 +16,9 @@ public interface PeliculaDAO {
     /**
      * Guarda una película en la base de datos.
      * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
      * @param pelicula Dato a guardar.
      * @return Exito.
      */
@@ -23,27 +26,44 @@ public interface PeliculaDAO {
 
     /**
      * Borra una pelicula.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
      * @param pelicula Dato a borrar.
      * @return Exito.
      */
     public boolean borrar(Pelicula pelicula);
-/**
- * Busca pelicula por titulo.
- * @param titulo Titulo de pelicula a buscar.
- * @return El dato encontrado.
- */
+
+    /**
+     * Busca pelicula por titulo.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
+     * @param titulo Titulo de pelicula a buscar.
+     * @return El dato encontrado.
+     */
     public Pelicula buscarPorTitulo(String titulo);
 
-    /**Busca por titulo y duracion.
+    /**
+     * Busca por titulo y duracion.
      * 
-     * @param titulo Titulo de la pelicula.
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
+     * @param titulo  Titulo de la pelicula.
      * @param resumen Resumen de la pelicula.
      * @return El dato encontrado o no.
      */
-    public Pelicula buscarPorTituloyResumen(String titulo,String resumen);
+    public Pelicula buscarPorTituloyResumen(String titulo, String resumen);
 
     /**
      * Busca pelicula por ID.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
      * @param id Id del dato a buscar.
      * @return El dato encontrado.
      */
@@ -51,6 +71,10 @@ public interface PeliculaDAO {
 
     /**
      * Actualiza una pelicula.
+     * 
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     * 
      * @param pelicula Dato a actualizar.
      * @return Exito.
      */
@@ -58,6 +82,10 @@ public interface PeliculaDAO {
 
     /**
      * Devuelve la lista con todos los datos de la base de datos.
+     *
+     * @author Grupo 4 - Proyecto TDL2
+     * @version 1.0
+     *
      * @return Lista con los datos.
      */
     public List<Pelicula> devolverListaPelicula();
