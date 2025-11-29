@@ -1,10 +1,12 @@
 basededatos
 comparadores
 control
+controlador
 dao
 dao.implementaciones
 dao.interfaces
+excepciones
 modelo.catalogo
 modelo.ente
-modelo.enums
 servicio
+vista

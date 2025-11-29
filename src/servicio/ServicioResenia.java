@@ -122,8 +122,6 @@ public class ServicioResenia {
      * @author Grupo 4 - Proyecto TDL2
      * @version 1.0
      * 
-     * @param idResenia El ID de la reseña a obtener.
-     * @return
      */
     public PeliculaDAO getPeliculaDAOImpl() {
         return peliculaDAO;

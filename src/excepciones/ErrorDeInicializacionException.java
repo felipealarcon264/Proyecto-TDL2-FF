@@ -1,5 +1,6 @@
-package excepciones;
 
+//Verificacion JavaDoc -> Realizada.
+package excepciones;
 /**
  * Excepción que se lanza cuando ocurre un error crítico durante la
  * inicialización de datos de la aplicación, como la imposibilidad de leer

@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import modelo.catalogo.Pelicula;
 
+
 /**
  * Este servicio se va a encargar de comunicarse con el servicio OMDb de las
  * peliculas a buscar.
