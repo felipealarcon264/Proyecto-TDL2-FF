@@ -1,105 +1,102 @@
-# Plataforma de Streaming TDL2 - Entregable 3
+# 🎬 Plataforma de Streaming TDL2
 
-Este proyecto es una aplicación de escritorio desarrollada en Java con Swing que simula una plataforma de streaming de películas. Cumple con los requisitos del Entregable 3 del curso Taller de Lenguajes II, incorporando una interfaz gráfica de usuario (GUI), manejo de concurrencia para tareas pesadas, persistencia de datos con SQLite y una arquitectura MVC (Modelo-Vista-Controlador) bien definida.
+Este proyecto es una aplicación de escritorio que simula una plataforma de streaming de películas. Desarrollada en Java con Swing para la interfaz gráfica, la aplicación implementa una arquitectura MVC, gestiona la concurrencia para tareas pesadas, utiliza SQLite para la persistencia de datos y consume la API de OMDb para la búsqueda de películas en línea.
 
-## ✨ Funcionalidades Implementadas
+## 📜 Índice
 
-- **Interfaz Gráfica con Swing**:
-  - **Navegación por Tarjetas (`CardLayout`)**: La aplicación utiliza un `CardLayout` para gestionar las diferentes pantallas (Login, Registro, Home, Carga) dentro de una única ventana principal (`JFrame`).
-  - **Splash Screen**: Al iniciar, se muestra una pantalla de bienvenida (`JWindow`) durante 3 segundos.
-  - **Login de Usuario**: Permite a los usuarios ingresar con su email y contraseña. La validación se realiza contra la base de datos.
-  - **Registro de Nuevos Usuarios**: Un formulario completo que valida los datos (campos no vacíos, formato de email, DNI numérico) y verifica que el DNI y el email no estén ya registrados. Utiliza excepciones personalizadas para gestionar los errores de negocio.
-  - **Pantalla Principal (Home)**: Muestra un catálogo de películas en una grilla con scroll. Incluye una barra de búsqueda, un botón para refrescar con 10 películas nuevas, un menú para ordenar la vista actual (por título o género), un saludo personalizado ("Hola, [usuario]") y un botón para cerrar sesión.
-  - **Pantalla de Carga**: Después de un login exitoso, se muestra una vista de "Cargando..." para indicar que se están preparando los datos en segundo plano, mejorando la experiencia de usuario.
-  - **Tarjetas de Película Interactivas**: Cada película en la grilla es un componente que muestra su póster, título, género y rating. Son interactivas, resaltando al pasar el ratón y respondiendo a los clics.
-
-- **Concurrencia y Carga Asíncrona**:
-  - **Carga de Catálogo (`SwingWorker`)**: La importación de películas desde el archivo CSV y la preparación de la vista principal se ejecutan en un hilo de trabajo (`SwingWorker`) para no congelar la interfaz.
-  - **Carga de Imágenes de Pósters**: Cada tarjeta de película (`TarjetaPelicula`) carga su imagen desde una URL de internet de forma asíncrona, también usando `SwingWorker`. Esto permite que la interfaz se mantenga fluida mientras se descargan las imágenes.
-
-- **Persistencia de Datos (DAO y SQLite)**:
-  - **Base de Datos SQLite**: Se utiliza un archivo `plataforma.db` para almacenar toda la información.
-  - **Inicialización Automática**: La clase `InicializadorDB` crea toda la estructura de tablas (`USUARIO`, `PELICULA`, etc.) si no existen al arrancar la aplicación.
-  - **Patrón DAO (Data Access Object)**: La lógica de acceso a la base de datos está completamente separada de la lógica de negocio. Las interfaces (`PeliculaDAO`, `UsuarioDAO`) definen los contratos, y las implementaciones (`PeliculaDAOImpl`, `UsuarioDAOImpl`) contienen el código SQL.
-
-- **Importación de Datos desde CSV**:
-  - Al iniciar sesión por primera vez, el `ServicioPelicula` lee el archivo `movies_database.csv`, procesa cada línea y guarda las películas en la base de datos. Esta operación solo se realiza si la tabla de películas está vacía.
-  
-  ## 🌐 Integración con Servicios Externos (API OMDb)
-
-Para cumplir con el requisito de búsqueda de contenido en línea, la aplicación se conecta a la API pública de **OMDb (Open Movie Database)**.
-
-- **Arquitectura de Conexión**:
-  - **`ServicioOMDb`**: Se implementó un servicio dedicado que encapsula la comunicación HTTP usando `java.net.http.HttpClient`.
-  - **Parseo JSON**: Se utiliza la librería externa `org.json` para interpretar las respuestas de la API y convertirlas en objetos `Pelicula`.
-  - **Manejo de Datos "Sucios"**: El servicio es robusto ante datos faltantes o formatos inconsistentes de la API (como años con guiones o valores "N/A"), asegurando que la aplicación no falle.
-
-- **Flujo de Búsqueda y UX**:
-  - **Búsqueda en Segundo Plano**: Las consultas a la API se ejecutan en hilos separados (`SwingWorker`) para evitar que la interfaz se congele ("freeze") durante la petición web.
-  - **Feedback Visual**: Se reutiliza la `VistaCarga` (GIF animado) dentro de un diálogo modal para indicar al usuario que la búsqueda está en curso.
-  - **Selección de Coincidencias**: Si la búsqueda arroja múltiples resultados, se abre una ventana de **Selección** (`VistaSeleccionOMDb`) que reutiliza el componente `TarjetaPelicula` en una grilla, permitiendo al usuario elegir visualmente el póster correcto.
-  - **Vista de Detalle**: Al seleccionar una película, se hace una segunda petición para traer la metadata completa (Sinopsis, Rating, Director) y se muestra en una **Vista de Detalle** (`VistaDetalleOMDb`) con diseño oscuro.
-
-- **Gestión de Errores**:
-  - Se implementó la excepción `ErrorApiOMDbException` para encapsular problemas de conectividad o de la API, permitiendo que los Controladores muestren mensajes amigables al usuario.
-
-
-
-- **Lógica de Negocio en Servicios**:
-  - **Primera Visita vs. Visitas Recurrentes**: La primera vez que un usuario ingresa, se le muestran las 10 películas con mejor rating. En los accesos posteriores (dentro de la misma sesión de la aplicación), se muestran 10 películas aleatorias.
-
-## 🚀 Cómo Ejecutar
-
-1.  Asegúrate de tener el JDK de Java instalado (versión 17 o superior).
-2.  El proyecto está configurado para ser ejecutado en un IDE como VS Code, Eclipse o IntelliJ.
-3.  El punto de entrada de la aplicación es el método `main` en la clase `control.Aplicacion`.
-4.  Al ejecutar, se creará automáticamente el archivo de base de datos `plataforma.db` en la raíz del proyecto con todas las tablas necesarias.
-
-## 📂 Estructura del Proyecto
-
-El proyecto sigue una arquitectura por capas para separar responsabilidades:
-
--   `src/`
-    -   `control/`: **Controladores** que actúan como intermediarios entre la vista y el modelo.
-        -   `Aplicacion.java`: Clase principal que inicializa y gestiona la navegación.
-        -   `ControladorLogin.java`: Maneja la lógica de inicio de sesión.
-        -   `ControladorRegistro.java`: Maneja la lógica de registro.
-        -   `ControladorHome.java`: Gestiona el contenido de la pantalla principal.
-    -   `vista/`: **Vistas** (componentes de la GUI en Swing). No contienen lógica de negocio.
-        -   `VistaLogin.java`, `VistaRegistro.java`, `VistaHome.java`, `VistaCarga.java`.
-        -   `TarjetaPelicula.java`: Componente personalizado para mostrar una película y su póster.
-    -   `modelo/`: **Clases del Modelo** que representan las entidades del dominio.
-        -   `catalogo/`: Clases como `Pelicula`, `Contenido`, `Resenia`.
-        -   `ente/`: Clases como `Usuario`, `Cuenta`, `Datos_Personales`.
-    -   `servicio/`: **Capa de Servicio** que contiene la lógica de negocio principal.
-        -   `ServicioUsuario.java`: Lógica de validación y creación de usuarios.
-        -   `ServicioPelicula.java`: Lógica de importación de CSV y obtención de listas de películas.
-    -   `dao/`: **Patrón DAO** para el acceso a datos.
-        -   `interfaces/`: Contratos para las operaciones de la base de datos.
-        -   `implementaciones/`: Clases con las consultas SQL (JDBC) para SQLite.
-    -   `basededatos/`: Clases relacionadas con la configuración de la base de datos.
-        -   `ConexionDB.java`: Gestiona la conexión a SQLite.
-        -   `InicializadorDB.java`: Crea el esquema de la base de datos.
-    -   `excepciones/`: **Excepciones personalizadas** para un mejor manejo de errores de negocio.
-    -   `comparadores/`: Clases `Comparator` para ordenar listas de objetos.
-    -   `resources/`: Contiene recursos como imágenes y el archivo `movies_database.csv`.
+1.  [Tecnologías Utilizadas](#-tecnologías-utilizadas)
+2.  [Funcionalidades Principales](#-funcionalidades-principales)
+3.  [Estructura del Proyecto](#-estructura-del-proyecto)
+4.  [Persistencia de Datos](#-persistencia-de-datos)
 
 ## 🛠️ Tecnologías Utilizadas
 
--   **Lenguaje**: Java
--   **Interfaz Gráfica**: Java Swing
--   **Base de Datos**: SQLite
--   **Conector**: JDBC para SQLite
--   **Patrones de Diseño**:
-    -   Modelo-Vista-Controlador (MVC)
-    -   Data Access Object (DAO)
-    -   Factory (en `FactoryDAO`)
-    -   Singleton (implícito en la gestión de la conexión a la BD)
+*   **Lenguaje:** Java
+*   **Interfaz Gráfica:** Java Swing
+*   **Base de Datos:** SQLite
+*   **API Externa:** [OMDb API](https://www.omdbapi.com/) para búsqueda de películas.
+*   **Concurrencia:** `SwingWorker` para tareas en segundo plano (cargas de datos, llamadas a API).
+*   **Manejo de Datos:**
+    *   Librería `org.json` para el parseo de respuestas JSON.
+    *   `java.net.http.HttpClient` para las peticiones HTTP.
 
----
-*Proyecto desarrollado para el Taller de Lenguajes II.*
+## ✨ Funcionalidades Principales
 
+### 🎨 Interfaz Gráfica y Experiencia de Usuario (UX)
 
-para * Importar las películas del CSV a la base de datos.
-     * Verifica si la película ya existe por título para evitar duplicados.
-     Esto solo se hace al iniciar la aplicacion.
+*   **Navegación Fluida:** Se utiliza `CardLayout` para gestionar las diferentes pantallas (Login, Registro, Home, Perfil) en una única ventana, permitiendo transiciones suaves.
+*   **Splash Screen:** Una pantalla de bienvenida (`JWindow`) simula la carga inicial de recursos.
+*   **Pantalla de Carga Inteligente:** Un `SwingWorker` muestra un GIF de carga durante tareas pesadas. Se asegura una duración mínima para evitar parpadeos.
+*   **Modo Oscuro:** Toda la interfaz está diseñada con una paleta de colores oscuros, inspirada en las plataformas de streaming modernas y el Dark Mode.
+
+### 👤 Gestión de Usuarios
+
+*   **Registro Unificado:** El formulario de alta combina la carga de datos personales y de la cuenta en un solo paso.
+*   **Validaciones Robustas:**
+    *   Se asegura que el DNI, email y nombre de usuario sean únicos en la base de datos.
+    *   Se valida el formato del email y que todos los campos obligatorios estén completos.
+*   **Lógica de "Usuario Nuevo":**
+    *   La primera vez que un usuario inicia sesión, se le muestra el Top 10 de películas y un mensaje de bienvenida.
+    *   En inicios de sesión posteriores, ve una selección de películas aleatorias.
+    *   Se agrego una columna en la base de datos del apartado usuario con el fin de determinar si es nuevo usuario.
+    *   El estado del usuario se actualiza en la base de datos tras el primer login.
+
+### 🎬 Gestión de Contenido y Catálogo
+
+*   **Importación desde CSV:** El sistema lee el archivo `movies_database.csv` y lo sincroniza con la base de datos local.
+*   **Estrategia de Actualización:** Al iniciar sesion, se verifica si cada película del CSV ya existe en la BD (comparando título y resumen) para evitar duplicados y permitir actualizaciones del archivo fuente. Se hizo de esta manera con el fin de asegurarnos que siempre estamos actualizados, no se realizó directamente con los tamaños porque tenemos conocimientos que la API externa puede contener mas peliculas que el propio archivo.
+*   **Adaptación del Modelo:** El género de las películas se maneja como `String` para mayor flexibilidad. Los datos faltantes en el CSV (como director o duración) se completan con valores por defecto, de esta manera tampoco limitamos los datos externos de la API.
+
+### 📝 Sistema de Reseñas y Perfil
+
+*   **Mi Perfil:** Una vista dedicada donde el usuario puede ver sus datos y gestionar sus reseñas.
+*   **Gestión de Memoria:** La vista de perfil se crea y destruye bajo demanda para evitar la persistencia de datos entre sesiones de diferentes usuarios.
+*   **Realizacion de una Reseña desde la API externa** Luego de buscar una pelicula desde la API externa se puede realizar una reseña de ella primero verifica si esa pelicula ya está cargada en la base de datos, caso contrario la carga y luego guarda la reseña con los ID correspondientes.
+*   **Reseñas Únicas:** Se impide que un usuario cree más de una reseña para la misma película.
+*   **Validación de una Reseña:** Con el fin de seguir el rumbo de nuestro código original decidimos que la puntuación de una reseña no
+se verá reflejada en la base de datos, pues una reseña debe ser validada por un administrador el cual se encargaría de esa lógica lo cual excede el alcance del entregable.
+*   **Eliminación de Reseñas:** Los usuarios pueden eliminar sus propias reseñas desde su perfil.
+
+### 🌐 Integración con API OMDb
+
+*   **Búsqueda Externa:** La funcionalidad de búsqueda consulta directamente a la API de OMDb en lugar de la base de datos local.
+*   **Búsqueda Asíncrona:** Las consultas a la API se realizan con `SwingWorker` para no congelar la interfaz de usuario.
+*   **Manejo de Errores:** El sistema gestiona respuestas sin póster (mostrando una imagen por defecto) y errores de conexión.
+
+## 📂 Estructura del Proyecto
+
+El proyecto sigue estrictamente el patrón de diseño **Modelo-Vista-Controlador (MVC)**, complementado con una capa de Servicios y una capa de Acceso a Datos (DAO).
+
+```
+src
+├── control/
+│   ├── Main.java           # Punto de entrada de la aplicación.
+│   └── Aplicacion.java     # Gestor principal de la ventana y el CardLayout.
+│
+├── controlador/
+│   └── ...                 # Controladores que conectan vistas y modelos.
+│
+├── dao/
+│   ├── interfaces/         # Interfaces del patrón DAO.
+│   └── sqlite/             # Implementaciones DAO para SQLite.
+│
+├── excepciones/
+│   └── ...                 # Excepciones personalizadas.
+│
+├── modelo/
+│   ├── catalogo/           # Clases del dominio (Pelicula, Resenia).
+│   └── ente/               # Clases del dominio (Usuario, Cuenta).
+│
+├── servicio/
+│   └── ...                 # Lógica de negocio (validaciones, conexión a API).
+│
+└── vista/
+    └── ...                 # Clases de la interfaz gráfica (JFrame, JPanel).
+```
+
+## 💾 Persistencia de Datos
+
+*   **Motor de Base de Datos:** SQLite (archivo `plataforma.db`).
+*   **Patrón de Diseño:** Se utiliza el patrón **Data Access Object (DAO)** para separar la lógica de negocio del acceso a datos.
+*   **Factory DAO:** Una clase `FactoryDAO` centraliza la creación de las instancias DAO.
+*   **Inicializador Automático:** La clase `InicializadorDB` verifica y crea las tablas necesarias (`USUARIO`, `PELICULA`, `RESENIA`, `DATOS_PERSONALES`) al arrancar la aplicación si estas no existen.

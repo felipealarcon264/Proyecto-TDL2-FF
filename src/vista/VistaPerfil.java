@@ -71,17 +71,17 @@ public class VistaPerfil extends JPanel {
         lblNombreUsuario = new JLabel("Usuario");
         lblNombreUsuario.setFont(new Font("Segoe UI", Font.BOLD, 24));
         lblNombreUsuario.setForeground(COLOR_TEXTO);
-        lblNombreUsuario.setAlignmentX(Component.LEFT_ALIGNMENT); // Alineación correcta para BoxLayout
+        lblNombreUsuario.setAlignmentX(Component.CENTER_ALIGNMENT); // Centramos el componente
 
         lblEmail = new JLabel("email@ejemplo.com");
         lblEmail.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         lblEmail.setForeground(Color.GRAY);
-        lblEmail.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblEmail.setAlignmentX(Component.CENTER_ALIGNMENT); // Centramos el componente
 
         lblRol = new JLabel("CUENTA");
         lblRol.setForeground(new Color(100, 180, 255)); // Azulito
         lblRol.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        lblRol.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblRol.setAlignmentX(Component.CENTER_ALIGNMENT); // Centramos el componente
 
         panelDatos.add(lblNombreUsuario);
         panelDatos.add(Box.createRigidArea(new Dimension(0, 5))); // Pequeño espacio
