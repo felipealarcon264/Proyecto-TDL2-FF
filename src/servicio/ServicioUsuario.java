@@ -64,16 +64,16 @@ public class ServicioUsuario {
      *                                    un número.
      * @throws DniYaRegistradosException  Si el DNI ya existe.
      * @throws EmailYaRegistradoException Si el email ya existe.
-     * @throws CampoVacio                 Si algún campo está vacío.
+     * @throws CampoVacioException                 Si algún campo está vacío.
      * 
      */
     public void crearNuevaCuenta(String nombre, String apellido, String dniStr, String nomUsr, String email,
             String password)
-            throws DatosInvalidosException, DniYaRegistradosException, EmailYaRegistradoException, CampoVacio {
+            throws DatosInvalidosException, DniYaRegistradosException, EmailYaRegistradoException, CampoVacioException {
         // Validacion de datos vacios.
         if (nombre.trim().isEmpty() || apellido.trim().isEmpty() || dniStr.trim().isEmpty() || nomUsr.trim().isEmpty()
                 || email.trim().isEmpty() || password.isEmpty()) {
-            throw new CampoVacio("Todos los campos son obligatorios.");
+            throw new CampoVacioException("Todos los campos son obligatorios.");
         }
         // Validacion de nombre y apellido valido.
         if (!(new ServicioDatos_Personales().contieneSoloLetras(nombre))) {

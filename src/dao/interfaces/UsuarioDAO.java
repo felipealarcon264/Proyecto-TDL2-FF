@@ -61,14 +61,7 @@ public interface UsuarioDAO {
      */
     public Usuario buscarPorEmail(String email);
 
-    /**
-     * Lista todos los Usuarios guardados en la DB y los muestra en pantalla.
-     * 
-     * @author Grupo 4 - Proyecto TDL2
-     * @version 1.0
-     */
-    public void ListarTodosLosUsuariosEnPantalla();
-
+    
     /**
      * Busca un usuario por su ID.
      * 

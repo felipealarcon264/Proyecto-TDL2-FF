@@ -1,7 +1,7 @@
 //Verificacion JavaDoc -> Realizada.
 package controlador;
 
-import excepciones.CampoVacio;
+import excepciones.CampoVacioException;
 import excepciones.DatosInvalidosException;
 import servicio.ServicioResenia;
 import vista.VistaResenia;
@@ -79,7 +79,7 @@ public class ControladorResenia {
                 javax.swing.JOptionPane.showMessageDialog(vista, "Reseña guardada. Será revisada por un administrador.",
                         "Éxito", javax.swing.JOptionPane.INFORMATION_MESSAGE);
                 vista.dispose();
-            } catch (CampoVacio | DatosInvalidosException ex) {
+            } catch (CampoVacioException | DatosInvalidosException ex) {
                 javax.swing.JOptionPane.showMessageDialog(vista, ex.getMessage(), "Error al guardar",
                         javax.swing.JOptionPane.ERROR_MESSAGE);
             }

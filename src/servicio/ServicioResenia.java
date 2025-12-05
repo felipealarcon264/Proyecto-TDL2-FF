@@ -7,7 +7,7 @@ import modelo.catalogo.Resenia;
 import modelo.ente.Usuario;
 import dao.FactoryDAO;
 import dao.interfaces.ReseniaDAO;
-import excepciones.CampoVacio;
+import excepciones.CampoVacioException;
 import excepciones.DatosInvalidosException;
 import java.util.List;
 
@@ -45,14 +45,14 @@ public class ServicioResenia {
      * @param contenido    Contenido al que se hace la reseña
      * @param calificacion Calificacion dada por el usuario
      * @param comentario   Comentario escrito por el usuario
-     * @throws CampoVacio              Si algun campo esta vacio
+     * @throws CampoVacioException              Si algun campo esta vacio
      * @throws DatosInvalidosException Si la calificacion esta fuera de rango o el
      *                                 comentario tiene mas de 200 caracteres
      */
     public void crearNuevaResenia(Usuario usuario, Contenido contenido, int calificacion, String comentario)
-            throws CampoVacio, DatosInvalidosException {
+            throws CampoVacioException, DatosInvalidosException {
         if (calificacion == 0 || comentario.trim().isEmpty())
-            throw new CampoVacio("Todos los campos son obligatorios.");
+            throw new CampoVacioException("Todos los campos son obligatorios.");
 
         if (calificacion < 1 || calificacion > 10)
             throw new DatosInvalidosException("Error al ingresar la calificacion.");

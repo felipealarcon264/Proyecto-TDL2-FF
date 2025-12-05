@@ -208,60 +208,6 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     }
 
     /**
-     * Lista todos los Usuarios guardados en la DB y los muestra en pantalla
-     * Mejoramos la eficiencia con el JOIN
-     * 
-     * @author Grupo 4 - Proyecto TDL2
-     * @version 1.2
-     * 
-     */
-    @Override
-    public void ListarTodosLosUsuariosEnPantalla() {
-        int i = 0;
-        // SQL con JOIN para traer todos los datos en UNA SOLA consulta
-        String sql = """
-                    SELECT u.ID AS usuario_id, u.NOMBRE_USUARIO, u.EMAIL, u.CONTRASENA, u.ROL,
-                           dp.ID AS dp_id, dp.NOMBRE, dp.APELLIDO, dp.DNI
-                    FROM USUARIO u
-                    JOIN DATOS_PERSONALES dp ON u.ID_DATOS_PERSONALES = dp.ID
-                """;
-
-        try (java.sql.Connection conn = ConexionDB.conectar();
-                java.sql.Statement stmt = conn.createStatement();
-                java.sql.ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                // Datos del Usuario
-                int id = rs.getInt("usuario_id");
-                String nombreUsuario = rs.getString("NOMBRE_USUARIO");
-                String email = rs.getString("EMAIL");
-                String contrasena = rs.getString("CONTRASENA");
-                String rol = rs.getString("ROL");
-
-                // Se crea el objeto Datos_Personales usando su constructor.
-                int idDP = rs.getInt("dp_id");
-                String dpNombre = rs.getString("NOMBRE");
-                String dpApellido = rs.getString("APELLIDO");
-                int dpDni = rs.getInt("DNI");
-                Datos_Personales dp = new Datos_Personales(idDP, dpNombre, dpApellido, dpDni);
-
-                i++;
-                // Se crean solo para mostrar
-                if (rol.equals("ADMINISTRADOR")) {
-                    Administrador auxAdm = new Administrador(id, nombreUsuario, email, contrasena, dp, rol,
-                            rs.getInt("ES_NUEVO"));
-                    System.out.println(i + ". \n" + auxAdm);
-                } else {
-                    Cuenta auxCta = new Cuenta(id, nombreUsuario, email, contrasena, dp, rol, rs.getInt("ES_NUEVO"));
-                    System.out.println(i + ". \n" + auxCta);
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("❌ Error al listar los usuarios: " + e.getMessage());
-        }
-    }
-
-    /**
      * Busca un usuario por su ID de base de datos.
      * 
      * @author Grupo 4 - Proyecto TDL2
