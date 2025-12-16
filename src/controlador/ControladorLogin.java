@@ -140,7 +140,6 @@ public class ControladorLogin implements ActionListener {
                             javax.swing.SwingUtilities.invokeLater(() -> {
                                 controladorHome.mostrarBienvenidaSiUsuarioNuevo();
                             });
-
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
